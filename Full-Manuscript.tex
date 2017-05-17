@@ -1,99 +1,94 @@
-%&latex
 \documentclass[12pt]{article}
-
-\usepackage[dvips]{graphicx}
-\usepackage{caption}
-\usepackage[authoryear]{natbib}
-\usepackage{psfrag,subfigure, natbib,amsfonts,float,mathbbol,natbib,amsmath,animate,multicol}
-\usepackage[letterpaper, left=1in, top=1in, right=1in, bottom=1in,nohead,includefoot, verbose, ignoremp]{geometry}
-\usepackage{times}
-\usepackage{relsize}
-\usepackage{array}
+\usepackage{graphicx,psfrag,amsfonts,float,mathbbol,xcolor,cleveref}
 \usepackage{arydshln}
-\usepackage{lmodern}
-\usepackage{color, colortbl}
-%\definecolor{Gray}{gray}{0.9}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage[mathscr]{euscript}
+\usepackage{enumitem}
+\usepackage{accents}
+\usepackage{framed}
+\usepackage{subcaption}
+\usepackage{natbib}
+\usepackage{mathtools}
+\usepackage{IEEEtrantools}
+\usepackage{times}
+\usepackage{cite}
+\usepackage{amsthm}
+\usepackage[letterpaper, left=1in, top=1in, right=1in, bottom=1in,nohead,includefoot, verbose, ignoremp]{geometry}
+\newcommand{\comment}[1]{\text{\phantom{(#1)}} \tag{#1}}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
 \newcommand*\needsparaphrased{\color{red}}
-\usepackage{slantsc}
+\newcommand*\needscited{\color{orange}}
+\newcommand*\needsproof{\color{blue}}
+\newcommand*\outlineskeleton{\color{green}}
+\newcommand{\PP}{\mathcal{P}}
 \newcommand{\bfeps}{\mbox{\boldmath $\epsilon$}}
-\newcommand{\bfeta}{\mbox{\boldmath $\eta$}}
 \newcommand{\bfgamma}{\mbox{\boldmath $\gamma$}}
-\newcommand{\bfbeta}{\mbox{\boldmath $\beta$}}
-\newcommand{\bfalpha}{\mbox{\boldmath $\alpha$}}
-\newcommand{\bftheta}{\mbox{\boldmath $\theta$}}
-\newcommand{\matDelta}{\mbox{$\Delta$}}
 \newcommand{\bflam}{\mbox{\boldmath $\lambda$}}
 \newcommand{\bfphi}{\mbox{\boldmath $\phi$}}
-\newcommand{\bfxi}{\mbox{\boldmath $\xi$}}
-\newcommand{\bfmu}{\mbox{\boldmath $\mu$}}
 \newcommand{\bfsigma}{\mbox{\boldmath $\sigma$}}
+\newcommand{\bfbeta}{\mbox{\boldmath $\beta$}}
+\newcommand{\bfalpha}{\mbox{\boldmath $\alpha$}}
 \newcommand{\bfe}{\mbox{\boldmath $e$}}
-%\newcommand{\bfb}{\mbox{\boldmath $b$}}
-%\newcommand{\bfa}{\mbox{\boldmath $a$}}
+\newcommand{\bff}{\mbox{\boldmath $f$}}
+\newcommand{\bfone}{\mbox{\boldmath $1$}}
 \newcommand{\bft}{\mbox{\boldmath $t$}}
 \newcommand{\bfo}{\mbox{\boldmath $0$}}
-\newcommand{\bfone}{\mbox{\boldmath $1$}}
+\newcommand{\bfO}{\mbox{\boldmath $O$}}
 \newcommand{\bfx}{\mbox{\boldmath $x$}}
+\newcommand{\bfX}{\mbox{\boldmath $X$}}
 \newcommand{\bfz}{\mbox{\boldmath $z$}}
-\newcommand{\lmr}{\fontfamily{lmr}\selectfont} % Latin Modern Roman
-\newcommand{\lmss}{\fontfamily{lmss}\selectfont} % Latin Modern Sans
-\newcommand{\lmm}{\fontfamily{lmtt}\selectfont} % Latin Modern Mono
-\newcommand{\Ycov}{\mbox{Y}_{\textsc{\relsize{-2}{\textsl{(-n)}}}}}
-\newcommand{\Yres}{\mbox{Y}_{\textsc{\relsize{-2}{\textsl{(-1)}}}}}
+
 
 \newcommand{\bfm}{\mbox{\boldmath $m}}
-%\newcommand{\bfy}{\mbox{\boldmath $y$}}
-\newcommand{\bfy}{\mbox{\bf y}}
-\newcommand{\bfa}{\mbox{\bf a}}
-\newcommand{\bfb}{\mbox{\bf b}}
-\newcommand{\bfd}{\mbox{\bf d}}
-\newcommand{\bfomega}{\mbox{\boldmath $\omega$}}
-\newcommand{\bfc}{\mbox{\bf c}}
-%\newcommand{\bfY}{\mbox{\boldmath $Y$}}
-\newcommand{\bfY}{\mbox{\bf Y}}
-\newcommand{\bigY}{\mbox{Y}}
-\newcommand{\matK}{\mbox{K}}
-\newcommand{\matC}{\mbox{C}}
-\newcommand{\matU}{\mbox{U}}
-\newcommand{\matL}{\mbox{L}}
-\newcommand{\matH}{\mbox{H}}
-\newcommand{\matB}{\mbox{B}}
-\newcommand{\matQ}{\mbox{Q}}
-\newcommand{\matR}{\mbox{R}}
-\newcommand{\matD}{\mbox{D}}
-\newcommand{\matZ}{\mbox{Z}}
-%\newcommand{\matH}{\mbox{H}}
-\newcommand{\matT}{\mbox{T}}
+\newcommand{\bfy}{\mbox{\boldmath $y$}}
+\newcommand{\bfa}{\mbox{\boldmath $a$}}
+\newcommand{\bfb}{\mbox{\boldmath $b$}}
+\newcommand{\bfY}{\mbox{\boldmath $Y$}}
 \newcommand{\bfS}{\mbox{\boldmath $S$}}
 \newcommand{\bfZ}{\mbox{\boldmath $Z$}}
 \newcommand{\cardT}{\vert \mathcal{T} \vert}
+%\newenvironment{theorem}[1][Theorem]{\begin{trivlist}
+%\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+%\newenvironment{corollary}[1][Corollary]{\begin{trivlist}
+%\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+%\newenvironment{proposition}[1][Proposition]{\begin{trivlist}
+%\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+%\newenvironment{definition}[1][Definition]{\begin{trivlist}
+%\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
 
-%\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
 
-\newenvironment{theorem}[1][Theorem]{\begin{trivlist}
-\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
-\newenvironment{corollary}[1][Corollary]{\begin{trivlist}
-\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
-\newenvironment{proposition}[1][Proposition]{\begin{trivlist}
-\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
-\newenvironment{algorithm}[1][Algorithm]{\begin{trivlist}
-\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
-\newenvironment{definition}[1][Definition]{\begin{trivlist}
-\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
-\newenvironment{example}[1][Example]{\begin{trivlist}
-\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\def\bL{\mathbf{L}}
 
+
+\makeatletter
+\renewcommand{\theenumi}{\Roman{enumi}}
+\renewcommand{\labelenumi}{\theenumi.}
+\renewcommand{\theenumii}{\Alph{enumii}}
+\renewcommand{\labelenumii}{\theenumii.}
+\renewcommand{\p@enumii}{\theenumi.}
+\makeatother
+
+\begin{document}
+
+%\nocite{*}
 \def\bL{\mathbf{L}}
 %\usepackage{mathtime}
 
 %%UNCOMMENT following line if you have package
-\usepackage{times}
+
 
 \title{ Nonparametric Covariance Estimation for Longitudinal Data via Penalized Tensor Product Splines}
 
 \author{Tayler A. Blake\thanks{The Ohio State University, 1958 Neil Avenue, Columbus, OH 43201} \and  Yoonkyung Lee\thanks{The Ohio State University, 1958 Neil Avenue, Columbus, OH 43201}}
 
-\begin{document}
 \bibliographystyle{plainnat}
 \maketitle
 
@@ -118,7 +113,7 @@ Prevalent technological advances in industry and many areas of science make high
 
 We consider two types of potentially high dimensional data: the first is the case of functional data or times series data, where each observation corresponds to a curve sampled densely at a fine grid of time points; in this case, it is typical that the number of time points is larger than the number of observations. The second is the case of sparse longitudinal data where measurement times may be almost unique yet sparsely distributed within the observed time range for each individual in the study. In this case, the nature of the high dimensionality may not be a consequence of having more measurements per subject than the number of subjects themselves, but rather because when pooled across subjects, the total number of unique observed time points is greater than the number of individuals. 
 
-Several approaches have been taken in effort to overcome the issue of high dimensionality in covariance estimation. Regularization improves stability of covariance estimates in high dimensions, particularly in the case where the parameter dimensionality $p$ is much larger than the number of observations $n$. Regularization of the covariance matrix and its Cholesky decomposition has been explored extensively through various approaches including banding, tapering, kernel smoothing, penalized likelihood, and penalized regression; see \citet{pourahmadi2011covariance} for a comprehensive overview. 
+Several approaches have been taken in effort to overcome the issue of high dimensionality in covariance estimation. Regularization improves stability of covariance estimates in high dimensions, particularly in the case where the parameter dimensionality $p$ is much larger than the number of observations $n$. Regularization of the covariance matrix and its Cholesky decomposition has been explored extensively through various approaches including banding, tapering, kernel smoothing, penalized likelihood, and penalized regression; see citet{pourahmadi2011covariance} for a comprehensive overview. 
 	
 To overcome the hurdle of enforcing covariance estimates to be positive definite, several have considered modeling various matrix decompositions including variance-correlation decomposition, spectral decomposition, and Cholesky decomposition. The Cholesky decomposition has received particular attention, as it which allows for a statistically meaningful interpretation as well as an unconstrained parameterization of elements of the covariance matrix. This parameterization allows for estimation to be accomplished as simply as in least squares regression. If we assume that the data follow an autoregressive process with (possibly) heteroskedastic errors, then the two matrices comprising the Cholesky decomposition, the Cholesky factor (which diagonalizes the covariance matrix) and diagonal matrix itself, hold the autoregressive coefficients and the error variances, respectively. The autoregressive coefficients are often referred to in the literature as the \emph{generalized autoregressive parameters}, or \emph{GARPs}, and the error variances are often called the \emph{innovation variances}, or \emph{IVs}.
 
@@ -127,7 +122,11 @@ In longitudinal studies, the measurement schedule could consist of targeted time
 
 	%% monotonicity constraint 
 %% I am unsure about how much detail to provide here about the mechanics of other methods and how our methods differ from (improve) previous work
-Through the Cholesky decomposition, we formulate covariance estimation as a penalized regression problem and propose novel covariance penalties designed to yield natural null models presented in the literature. By transforming the axes of the design points, we express these penalties in terms of two directions: the lag component and the additive component and characterize the solution coefficient function in terms of a functional ANOVA decomposition. Some have side-stepped the issue of high dimensionality by prescribing simple parametric models for the elements of the Cholesky decomposition. \citet{chen2011efficient}, \citet{pourahmadi1999joint}, and \citet{pourahmadi2002dynamic} have elicited stationary parametric models for the generalized autoregressive coefficients, letting the GARPs depend only on the distance between two time points. To induce the structural simplicity of such stationary models with the flexibility of a nonparametric approach, we penalize all functional components but that corresponding to the lag component so that the set of null models is comprised of stationary models. \cite{huang2007estimation} follow the hueristic argument presented in \cite{pourahmadi1999joint} that the generalized autoregressive parameters are monotone decreasing in as lag increases and set off-diagonal elements of either the covariance matrix or the Cholesky factor corresponding to large lags to zero. Rather than shrinking element of the Cholesky factor to zero after a particular value of $l$, we choose to softly enforce monotonicity in $l$ by penalizing order restriction as in the work of \citet{tibshirani2011nearly}. 
+Through the Cholesky decomposition, we formulate covariance estimation as a penalized regression problem and propose novel covariance penalties designed to yield natural null models presented in the literature. By transforming the axes of the design points, we express these penalties in terms of two directions: the lag component and the additive component and characterize the solution coefficient function in terms of a functional ANOVA decomposition. Some have side-stepped the issue of high dimensionality by prescribing simple parametric models for the elements of the Cholesky decomposition. 
+
+citet{chen2011efficient}, citet{pourahmadi1999joint}, and citet{pourahmadi2002dynamic} have elicited stationary parametric models for the generalized autoregressive coefficients, letting the GARPs depend only on the distance between two time points. To induce the structural simplicity of such stationary models with the flexibility of a nonparametric approach, we penalize all functional components but that corresponding to the lag component so that the set of null models is comprised of stationary models.
+
+citet{huang2007estimation} follow the hueristic argument presented in citet{pourahmadi1999joint} that the generalized autoregressive parameters are monotone decreasing in as lag increases and set off-diagonal elements of either the covariance matrix or the Cholesky factor corresponding to large lags to zero. Rather than shrinking element of the Cholesky factor to zero after particular value of $l$, we choose to softly enforce monotonicity in $l$ by penalizing order restriction as in the work of citet{tibshirani2011nearly}. 
 	
 The rest of the paper is organized as follows: Section 2 summarizes the general penalized estimation approach and introduces the transformed design coordinates and penalties for stationarity and non-monotonicity. Section 3 presents a detailed discussion of optimization and computational issues. Section 4 presents a simulation study and a real example to examine the performance of our methods as well as others. Section 5 concludes with discussion and future work.	
 
@@ -138,57 +137,53 @@ Parametric models are frequently used for modeling covariance structure in the l
 To satisfy the positive-definiteness constraint, methods have been developed and applied to certain reparameterizations of the covariance structure. Chiu, Leonard, and Tsui modeled the matrix logarithm of the covariance matrix. Early nonparametric work using the spectral decomposition of the covariance matrix included that of Rice and Silverman (1991) which discussed smoothing and smoothing parameter choice for eigenfunction estimation for regularly-spaced data. Staniswalis and Lee (1998) extended kernel-based smoothing of eigenfunctions to functional data observed on irregular grids. However, when the data are sparse in the sense that there are few repeated within-subject measurements and measurement times are quite different from subject-to-subject, approximation of the functional principal component scores defined by the Karhunen-Loeve expansion of the stochastic process by usual integration is unsatisfactory and requires numerical quadrature. Many have explored regression-based approaches using the Spectral decomposition, framing principal components analysis as a least-squares optimization problem. Among many others, Zou, Hastie and Tibshirani (2006) imposed penalties on regression coefficients to induce sparse loadings. {\needsparaphrased[REVIEW THE METHODS OF HUANG, KAUFMAN, YAO HERE]}
 
 
-Leveraging regression techniques for covariance estimation has recently received much attention.  {[\needsparaphrased OMIT THIS; INCLUDE BRIEF SUMMARIES OF THEIR TECHNIQUES BELOW. including \citet{bickel2008regularized} and \citet{huang2006covariance}}] have proposed nonparametric estimators of a specific covariance matrix (or its inverse) rather than the parameters of a covariance function. 
+Leveraging regression techniques for covariance estimation has recently received much attention.  {\needsparaphrased [OMIT THIS; INCLUDE BRIEF SUMMARIES OF THEIR TECHNIQUES BELOW. including citet{bickel2008regularized} and citet{huang2006covariance}] } have proposed nonparametric estimators of a specific covariance matrix (or its inverse) rather than the parameters of a covariance function. 
 
 {\needsparaphrased[DISCUSS THE CHOLESKY PARAMETERIZATION OF THE INVERSE COVARIANCE MATRIX. REFERENCE THE EARLY INFLUENTIAL WORKS]}
 
-Recently, many have considered a modified Cholesky decomposition (MCD) of the inverse of the covariance matrix. This decomposition also ensures positive-definite covariance estimates, and, unlike the Spectral decomposition whose parameters follow an orthogonality constraint, the entries in the MCD of the covariance matrix are unconstrained and have an attractive statistical interpretation as particular regression coefficients and variances.  One drawback we might note, however, is that the interpretation of  the regression model induced by the MCD assumes a natural (time) ordering among the variables in $Y$, which we henceforth assume to have mean $0$, whereas other decompositions are permutation-invariant.
-
-\citet{kaufman2008covariance} assume a stationary process, restricting covariance estimates to a specific class of functions. They as well as  Huang, Liu, and Liu \cite{huang2007estimation} follow the hueristic argument presented by \cite{pourahmadi1999joint} that $\phi_{t,t-l}$ is monotone decreasing in $l$ and set off-diagonal elements of either the covariance matrix or the Cholesky factor corresponding to large lags to zero. 
-
-As in \citet{huang2007estimation}, \citet{kaufman2008covariance}, and \citet{yao2005functional}, we treat covariance estimation as a function estimation problem where the covariance matrix is viewed as the evaluation of a smooth function at particular design points. 
+Recently, many have considered a modified Cholesky decomposition (MCD) of the inverse of the covariance matrix. This decomposition also ensures positive-definite covariance estimates, and, unlike the Spectral decomposition whose parameters follow an orthogonality constraint, the entries in the MCD of the covariance matrix are unconstrained and have an attractive statistical interpretation as particular regression coefficients and variances.  One drawback we might note, however, is that the interpretation of  the regression model induced by the MCD assumes a %natural (time) ordering among the variables in $Y$, which we henceforth assume to have mean $0$, whereas other decompositions are permutation-invariant.  citet{kaufman2008covariance} assume a stationary process, restricting covariance estimates to a specific class of functions. They as well as  Huang, Liu, and Liu cite{huang2007estimation} follow the hueristic argument presented by cite{pourahmadi1999joint} that $\phi_{t,t-l}$ is monotone decreasing in $l$ and set off-diagonal elements of either the covariance matrix or the Cholesky factor corresponding to large lags to zero.   As in citet{huang2007estimation}, citet{kaufman2008covariance}, and citet{yao2005functional}, we treat covariance estimation as a function estimation problem where the covariance matrix is viewed as the evaluation of a smooth function at particular design points. 
 
 {\needsparaphrased[DISCUSS THE CHOLESKY PARAMETERIZATION OF THE INVERSE COVARIANCE MATRIX. REFERENCE THE Liao, Park, Hannig, and Kang (2015) paper, discuss their estimators and the competitors they investigated.]}
 
 
 
-\citet{yao2005functional} do not utilize the Cholesky parameterization, and their estimates are not guaranteed to be positive definite.  We combine the advantages of bivariate smoothing as in \citet{yao2005functional} with the added utility of the Cholesky parameterization in \citet{huang2007estimation}; in doing so, we present a flexible and coherent approach to covariance estimation, while simultaneously we ensuring positive definiteness of estimates.Rather than shrinking element of the Cholesky factor to zero after a particular value of $l$, we choose to softly enforce monotonicity in $l$ by using a hinge penalty as in the work of \citet{tibshirani2011nearly}. 
+citet{yao2005functional} do not utilize the Cholesky parameterization, and their estimates are not guaranteed to be positive definite.  We combine the advantages of bivariate smoothing as in citet{yao2005functional} with the added utility of the Cholesky parameterization in citet{huang2007estimation}; in doing so, we present a flexible and coherent approach to covariance estimation, while simultaneously we ensuring positive definiteness of estimates.Rather than shrinking element of the Cholesky factor to zero after a particular value of $l$, we choose to softly enforce monotonicity in $l$ by using a hinge penalty as in the work of citet{tibshirani2011nearly}. 
 
 \section{Covariance Estimation via Bivariate Smoothing}
 
-Assume that we have measurements on individual $i$, denoted $\bfy_i = \left( y_{i1}, y_{i2}, \dots, y_{i,n_i} \right)^T$, at times $t_{i1} < t_{i2} < \dots< t_{i,n_i}$, with $i=1,2,\dots,N$. Observed time points may be individual-specific and not necessarily on a regular grid. To present a comprehensive overview our estimation procedure, we begin with the representation of the inverse covariance matrix, $\Sigma^{-1}$, in terms of its Cholesky decomposition (see \citet{pourahmadi2007cholesky} for a detailed discussion). Decomposing the precision matrix in such a way allows for both an unconstrained parameterization and statistically meaningful interpretation of covariance parameters. For any positive definite matrix $\Sigma$, there exists a unique unit lower triangular matrix $\matT$ with diagonal entries equal to $1$ which diagonalizes $\Sigma$:
+Assume that we have measurements on individual $i$, denoted $\bfy_i = \left( y_{i1}, y_{i2}, \dots, y_{i,n_i} \right)^T$, at times $t_{i1} < t_{i2} < \dots< t_{i,n_i}$, with $i=1,2,\dots,N$. Observed time points may be individual-specific and not necessarily on a regular grid. To present a comprehensive overview our estimation procedure, we begin with the representation of the inverse covariance matrix, $\Sigma^{-1}$, in terms of its Cholesky decomposition (see citet{pourahmadi2007cholesky} for a detailed discussion). Decomposing the precision matrix in such a way allows for both an unconstrained parameterization and statistically meaningful interpretation of covariance parameters. For any positive definite matrix $\Sigma$, there exists a unique unit lower triangular matrix $T$ with diagonal entries equal to $1$ which diagonalizes $\Sigma$:
 
 \begin{equation}
-\nonumber \matT \Sigma \matT^T = \matD
+\nonumber T \Sigma T^T = D
 \end{equation}
 \noindent
 
-The entries of $\matT$ and $\matD$ are easily interpretable if we consider regressing $y_{ij}$ on its predecessors: 
+The entries of $T$ and $D$ are easily interpretable if we consider regressing $y_{ij}$ on its predecessors: 
 
 \begin{equation}
 {y}_{ij}  = \sum_{k=1}^{j-1} \phi_{ijk} y_{ik} + \sigma_{ij}\epsilon_{ij} \label{data_ARmodel}
 \end{equation}
 \noindent
-for $j=2,\dots,n_i$; we define $y_{i1}=\epsilon_{i1}$. Standard regression theory gives us that if $\lbrace \phi_{ijk} \rbrace$ are the coefficients of the linear least squares predictor of $y_{ij}$ based on its predecessors, then the prediction residuals $\bfe_i =\left( e_{i1}, e_{i2},\dots, e_{i,n_i} \right)^T$ have diagonal covariance. Let $\matT_i$ be the unit lower triangular matrix with $jk^{th}$ below-diagonal entry given by $-\phi_{ijk}$. Let $\bfY_i$ denote the random vector giving rise to observed data $\bfy_i$, and let $\bfeps_i$ denote the associated vector of random errors. Then we may write the model \eqref{data_ARmodel} as follows: 
+for $j=2,\dots,n_i$; we define $y_{i1}=\epsilon_{i1}$. Standard regression theory gives us that if $\lbrace \phi_{ijk} \rbrace$ are the coefficients of the linear least squares predictor of $y_{ij}$ based on its predecessors, then the prediction residuals $\bfe_i =\left( e_{i1}, e_{i2},\dots, e_{i,n_i} \right)^T$ have diagonal covariance. Let $T_i$ be the unit lower triangular matrix with $jk^{th}$ below-diagonal entry given by $-\phi_{ijk}$. Let $\bfY_i$ denote the random vector giving rise to observed data $\bfy_i$, and let $\bfeps_i$ denote the associated vector of random errors. Then we may write the model \eqref{data_ARmodel} as follows: 
 
 \begin{equation}
-\bfeps_i = \matT_i \bfY_i \label{epsilon}
+\bfeps_i = T_i \bfY_i \label{epsilon}
 \end{equation}
 
-We assume $\bfY_i$ centered to have mean $\bfo$ with covariance matrix $\Sigma_i$. Let $\matD_i$ be the diagonal matrix with $\lbrace \sigma_{ij} \rbrace$ down the diagonal, and taking covariances on both sides of \eqref{epsilon}, 
+We assume $\bfY_i$ centered to have mean $\bfo$ with covariance matrix $\Sigma_i$. Let $D_i$ be the diagonal matrix with $\lbrace \sigma_{ij} \rbrace$ down the diagonal, and taking covariances on both sides of \eqref{epsilon}, 
 
 \begin{equation}
 \nonumber
-\matD_i = \matT_i \Sigma_i \matT_i^T
+D_i = T_i \Sigma_i T_i^T
 \end{equation} 
 \noindent
-and immediately, we have that $\Sigma_i^{-1} = \matT_i^T \matD_i^{-1} \matT_i$. The regression coefficients $\lbrace \phi_{ijk} \rbrace$ are referred to as the \emph{generalized autoregressive parameters} (GARPs), and the $\lbrace \sigma_{ij} \rbrace$ are referred to as the \emph{innovation variances} (IVs.) 
+and immediately, we have that $\Sigma_i^{-1} = T_i^T D_i^{-1} T_i$. The regression coefficients $\lbrace \phi_{ijk} \rbrace$ are referred to as the \emph{generalized autoregressive parameters} (GARPs), and the $\lbrace \sigma_{ij} \rbrace$ are referred to as the \emph{innovation variances} (IVs.) 
 
 %% Show that the elements of the inverse covariance matrix can be viewed as conditional covariances 
 
 Rather than a vector of longitudinal data points, we view the random vectors $\bfY_i$ and $\bfeps_i$ as discrete renditions of the stochastic processes: $Y\left(t\right)$ and $\epsilon\left(t\right)$.  We assume $Y\left(t\right)$ has corresponding covariance function $G\left(s,t\right)$ and that $\epsilon\left(s\right)$ follows a zero mean Gaussian white noise process with unit variance. It is reasonable to assume that if $\bfY$ is reasonably well-behaved, then $G\left(s,t\right)$ satisfies some smoothness conditions, where smoothness is defined in terms of square integrability of certain derivatives. We view the entries of $\Sigma_i$ as values of $G$ evaluated at the distinct pairs of observed time points on individual $i$. 
 
-Additionally, we treat the elements of the precision matrix $\Sigma_i^{-1}$ as the values of the smooth function, $\gamma\left(s,t\right)$ evaluated at observed time points. If we consider the Cholesky decomposition of $\Sigma^{-1}$, it is natural to extent the same notion to the elements of $\matT_i$ and $\matD_i$: view the GARPs $\lbrace \phi_{ijk} \rbrace$ and innovation variances as the evaluation of the smooth functions $\phi\left(s,t\right)$ and $\sigma^2\left(t\right)$ at observed time points and interpret $\phi_{ijk} = \phi\left(t_{ij},t_{ik}\right)$ and $\sigma_{ij}^2 = \sigma^2\left(t_{ij}\right)$. 
+Additionally, we treat the elements of the precision matrix $\Sigma_i^{-1}$ as the values of the smooth function, $\gamma\left(s,t\right)$ evaluated at observed time points. If we consider the Cholesky decomposition of $\Sigma^{-1}$, it is natural to extent the same notion to the elements of $T_i$ and $D_i$: view the GARPs $\lbrace \phi_{ijk} \rbrace$ and innovation variances as the evaluation of the smooth functions $\phi\left(s,t\right)$ and $\sigma^2\left(t\right)$ at observed time points and interpret $\phi_{ijk} = \phi\left(t_{ij},t_{ik}\right)$ and $\sigma_{ij}^2 = \sigma^2\left(t_{ij}\right)$. 
 
 Analogous to Pourahmadi's model \eqref{RV_ARmodel}, we model the continuous time process as follows: 
 \begin{equation}   
@@ -196,37 +191,39 @@ y\left(t_{ij} \right)  = \sum_{k=1}^{j-1} \phi\left(t_{ij} ,t_{ik}\right) y\left
 \label{eq:MyModel} 
 \end{equation}
 
-It is advantageous to estimate the smooth function $\gamma\left(s,t\right)$ rather than a covariance matrix at a predetermined set of pairs of observed time points since observed time points may be unevenly spaced and vary from individual to individual. Several approaches to function estimation have been utilized in this setting; \cite{wu2003nonparametric}, for example, used locally weighted polynomials to smooth down the sub-diagonals of $\matT$. \cite{huang2007estimation} smoothed the sub-diagonals of $\matT$ using univariate smoothing splines.  Within our formulation, the task of estimating a covariance matrix is equivalent to estimating the function $\phi\left(s,t\right)$ using bivariate smoothing. For ease of exposition, we assume that $\sigma^2\left(t\right)$ is fixed and known. Like other nonparametric situations, we make no assumption about the functional form of $\phi$ other than that $\phi$ is smooth, with smoothness defined in terms of square integrability of certain derivatives and let $\phi$ belong to a reproducing kernel Hilbert space, $\mathcal{H}$.
+It is advantageous to estimate the smooth function $\gamma\left(s,t\right)$ rather than a covariance matrix at a predetermined set of pairs of observed time points since observed time points may be unevenly spaced and vary from individual to individual. Several approaches to function estimation have been utilized in this setting; cite{wu2003nonparametric}, for example, used locally weighted polynomials to smooth down the sub-diagonals of $T$. cite{huang2007estimation} smoothed the sub-diagonals of $T$ using univariate smoothing splines.  Within our formulation, the task of estimating a covariance matrix is equivalent to estimating the function $\phi\left(s,t\right)$ using bivariate smoothing. For ease of exposition, we assume that $\sigma^2\left(t\right)$ is fixed and known. Like other nonparametric situations, we make no assumption about the functional form of $\phi$ other than that $\phi$ is smooth, with smoothness defined in terms of square integrability of certain derivatives and let $\phi$ belong to a reproducing kernel Hilbert space, $\mathcal{H}$.
 
-%  Pooling the observed time points across subjects, we let $\mathcal{T}$ denote the set of all unique observed time points $\mathcal{T} = \bigcup \limits_{i=1}^{N} \bigcup\limits_{j=1}^{n_i}  \lbrace t_{ij} \rbrace$ and order them so that the elements of this set are given by $t_1 < t_2 < \dots < t_{p}$, $\vert \vert \mathcal{T} \vert \vert = p$. Let $\bfY = \left(Y_{t_1}, Y_{t_2}, \dots, Y_{t_p}\right)^T$ denote the vector of random variables corresponding to the process $Y$ at each of the unique 
-%
-%of pooled observations, and let $Cov\left(\bfY \right) = \Sigma$ where the $ij^{th}$ element of the $\Sigma$ is given by $\Sigma_{ij} = Cov\left(y_{t_i}, y_{t_j}\right)$. \\
-%
-% $\gamma$ is defined through $\phi$ and $\sigma$, which we also assume to be smooth functions.
-%\begin{equation}
-%{y}_{t_i}  = \sum_{j=1}^{i-1} \phi_{{t_i}{t_j}} y_{t_j} + \sigma_{t_j}\epsilon_{t_j} \label{RV_ARmodel}
-%\end{equation}
-%\noindent
-%where $\bfphi_{t_i} = \left( \phi_{{t_i}{t_1}}, \phi_{{t_i}{t_2}}, \dots, \phi_{{t_i},{t_{i-1}}}\right)^T$ is the coefficient vector corresponding to the best linear predictor of $y_{t_i}$ based on its predecessors; Let $\matT$ be the $p \times p$ lower triangular matrix with unit diagonal and $\left(ij\right)^{th}$ element $-\phi_{ij}$, $i > j$ and $D$ be the diagonal matrix with diagonal entries $\sigma_1^2, \sigma_2^2, \dots, \sigma_p^2$. Using this notation, we may write 
-%
-%
-%\noindent and letting $\text{L} = \matT^{-1}$, the modified Cholesky decomposition of $\Sigma^{-1}$ and $\Sigma$ are given by 
-%\[
-%\Sigma^{-1} = \matT^T \matD^{-1}\matT,\;\;\;\Sigma = \text{L} \matD \text{L}^T
-%\]
+  Pooling the observed time points across subjects, we let $\mathcal{T}$ denote the set of all unique observed time points $\mathcal{T} = \bigcup \limits_{i=1}^{N} \bigcup\limits_{j=1}^{n_i}  \lbrace t_{ij} \rbrace$ and order them so that the elements of this set are given by $t_1 < t_2 < \dots < t_{p}$, $\vert \vert \mathcal{T} \vert \vert = p$. Let $\bfY = \left(Y_{t_1}, Y_{t_2}, \dots, Y_{t_p}\right)^T$ denote the vector of random variables corresponding to the process $Y$ at each of the unique 
 
-%% begin discussion of estimation procedure, introduce data, replication
-% Analogous to Pourahmadi's model \eqref{RV_ARmodel}, we model the continuous time process as follows: 
-%\begin{equation}   
-%{y}\left(t_i\right)  = \sum_{j=1}^{i-1} \phi\left(t_i ,t_j\right) y\left({t_j}\right) + \sigma\left(t_i\right)\epsilon\left({t_i}\right) \;\;\;\; i=1,\dots, n 
-%\label{eq:MyModel} 
-%\end{equation}
+of pooled observations, and let $Cov\left(\bfY \right) = \Sigma$ where the $ij^{th}$ element of the $\Sigma$ is given by $\Sigma_{ij} = Cov\left(y_{t_i}, y_{t_j}\right)$. \\
 
-%The task of estimating a covariance matrix becomes the task of estimating the bivariate function $\phi\left(s,t\right)$ given noisy, discrete, and possibly unevenly spaced observations $Y_i= \left(Y\left(t_{i1}\right),Y\left(t_{i2}\right),\dots,Y\left(t_{i{n_i}}\right)  \right)^T$, $i=1,\dots,N$. The entries of the covariance matrix are viewed as the evaluation of this bivariate function at the unique observed pairs of time points. Like other nonparametric situations, we make no assumption about the functional form of $\phi$ other than that $\phi$ is smooth, with smoothness defined in terms of square integrability of certain derivatives.  
-Along with \citet{huang2006covariance}, \citet{levina2008sparse}, and \citet{pourahmadi2000maximum} we consider the normal log-likelihood as a loss function, though it is important to note that the derivation of the Cholesky decomposition did not rely on any distributional assumption on $\bfeps$. Under the Gaussian assumption on $\epsilon\left(t\right)$, the negative log-likelihood of the data $\bfy_1,\bfy_2,\dots, \bfy_N$ up to a constant is given by
+ $\gamma$ is defined through $\phi$ and $\sigma$, which we also assume to be smooth functions.
+\begin{equation}
+{y}_{t_i}  = \sum_{j=1}^{i-1} \phi_{{t_i}{t_j}} y_{t_j} + \sigma_{t_j}\epsilon_{t_j} \label{RV_ARmodel}
+\end{equation}
+\noindent
+where $\bfphi_{t_i} = \left( \phi_{{t_i}{t_1}}, \phi_{{t_i}{t_2}}, \dots, \phi_{{t_i},{t_{i-1}}}\right)^T$ is the coefficient vector corresponding to the best linear predictor of $y_{t_i}$ based on its predecessors; Let $T$ be the $p \times p$ lower triangular matrix with unit diagonal and $\left(ij\right)^{th}$ element $-\phi_{ij}$, $i > j$ and $D$ be the diagonal matrix with diagonal entries $\sigma_1^2, \sigma_2^2, \dots, \sigma_p^2$. Using this notation, we may write 
+
+
+\noindent and letting $\text{L} = T^{-1}$, the modified Cholesky decomposition of $\Sigma^{-1}$ and $\Sigma$ are given by 
+\[
+\Sigma^{-1} = T^T D^{-1}T,\;\;\;\Sigma = \text{L} D \text{L}^T
+\]
+
+% begin discussion of estimation procedure, introduce data, replication
+ Analogous to Pourahmadi's model \eqref{RV_ARmodel}, we model the continuous time process as follows: 
+\begin{equation}   
+{y}\left(t_i\right)  = \sum_{j=1}^{i-1} \phi\left(t_i ,t_j\right) y\left({t_j}\right) + \sigma\left(t_i\right)\epsilon\left({t_i}\right) \;\;\;\; i=1,\dots, n 
+\label{eq:MyModel} 
+\end{equation}
+
+The task of estimating a covariance matrix becomes the task of estimating the bivariate function $\phi\left(s,t\right)$ given noisy, discrete, and possibly unevenly spaced observations $Y_i= \left(Y\left(t_{i1}\right),Y\left(t_{i2}\right),\dots,Y\left(t_{i{n_i}}\right)  \right)^T$, $i=1,\dots,N$. The entries of the covariance matrix are viewed as the evaluation of this bivariate function at the unique observed pairs of time points. Like other nonparametric situations, we make no assumption about the functional form of $\phi$ other than that $\phi$ is smooth, with smoothness defined in terms of square integrability of certain derivatives.  
+
+
+Along with citet{huang2006covariance}, citet{levina2008sparse}, and citet{pourahmadi2000maximum} we consider the normal log-likelihood as a loss function, though it is important to note that the derivation of the Cholesky decomposition did not rely on any distributional assumption on $\bfeps$. Under the Gaussian assumption on $\epsilon\left(t\right)$, the negative log-likelihood of the data $\bfy_1,\bfy_2,\dots, \bfy_N$ up to a constant is given by
 
 \begin{equation}
--2\lmr{L}\left(\bfy_1, \bfy_2, \dots,\bfy_N ,\Phi \right) = \sum_{i=1}^N \sum_{j=2}^{n_i} \sigma\left({t_j}\right)^{-2} \left(y\left({t_{ij}}\right) - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y\left({t_{ik}}\right) \right)^2 \label{loglikelihood}
+-2 L\left(\bfy_1, \bfy_2, \dots,\bfy_N ,\Phi \right) = \sum_{i=1}^N \sum_{j=2}^{n_i} \sigma\left({t_j}\right)^{-2} \left(y\left({t_{ij}}\right) - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y\left({t_{ik}}\right) \right)^2 \label{loglikelihood}
 \end{equation}
 
 
@@ -243,11 +240,11 @@ Along with \citet{huang2006covariance}, \citet{levina2008sparse}, and \citet{pou
 %\begin{itemize}
 %\item {\bf Step 1:} Select $\hat{\lambda}_1$, where
 \begin{equation} 
-\hat{\phi} = \mathop{\mbox{arg min}}_{\phi} \left( -2\lmr{L} + \lambda_1 J_1\left(\phi\right) \right) \label{stage1obj}
+\hat{\phi} = \mathop{\mbox{arg min}}_{\phi} \left( -2 L + \lambda_1 J_1\left(\phi\right) \right) \label{stage1obj}
 \end{equation}
 %\item {\bf Step 2:} Define $\hat{\phi}$ to the the minimizer of 
 %\begin{equation}
-%-2\lmr{L} + \hat{\lambda}_1 J_1\left(\phi^*\right) + \lambda_2 J_2\left(\phi\right) \label{stage2obj}
+%-2L + \hat{\lambda}_1 J_1\left(\phi^*\right) + \lambda_2 J_2\left(\phi\right) \label{stage2obj}
 %\end{equation}
 %\end{itemize}
 \noindent
@@ -257,7 +254,7 @@ The first term in \eqref{stage1obj} discourages the lack of fit of $\phi$ to the
 
 \subsection{Parsimonious  precision  structures}
 
-Many have specified parsimonious parametric models for $\phi_{ijk}$ to overcome the issue of dimensionality. A commonly utilized approach in previous work is to model $\phi_{ijk} = z_{ijk}^T \gamma$ where $z_{ijk}$ is a vector of powers of time differences and $\gamma$ is a vector of unknown ``dependence'' parameters to be estimated. \citet{chen2011efficient}, \citet{lin2009robust}, \citet{pan2003modelling},  and \citet{pourahmadi1999joint} let 
+Many have specified parsimonious parametric models for $\phi_{ijk}$ to overcome the issue of dimensionality. A commonly utilized approach in previous work is to model $\phi_{ijk} = z_{ijk}^T \gamma$ where $z_{ijk}$ is a vector of powers of time differences and $\gamma$ is a vector of unknown ``dependence'' parameters to be estimated. citet{chen2011efficient}, citet{lin2009robust}, citet{pan2003modelling},  and citet{pourahmadi1999joint} let 
 \begin{equation}
 z_{ijk}^T = \left(1, t_{ij} - t_{ik},\left( t_{ij} - t_{ik} \right)^2, \dots, \left(t_{ij} - t_{ik}\right)^{q-1} \right) \label{covmodel}
 \end{equation}
@@ -276,7 +273,7 @@ To shrink $\phi$ toward the continuous analogue of these models \eqref{covmodel}
 \phi^*\left(l,m\right) = \phi^*\left(s-t, \frac{1}{2}\left(s+t\right)\right) = \phi\left(s,t\right)
 \end{equation}
 
-When $\phi^*$ corresponds to the simple models of the form \eqref{covmodel}, the bivariate function may be written in terms of only its first argument. Writing $\mathcal{H} = \mathcal{H}_l \otimes \mathcal{H}_m$ as a tensor product of two Hilbert spaces for each of $l$ and $m$, the ANOVA decomposition of $\phi^*\left(l,m\right) $ as presented in \citet{gu2002smoothing} is given by 
+When $\phi^*$ corresponds to the simple models of the form \eqref{covmodel}, the bivariate function may be written in terms of only its first argument. Writing $\mathcal{H} = \mathcal{H}_l \otimes \mathcal{H}_m$ as a tensor product of two Hilbert spaces for each of $l$ and $m$, the ANOVA decomposition of $\phi^*\left(l,m\right) $ as presented in citet{gu2002smoothing} is given by 
 
 \begin{equation}
 \phi^*\left(l,m\right) = \mu^* + \phi_1^*\left(l\right) + \phi_2^*\left(m\right) + \phi_{12}^*\left(l,m\right)   \label{ANOVA}
@@ -321,7 +318,7 @@ We may write the penalty functional in terms of the projection of $\phi^* \in \m
 $P_1 \phi^*$ denotes the projection of $\phi^* \in \mathcal{H}$ onto $\mathcal{H}_1$. To find the solution $\hat{\phi^*}$ which is the stage-wise minimizer of \eqref{objfun2}: we first set $\lambda_2 = 0$ and find $\tilde{\phi}^*$ which minimizes \eqref{objfun1}:
 
 \begin{equation}
--2\lmr{L} + \lambda_1 J_1\left(\phi^*\right) = \sum_{i=1}^N \sum_{j=2}^{p_i} \sigma\left({t_j}\right)^{-2} \left(y\left({t_{ij}}\right) - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y\right)^2 + \lambda_1 \left(\vert \vert {P_1 \phi_1^*} \vert \vert^2 + \vert \vert {P_1 \phi_2^*} \vert \vert^2 + \vert \vert {P_1 \phi_{12}^*} \vert \vert^2 \right) \label{stage1obj}
+-2L + \lambda_1 J_1\left(\phi^*\right) = \sum_{i=1}^N \sum_{j=2}^{p_i} \sigma\left({t_j}\right)^{-2} \left(y\left({t_{ij}}\right) - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y\right)^2 + \lambda_1 \left(\vert \vert {P_1 \phi_1^*} \vert \vert^2 + \vert \vert {P_1 \phi_2^*} \vert \vert^2 + \vert \vert {P_1 \phi_{12}^*} \vert \vert^2 \right) \label{stage1obj}
 \end{equation}
 Let $\tilde{\lambda}_1$ denote the value of $\lambda_1$ corresponding to the minimizer $\tilde{\phi}^*$. Observe that large values of $\lambda_1$ (i.e. when $\lambda_1 \rightarrow \infty$) forces a parametric model in the null space of $J_1\left(\phi^*\right) = \lbrace \phi^*: \phi^*\left(l,m\right) = \alpha + \beta l \rbrace$, the set of $\phi^*$ to which $J_1$ assigns zero penalty. By construction, these nulls models correspond to modeling $\phi^*$ as linear functions of lag, so that as $\lambda_1 \rightarrow \infty$, the minimizer of \eqref{objfun1} corresponds to those models previously proposed \eqref{cov} for the case where $q=2$. 
 
@@ -334,7 +331,7 @@ R^1\left(\left(l,m\right),\left(l^\prime,m^\prime\right)  \right) &=& \left[k_1\
 where $k_\nu = B_\nu/\nu!$ are scaled Bernoulli polynomials satisfying $B_0\left(x\right) = 1$, $\frac{d}{dx} B_j\left(x\right) = jB_{j-1}\left(x\right)$, and where $\left[ \alpha \right]$ is the fractional part of $\alpha$. Then we have the following result:
 
 \begin{theorem}
-Let $p= \sum_{i=1}^N {n_i \choose 2}$ be the total number of distinct within-subject pairs of design points, and index the transformed pairs $\left( l,m \right)_i$, $i=1, \dots,p$. Let $\matB$ be the $p \times 2$ matrix with $\left(i,j\right)^{th}$ entry $k_j\left( \left( l,m \right)_i \right)$ with rank $r=2$. Then, the unique minimizer of the penalized likelihood \eqref{penlik1}, $\phi^* \in \mathcal{H}$ is of the form
+Let $p= \sum_{i=1}^N {n_i \choose 2}$ be the total number of distinct within-subject pairs of design points, and index the transformed pairs $\left( l,m \right)_i$, $i=1, \dots,p$. Let $B$ be the $p \times 2$ matrix with $\left(i,j\right)^{th}$ entry $k_j\left( \left( l,m \right)_i \right)$ with rank $r=2$. Then, the unique minimizer of the penalized likelihood \eqref{penlik1}, $\phi^* \in \mathcal{H}$ is of the form
 
 \begin{equation}
 \phi^*\left(l,m\right) = d_0 + d_1 k_1\left(l\right) + \sum_{i=1}^{p} c_i R^1\left( \left(l,m\right) , \left(l,m \right)_i\right)
@@ -384,40 +381,40 @@ Thus, including $\rho$ in $\phi^*$ only increases the penalty without improving 
  \label{eq:finitedimsolution}
  \end{equation}
 
-This result can be seen as a special case of the representer theorem given in \cite{kimeldorf1971some} and gives us that the minimizer $\phi^*$ lies within a finite dimensional space despite the optimization being carried out over an infinite dimensional space, $\mathcal{H}$. 
+This result can be seen as a special case of the representer theorem given in cite{kimeldorf1971some} and gives us that the minimizer $\phi^*$ lies within a finite dimensional space despite the optimization being carried out over an infinite dimensional space, $\mathcal{H}$. 
 
 
 \subsection{Computation: Shrinkage toward Toeplitz precision structures}
-For ease of exposition, we present the optimization problem in matrix notation. Let $\matK$ be the $p \times p$ matrix with $ij^{th}$ entry given by $R^1\left( \left(l,m\right)_i, \left(l,m\right)_j \right)$, $\matB$ defined as in the previous theorem, and let $\matD$ be the $\left( \sum_{i=1}^N n_i - N\right) \times \left( \sum_{i=1}^N n_i - N\right)$ diagonal matrix with diagonal entries $\sigma_{t_{12}}^2, \sigma_{t_{13}}^2, \dots,\sigma_{t_{1n_1}}^2, \dots, \sigma_{t_{{N},{n_N}}}^2$. Lastly, let $\bigY = \left(y_{t_{11}}, y_{t_{12}}, \dots, y_{t_{1,n_1}},y_{t_{21}},\dots,y_{\textsc{\relsize{-4}\textsl{{$N,n_N$}}}}\right)^T$ denote the $\sum_{i=1}^N n_i \times 1$ vector of pooled observations, and let $\bigY_{\textsc{\relsize{-2}{\textsl{(-1)}}}}$ and $\bigY_{\textsc{\relsize{-2}{\textsl{(-n)}}}}$ denote the $\left( \sum_{i=1}^N n_i - N\right)\times 1$ vectors of pooled observations with the first within-subject and last within-subject observations omitted, respectively, holding the responses and corresponding regression covariates in \eqref{MyModel}.   Rewrite \eqref{stage1obj} as
+%For ease of exposition, we present the optimization problem in matrix notation. Let $K$ be the $p \times p$ matrix with $ij^{th}$ entry given by $R^1\left( \left(l,m\right)_i, \left(l,m\right)_j \right)$, $B$ defined as in the previous theorem, and let $D$ be the $\left( \sum_{i=1}^N n_i - N\right) \times \left( \sum_{i=1}^N n_i - N\right)$ diagonal matrix with diagonal entries $\sigma_{t_{12}}^2, \sigma_{t_{13}}^2, \dots,\sigma_{t_{1n_1}}^2, \dots, \sigma_{t_{{N},{n_N}}}^2$. Lastly, let $Y = \left(y_{t_{11}}, y_{t_{12}}, \dots, y_{t_{1,n_1}},y_{t_{21}},\dots,y_{\textsc{\relsize{-4}\textsc{{$N,n_N$}}}}\right)^T$ denote the $\sum_{i=1}^N n_i \times 1$ vector of pooled observations, and let% $Y_{\textsc{ {\textsl{(-1)}}}}$ and %$Y_{\textsc{ {\textsl{(-n)}}}}$ denote the $\left( \sum_{i=1}^N n_i - N\right)\times 1$ vectors of pooled observations with the first within-subject and last within-subject observations omitted, respectively, holding the responses and corresponding regression covariates in \eqref{MyModel}.   Rewrite \eqref{stage1obj} as
 
-\begin{eqnarray}
-\nonumber
--2\lmr{L} + \lambda_1J_1\left(\phi^*\right) &=& \left(\bigY_{\textsc{\relsize{-2}{\textsl{(-1)}}}}  - \matZ \Phi \right)^T \matD^{-1} \left(\bigY_{\textsc{\relsize{-2}{\textsl{(-1)}}}} - \matZ \Phi \right) + \lambda_1 \bfc^T \matK \bfc \\
-&=& \left(\bigY_{\textsc{\relsize{-2}{\textsl{(-1)}}}} - \matZ\left(\matB\bfd + \matK\bfc\right) \right)^T \matD^{-1} \left(\bigY_{\textsc{\relsize{-2}{(-1)}}}  - \matZ\left(\matB\bfd + \matK \bfc \right) \right) + \lambda_1 \bfc^T \matK \bfc 
-\end{eqnarray}
-\noindent 
-for appropriately specified $\left(\sum \limits_{i=1}^N n_i - N \right) \times p$ design matrix $\matZ=\matZ\left(\bigY_{\textsc{\relsize{-2}{\textsl{(-n)}}}} \right)$ where $\Phi$ denotes the vector with elements given by $\phi\left(s,t\right)$ evaluated at the unique pairs of observed time points. Taking derivatives, we have that
- 
-\begin{eqnarray}
-\frac{\partial}{\partial \bfc}\left[ -2\lmr{L} + \lambda_1 J_1\left(\phi^*\right)\right] &=& - \left(\matZ \matK \right)^T \matD^{-1}\left[\bigY_{\textsc{\relsize{-2}{\textsl{(-1)}}}} - \matZ \left(\matB \bfd + \matK \bfc \right) \right] + \lambda_1 \matK \bfc= 0 \label{eq:normaleq1}\\
-\frac{\partial}{\partial \bfd}\left[ -2\lmr{L} + \lambda_1 J_1\left(\phi^*\right) \right]&=& - \left(\matZ \matB \right)^T \matD^{-1}\left[\bigY_{\textsc{\relsize{-2}{\textsl{(-1)}}}} - \matZ \left(\matB \bfd + \matK \bfc \right) \right] = 0 \label{eq:normaleq2}
-\end{eqnarray}
-\noindent
-We may write $\matB$ according to its Q-R decomposition: 
-\[
-\matB  = \left[ \matQ_1 \; \matQ_2\right]\left[ \begin{array}{c} \matR \\ 0 \end{array}\right] = \matQ_1 \matR  
-\]
-
-\noindent
-where the columns of $\text{Q}=\left[ \matQ_1 \; \matQ_2\right]$ are orthogonal, with $Q_1$ having dimension $p \times 2$. Using this, we can show that the solutions to the normal equations \eqref{normaleq1}, \eqref{normaleq2} are given by 
-\begin{eqnarray*}
-\tilde{\bfc} &=&  \matQ_2\left[ \matQ_2^T\left[\matK + \lambda_1\left( \matZ^T \matD^{-1} \matZ \right)^{-1}\right] \matQ_2 \right]^{-1} \matQ_2^T\left(\matZ^T \matD^{-1} \matZ \right)^{-1}\matZ^T \matD^{-1} \bigY_{\textsc{\relsize{-2}{\textsl{(-1)}}}}\\
-\tilde{\bfd} &=& \matR^{-1}\matQ_1^T\left[ \left( \matZ^T \matD^{-1} \matZ \right)^{-1}\matZ^T \matD^{-1} \bigY_{\textsc{\relsize{-2}{\textsl{(-1)}}}} -  \left[\matK + \lambda_1\left( \matZ^T \matD^{-1} \matZ \right)^{-1}\right] \hat{\bfc} \right]
-\end{eqnarray*}
-\noindent
-Using some model selection criterion, such as the $K$-fold cross validation function, we select the optimal value of $\lambda_1$, denoted $\hat{\lambda}_1$. A more detailed discussion of smoothing parameter selection is presented in section four.
+%\begin{eqnarray}
+%\nonumber
+%-2L + \lambda_1J_1\left(\phi^*\right) &=& \left(Y_{\textsc{ {\textsl{(-1)}}}}  - Z \Phi \right)^T D^{-1} \left(Y_{\textsc{ {\textsl{(-1)}}}} - Z \Phi \right) + \lambda_1 c^T K c \\
+%&=& \left(Y_{\textsc{ {\textsl{(-1)}}}} - Z\left(Bd + Kc\right) \right)^T D^{-1} \left(Y_{\textsc{ {(-1)}}}  - Z\left(Bd + K c \right) \right) + \lambda_1 c^T K c 
+%\end{eqnarray}
+%\noindent 
+%for appropriately specified $\left(\sum \limits_{i=1}^N n_i - N \right) \times p$ design matrix $Z=Z\left(Y_{\textsc{ {\textsl{(-n)}}}} \right)$ where $\Phi$ denotes the vector with elements given by $\phi\left(s,t\right)$ evaluated at the unique pairs of observed time points. Taking derivatives, we have that
+% 
+%\begin{eqnarray}
+%\frac{\partial}{\partial c}\left[ -2L + \lambda_1 J_1\left(\phi^*\right)\right] &=& - \left(Z K \right)^T D^{-1}\left[Y_{\textsc{ {\textsl{(-1)}}}} - Z \left(B d + K c \right) \right] + \lambda_1 K c= 0 \label{eq:normaleq1}\\
+%\frac{\partial}{\partial d}\left[ -2L + \lambda_1 J_1\left(\phi^*\right) \right]&=& - \left(Z B \right)^T D^{-1}\left[Y_{\textsc{ {\textsl{(-1)}}}} - Z \left(B d + K c \right) \right] = 0 \label{eq:normaleq2}
+%\end{eqnarray}
+%\noindent
+%We may write $B$ according to its Q-R decomposition: 
+%\[
+%B  = \left[ \matQ_1 \; \matQ_2\right]\left[ \begin{array}{c} \matR \\ 0 \end{array}\right] = \matQ_1 \matR  
+%\]
 %
-%We fix $\lambda_1 = \hat{\lambda}_1$ at the value of $\lambda_1$ for which $\left( \tilde{\bfc}\left(\lambda_1\right),\tilde{\bfd}\left(\lambda_1\right)\right) $ minimize $-2\lmr{L} + \lambda_1 J_1\left({\phi}^*\right)$. 
+%\noindent
+%where the columns of $\text{Q}=\left[ \matQ_1 \; \matQ_2\right]$ are orthogonal, with $Q_1$ having dimension $p \times 2$. Using this, we can show that the solutions to the normal equations \eqref{normaleq1}, \eqref{normaleq2} are given by 
+%\begin{eqnarray*}
+%\tilde{c} &=&  \matQ_2\left[ \matQ_2^T\left[K + \lambda_1\left( Z^T D^{-1} Z \right)^{-1}\right] \matQ_2 \right]^{-1} \matQ_2^T\left(Z^T D^{-1} Z \right)^{-1}Z^T D^{-1} Y_{\textsc{ {\textsl{(-1)}}}}\\
+%\tilde{d} &=& \matR^{-1}\matQ_1^T\left[ \left( Z^T D^{-1} Z \right)^{-1}Z^T D^{-1} Y_{\textsc{ {\textsl{(-1)}}}} -  \left[K + \lambda_1\left( Z^T D^{-1} Z \right)^{-1}\right] \hat{c} \right]
+%\end{eqnarray*}
+%\noindent
+%Using some model selection criterion, such as the $K$-fold cross validation function, we select the optimal value of $\lambda_1$, denoted $\hat{\lambda}_1$. A more detailed discussion of smoothing parameter selection is presented in section four.
+%
+%We fix $\lambda_1 = \hat{\lambda}_1$ at the value of $\lambda_1$ for which $\left( \tilde{c}\left(\lambda_1\right),\tilde{d}\left(\lambda_1\right)\right) $ minimize $-2L + \lambda_1 J_1\left({\phi}^*\right)$. 
 
 
 
@@ -436,32 +433,32 @@ Using some model selection criterion, such as the $K$-fold cross validation func
 
 \section{Shrinkage toward banded inverse structures}
 
-%See \cite{rothman2010new} for proof that if $\matT$ is k-banded, then $\Sgima^{-1}$ is k-banded, and explain why this is attractive for regularization of elements on the inverse covariance matrix. Also explain using conditional covariances why it is attractive to have conditional dependence as defined through the magnitude of $\phi_1^*$ diminishing as $l$ increases.
+%See cite{rothman2010new} for proof that if $T$ is k-banded, then $\Sgima^{-1}$ is k-banded, and explain why this is attractive for regularization of elements on the inverse covariance matrix. Also explain using conditional covariances why it is attractive to have conditional dependence as defined through the magnitude of $\phi_1^*$ diminishing as $l$ increases.
 
-The regularization instituted by $J_1$ determines the  complexity of those functional components which extent the stationary models, or rather the set of models that may be written in terms of an overall mean and the main effect of $l$ only. Several other ways of imposing structural simplicity have been explored in previous works; specifically, \cite{pourahmadi1999joint} was one of the first to present a hueristic argument that the GARPs, $\phi_{t,t-l}$ should be monotonically decreasing in $l$. That is, the effect of $y_{t-l}$ on $y_t$ through the autoregressive parameterization should decrease as the distance in time between the two measurements increases. They and others (see \cite{bickel2008regularized}, \cite{huang2007estimation},\cite{levina2008sparse}) enforce this structure by setting $\phi_{t,t-l}=0$ for $l > K$, or equivalently, setting all off-diagonals of $\matT$ beyond the $K^{th}$ off-diagonal to $0$, where $K$ is chosen using a model selection criterion such as AIC or BIC (see  \citet{wu2003nonparametric}.) This regularization is equivalent to banding the Cholesky factor $\matT$, or rather, regressing $y_t$ as in \eqref{data_ARmodel} on only its $K$ immediate predecessors, setting $\phi_{ijk} = 0$ for $j-k>K$. We may show that banding $\matT$ to only its first $K$ off-diagonals is equivalent to banding $\Sigma^{-1}$ to its first $K$ off-diagonals, and is a reasonable approach to imposing parsimony in the inverse covariance matrix, as off-diagonal zeros imply conditional independence between $y_t$ and $y_{t-l}$ given the intermediate observations under the assumption of Gaussian likelihood for any $l > K$. For this to become immediate, we need the following two propositions:
+The regularization instituted by $J_1$ determines the  complexity of those functional components which extent the stationary models, or rather the set of models that may be written in terms of an overall mean and the main effect of $l$ only. Several other ways of imposing structural simplicity have been explored in previous works; specifically, cite{pourahmadi1999joint} was one of the first to present a hueristic argument that the GARPs, $\phi_{t,t-l}$ should be monotonically decreasing in $l$. That is, the effect of $y_{t-l}$ on $y_t$ through the autoregressive parameterization should decrease as the distance in time between the two measurements increases. They and others (see cite{bickel2008regularized}, cite{huang2007estimation},cite{levina2008sparse}) enforce this structure by setting $\phi_{t,t-l}=0$ for $l > K$, or equivalently, setting all off-diagonals of $T$ beyond the $K^{th}$ off-diagonal to $0$, where $K$ is chosen using a model selection criterion such as AIC or BIC (see  citet{wu2003nonparametric}.) This regularization is equivalent to banding the Cholesky factor $T$, or rather, regressing $y_t$ as in \eqref{data_ARmodel} on only its $K$ immediate predecessors, setting $\phi_{ijk} = 0$ for $j-k>K$. We may show that banding $T$ to only its first $K$ off-diagonals is equivalent to banding $\Sigma^{-1}$ to its first $K$ off-diagonals, and is a reasonable approach to imposing parsimony in the inverse covariance matrix, as off-diagonal zeros imply conditional independence between $y_t$ and $y_{t-l}$ given the intermediate observations under the assumption of Gaussian likelihood for any $l > K$. For this to become immediate, we need the following two propositions:
 
 \begin{proposition}
-Let $\bigY = \left(Y_1, \dots, Y_n\right)^T$ have joint distribution with mean vector $\bfmu$ and covariance matrix $\Sigma$. The elements of $\Sigma^{-1} = \left( \sigma^{ij} \right)_{1 \le i,j \le n}$ may be interpreted as partial covariances between the elements of $\bigY$.
+Let $Y = \left(Y_1, \dots, Y_n\right)^T$ have joint distribution with mean vector $\mu$ and covariance matrix $\Sigma$. The elements of $\Sigma^{-1} = \left( \sigma^{ij} \right)_{1 \le i,j \le n}$ may be interpreted as partial covariances between the elements of $Y$.
 \end{proposition}
 
-\underline{\bf Proof:} We may easily derive the covariance between two measurements $Y_{j}$ and $Y_{k}$ conditional on the remaining measurements $\lbrace Y_{l} \vert l\ni j,k \rbrace$ using properties of the Normal distribution. Partition $\bigY = \left(Y_{1},Y_{2},\dots,Y_{,n}\right)^T$ as follows: letting $\bigY_{{\relsize{-2}{\textsl{-(jk)}}}}$ denote the full random vector with the $j^{th}$ and $k^{th}$ observation omitted, we let
+\underline{\bf Proof:} We may easily derive the covariance between two measurements $Y_{j}$ and $Y_{k}$ conditional on the remaining measurements $\lbrace Y_{l} \vert l\ni j,k \rbrace$ %using properties of the Normal distribution. Partition $Y = \left(Y_{1},Y_{2},\dots,Y_{,n}\right)^T$ as follows: letting $Y_{{ {\textsl{-(jk)}}}}$ denote the full random vector with the $j^{th}$ and $k^{th}$ observation omitted, we let
 
-\[
-\bigY = \left[ \begin{array}{c}  Y_{j}\\ Y_{k}\\ \hdashline \bigY_{{\relsize{-2}{\textsl{-(jk)}}}} \end{array}\right]
-\]
+%\[
+%Y = \left[ \begin{array}{c}  Y_{j}\\ Y_{k}\\ \hdashline Y_{{ {\textsl{-(jk)}}}} \end{array}\right]
+%\]
 \noindent
-which leads to the corresponding partition of $\Sigma = Cov\left(\bigY\right)$:
+which leads to the corresponding partition of $\Sigma = Cov\left(Y\right)$:
 
-\begin{equation}
-\Sigma = \left[\begin{array}{c:c}  \Sigma_{jk} &  \Sigma_{{\relsize{-2}{(jk),\textsl{-(jk)}}}} \\ \cdashline{1-2}  \hdashline \Sigma_{{\relsize{-2}{\textsl{-(jk)}},(jk)}}  & \Sigma_{{\relsize{-2}{\textsl{-(jk)}}}}   \end{array}\right] \equiv \left[\begin{array}{c:c} \Sigma_{11} & \Sigma_{12}  \\ \cdashline{1-2}  \hdashline \Sigma_{21} & \Sigma_{22}  \end{array}\right] \label{partition}
-\end{equation}
+%\begin{equation}
+%\Sigma = \left[\begin{array}{c:c}  \Sigma_{jk} &  \Sigma_{{ {(jk),\textsl{-(jk)}}}} \\ \cdashline{1-2}  \hdashline \Sigma_{{ {\textsl{-(jk)}},(jk)}}  & \Sigma_{{ {\textsl{-(jk)}}}}   \end{array}\right] \equiv \left[\begin{array}{c:c} \Sigma_{11} & \Sigma_{12}  \\ \cdashline{1-2}  \hdashline \Sigma_{21} & \Sigma_{22}  \end{array}\right] \label{partition}
+%\end{equation}
 
 Conditional distributions are easily obtained for the multivariate normal distribution; in particular, the covariance corresponding to the joint distribution $Y_{j}$ and $Y_{k}$ conditional on $\lbrace Y_{il} \vert l \ne j,k \rbrace$ is given by 
 
-\begin{equation}
-\Sigma_{11} - \Sigma_{12}^T\Sigma_{22}^T\Sigma_{12} = \Sigma_{jk} - \Sigma_{{\relsize{-2}{(jk),\textsl{-(jk)}}}}\Sigma_{22}^{-1}\Sigma_{{\relsize{-2}{\textsl{-(jk)}},(jk)}} \label{condcov}
-\end{equation}
-\noindent
+%\begin{equation}
+%\Sigma_{11} - \Sigma_{12}^T\Sigma_{22}^T\Sigma_{12} = \Sigma_{jk} - \Sigma_{{ {(jk),\textsl{-(jk)}}}}\Sigma_{22}^{-1}\Sigma_{{ {\textsl{-(jk)}},(jk)}} \label{condcov}
+%\end{equation}
+%\noindent
 Noting that the inverse of a matrix partitioned as in \eqref{partition} is given by 
 
 \begin{equation}
@@ -471,7 +468,7 @@ Noting that the inverse of a matrix partitioned as in \eqref{partition} is given
 We may quickly see that the covariance of $Y_{j}$ and $Y_{k}$ conditional on $\lbrace Y_{il}\vert l\ne j,k \rbrace$ \eqref{condcov} corresponds to the upper left $2 \times 2$ sub-matrix of $\Sigma^{-1}$, $\Sigma^{11}$. 
 
 \begin{proposition}
-For any $p\times p$ positive definite matrix $\Sigma^{-1}$ and modified Cholesky decomposition $\Sigma^{-1} = \matT^T \matD^{-1}\matT$ where $\matT$ is unit lower triangular, for any column $j$ and $r\left(j\right)>j$, $\sigma^{pj} = \dots = \sigma^{r\left(j\right),j} = 0$ if and only if $t_{pj} = \dots = t_{r\left(j\right),j} = 0$ where $\lbrace \sigma^{ij}\rbrace$ and $\lbrace t_{ij}\rbrace$ denote the entries of $\Sigma^{-1}$ and $\matT$, respectively.
+For any $p\times p$ positive definite matrix $\Sigma^{-1}$ and modified Cholesky decomposition $\Sigma^{-1} = T^T D^{-1}T$ where $T$ is unit lower triangular, for any column $j$ and $r\left(j\right)>j$, $\sigma^{pj} = \dots = \sigma^{r\left(j\right),j} = 0$ if and only if $t_{pj} = \dots = t_{r\left(j\right),j} = 0$ where $\lbrace \sigma^{ij}\rbrace$ and $\lbrace t_{ij}\rbrace$ denote the entries of $\Sigma^{-1}$ and $T$, respectively.
 \end{proposition}
 
 \underline{\bf Proof:} Using the expression
@@ -480,7 +477,7 @@ For any $p\times p$ positive definite matrix $\Sigma^{-1}$ and modified Cholesky
 \]
 it follows immediately that $t_{pj} = \dots = t_{r\left(j\right),j} = 0$ implies that $\sigma^{pj} = \dots = \sigma^{r\left(j\right),j} = 0$.
 
-From \cite{watkins2004fundamentals}, we can show that we can sequentially derive the elements of $\matT$ and $\matD$ according to 
+From cite{watkins2004fundamentals}, we can show that we can sequentially derive the elements of $T$ and $D$ according to 
 
 \begin{eqnarray*}
 d_{ii} = \sqrt{\sigma^{ii}-\sum_{k=1}^{i-1} t_{ki}^2 }\\
@@ -488,13 +485,13 @@ t_{ij} = \frac{1}{d_{ii}}\left(\sigma^{ij} - \sum_{k=1}^{i-1} t_{ki}t_{kj} \righ
 \end{eqnarray*}
 \noindent
 
-We proceed by induction. For the first row of $\matT^T$, 
+We proceed by induction. For the first row of $T^T$, 
 
 
 
 
 
-Regularization via banding the inverse covariance matrix is a generalization of tapering; \cite{cai2010optimal} define the $k$-tapered estimator of a $p \times p$ covariance matrix $\Sigma$ by $\tilde{\Sigma}^{\left(k\right)} = \left( \tilde{\sigma}_{ij}^{\left(k\right)} \right)_{1 \le i,j\le p} = \left( w_{ij}^{\left(k\right)}\hat{\sigma}_{ij} \right)_{1 \le i,j\le p}$ where $\hat{\Sigma}$ denotes the MLE for $\Sigma$ and where, for tapering parameter $k$,
+Regularization via banding the inverse covariance matrix is a generalization of tapering; cite{cai2010optimal} define the $k$-tapered estimator of a $p \times p$ covariance matrix $\Sigma$ by $\tilde{\Sigma}^{\left(k\right)} = \left( \tilde{\sigma}_{ij}^{\left(k\right)} \right)_{1 \le i,j\le p} = \left( w_{ij}^{\left(k\right)}\hat{\sigma}_{ij} \right)_{1 \le i,j\le p}$ where $\hat{\Sigma}$ denotes the MLE for $\Sigma$ and where, for tapering parameter $k$,
 \[
 w_{ij}^{\left(k\right)} = \left\{ \begin{array}{ll} 1,& \vert i-j \vert \le k/2 \\ 2 - \frac{\vert i-j \vert}{k/2},& k/2 < \vert i-j \vert < k  \\  0, & otherwise    \end{array}\right.
 \]
@@ -503,12 +500,12 @@ The $k$-banded estimator of $\Sigma$ may be defined in the same manner by specif
 \[
 \tilde{\sigma}_{ij}^{B\left(k\right)} = \hat{\sigma}_{ij}I\left( \vert i-j \vert \le k \right)
 \]
-Rather than tapering the covariance matrix itself, \cite{cai2012estimating} have generalized banding the inverse covariance matrix as in \cite{bickel2008regularized}, \cite{huang2007estimation}, and \cite{levina2008sparse} by proposing $k$-tapered estimators of $\Sigma^{-1}$.Rather than tapering elements of a covariance matrix given a specific set of observed time points, \cite{kaufman2008covariance} employ tapering to regularize a parametric estimator of a smooth covariance function, defining the tapered covariance function as follows:
+Rather than tapering the covariance matrix itself, cite{cai2012estimating} have generalized banding the inverse covariance matrix as in cite{bickel2008regularized}, cite{huang2007estimation}, and cite{levina2008sparse} by proposing $k$-tapered estimators of $\Sigma^{-1}$.Rather than tapering elements of a covariance matrix given a specific set of observed time points, cite{kaufman2008covariance} employ tapering to regularize a parametric estimator of a smooth covariance function, defining the tapered covariance function as follows:
 \[
-K_1\left(x, \bftheta, \gamma \right) = K_0\left(,\bftheta \right) K_{taper}\left( x,\gamma \right) 
+K_1\left(x, \theta, \gamma \right) = K_0\left(,\theta \right) K_{taper}\left( x,\gamma \right) 
 \]
 
-where $x$ is the distance between two observations, $K_0$ is the original covariance function which is assumed to be known up to a parameter vector $\bftheta \in \mathcal{R}^d$, and where $K_{taper}$ is an isotropic correlation function such that $K_{taper}\left(x,\gamma\right) = 0$ for $x \ge \gamma$. Rather than tapering the covariance matrix or a covariance function, \cite{cai2012estimating} have generalized banding the inverse covariance matrix as in \cite{bickel2008regularized}, \cite{huang2007estimation}, and \cite{levina2008sparse} by proposing $k$-tapered estimators of $\Sigma^{-1}$.
+where $x$ is the distance between two observations, $K_0$ is the original covariance function which is assumed to be known up to a parameter vector $\theta \in \mathcal{R}^d$, and where $K_{taper}$ is an isotropic correlation function such that $K_{taper}\left(x,\gamma\right) = 0$ for $x \ge \gamma$. Rather than tapering the covariance matrix or a covariance function, cite{cai2012estimating} have generalized banding the inverse covariance matrix as in cite{bickel2008regularized}, cite{huang2007estimation}, and cite{levina2008sparse} by proposing $k$-tapered estimators of $\Sigma^{-1}$.
 
 Thus, shrinking the Cholesky factor toward a unit diagonal structure is clearly a natural and desirable way to impose sparsity in the estimated inverse covariance matrix. We consider the form of the models belonging to the null space of $J_1$:
 
@@ -524,21 +521,21 @@ To further impose simplicity in the structure of the inverse covariance, we cons
 \phi^*\left(l,m\right) = \mu^* + \phi^*_1\left(l\right)
 \end{equation}
 \noindent
-we propose truncating the stationary functional components:  the overall mean and the main effect of $l$ to zero for any $l > l_0$ for some truncation point $l_0 \in \left(0,1\right)$. We consider the class of penalty functions that can be written in terms of an $L_p$ norm of the sum of the overall mean and the functional main effect of $l$. We follow in the work of \cite{huang2006covariance} and consider penalties which may be written
+we propose truncating the stationary functional components:  the overall mean and the main effect of $l$ to zero for any $l > l_0$ for some truncation point $l_0 \in \left(0,1\right)$. We consider the class of penalty functions that can be written in terms of an $L_p$ norm of the sum of the overall mean and the functional main effect of $l$. We follow in the work of cite{huang2006covariance} and consider penalties which may be written
 
 \begin{equation}
-J_{2,\left(p\right)} = \sum_{\relsize{-2} l_i \in \mathcal{L}: l_i > l_0} \vert \mu^* + \phi^*_1\left(l_i\right) \vert^p  \label{bandedpenalty}
+J_{2,\left(p\right)} = \sum_{ l_i \in \mathcal{L}: l_i > l_0} \vert \mu^* + \phi^*_1\left(l_i\right) \vert^p  \label{bandedpenalty}
 \end{equation}
 \noindent
 
 %\begin{equation}
-%J_2 = \sum_{\relsize{-2} l_i \in \mathcal{L}: l_i > L} \vert \mu^* + \phi^*_1\left(l_i\right) \vert  \label{bandedpenalty}
+%J_2 = \sum_{  l_i \in \mathcal{L}: l_i > L} \vert \mu^* + \phi^*_1\left(l_i\right) \vert  \label{bandedpenalty}
 %\end{equation}
 %\noindent
 where $\mathcal{L}$ denotes the observed values of $l$, so that any $\phi^*$ to which $J_2$ assigns zero penalty is one that inherits nonzero contribution from stationary functional components only for lags $l \le l_0$. We focus our attention to two important members of this family of penalties: the $L_2$ penalty and the $L_1$ penalty, given by
 \begin{eqnarray} \nonumber
- J_{2,\left(2\right)} = \sum_{\relsize{-2} l_i \in \mathcal{L}: l_i > l_0} \left( \mu^* + \phi^*_1\left(l_i\right) \right)^2 \label{L2penalty} \;\;\mbox{and}\\
- J_{2,\left(1\right)} = \sum_{\relsize{-2} l_i \in \mathcal{L}: l_i > l_0} \vert \mu^* + \phi^*_1\left(l_i\right) \vert \label{L1penalty}
+ J_{2,\left(2\right)} = \sum_{ l_i \in \mathcal{L}: l_i > l_0} \left( \mu^* + \phi^*_1\left(l_i\right) \right)^2 \label{L2penalty} \;\;\mbox{and}\\
+ J_{2,\left(1\right)} = \sum_{ l_i \in \mathcal{L}: l_i > l_0} \vert \mu^* + \phi^*_1\left(l_i\right) \vert \label{L1penalty}
  \end{eqnarray}\noindent
 respectively. These penalties will induce shrinkage in the autoregressive coefficient function $\phi^*$ (and hence in the overall inverse covariance function) as in ridge regression and LASSO, respectively. Considering both types of regularization introduced in this section and in the previous, any $\phi^*$ belonging to the set of models incurring zero penalty from both $J_1$ and $J_2$ may be written
 
@@ -555,23 +552,23 @@ respectively. These penalties will induce shrinkage in the autoregressive coeffi
 We impose this further regularization from a stage-wise approach and define $\hat{\phi}^*$ to be the minimizer of 
 
 \begin{eqnarray}
-&-2\lmr{L}& + \hat{\lambda}_1J_1\left(\phi^*\right) + \lambda_2 J_2\left(\phi^*\right)\\
-= &-2\lmr{L}& + \hat{\lambda}_1J_1\left(\phi^*\right) + \sum_{\relsize{-2} l_i \in \mathcal{L}: l_i > l_0} \vert \mu^* + \phi^*_1\left(l_i\right) \vert  \label{stage2loss}
+&-2L& + \hat{\lambda}_1J_1\left(\phi^*\right) + \lambda_2 J_2\left(\phi^*\right)\\
+= &-2L& + \hat{\lambda}_1J_1\left(\phi^*\right) + \sum_{ l_i \in \mathcal{L}: l_i > l_0} \vert \mu^* + \phi^*_1\left(l_i\right) \vert  \label{stage2loss}
 \end{eqnarray}
 \noindent
-%where $\hat{\lambda}_1$ is the optimal choice of tuning parameter value as determined by some model selection criterion; thorough discussion is reserved for Section four.
+where $\hat{\lambda}_1$ is the optimal choice of tuning parameter value as determined by some model selection criterion; thorough discussion is reserved for Section four.
 
-%Models chosen with tuning parameter selection determined using GCV have a desirable number of properties (see \cite{wahba1990spline} for detailed discussion.)
+Models chosen with tuning parameter selection determined using GCV have a desirable number of properties (see cite{wahba1990spline} for detailed discussion.)
 
-%Minimizing 
-%\begin{eqnarray}
-%-2\lmr{L} + \hat{\lambda_1}J_1\left(\phi^*\right) + \lambda_2 \sum_{\relsize{-2} l_i \in \mathcal{L}: l_i > L} \vert \mu^* + \phi^*_1\left(l_i\right) \vert  \label{stage2loss}
-%\end{eqnarray}
-%\noindent
+Minimizing 
+\begin{eqnarray}
+-2L + \hat{\lambda_1}J_1\left(\phi^*\right) + \lambda_2 \sum_{  l_i \in \mathcal{L}: l_i > L} \vert \mu^* + \phi^*_1\left(l_i\right) \vert  \label{stage2loss}
+\end{eqnarray}
+\noindent
 
 We introduce two sets of non-negative variables $\big \lbrace \eta_{+,i} \big \rbrace$, $\big \lbrace \eta_{-,i} \big \rbrace$ so that minimizing \eqref{stage2loss} is equivalent to minimizing 
 \begin{eqnarray}
--2\lmr{L} + \hat{\lambda}_1J_1\left(\phi^*\right) + \lambda_2 \sum_{\relsize{-2} l_i \in \mathcal{L}: l_i > l_0} \left( \eta_{+,i} + \eta_{-,i} \right)  \label{stage2loss}
+-2L + \hat{\lambda}_1J_1\left(\phi^*\right) + \lambda_2 \sum_{  l_i \in \mathcal{L}: l_i > l_0} \left( \eta_{+,i} + \eta_{-,i} \right)  \label{stage2loss}
 \end{eqnarray}
 \noindent subject to the constraints
 
@@ -583,7 +580,7 @@ We introduce two sets of non-negative variables $\big \lbrace \eta_{+,i} \big \r
 \noindent
 for $i=1,\dots,\vert \vert\mathcal{L}\vert \vert-l_0$. Note that the solution $\hat{\phi}^*$, which depends on both $\lambda_1$ and $\lambda_2$, does not minimize the loss
 \[
--2\lmr{L} + \lambda_1J_1\left(\phi^*\right) + \lambda_2J_2\left(\phi^*\right) 
+-2L + \lambda_1J_1\left(\phi^*\right) + \lambda_2J_2\left(\phi^*\right) 
 \]
 \noindent
 
@@ -604,39 +601,39 @@ The effect of the tuning parameters $\lambda_1$ and $\lambda_2$ in addition to $
 
 In this section, we outline the derivation of the dual optimization problem for the optimal autoregressive coefficient function under the $L_1$ penalty \eqref{L1penalty}, though thorough explanation of the theory behind this derivation is omitted to allow for affable discussion.
 
-Define the vector $\Phi^*_{1,J_2}$ with elements given by the functional main effect of $l$, $\phi^*_1$ evaluated at the penalized observed values of $l$, that is, $l_i\in \mathcal{L}$ such that $l_i > l_0$. Let $\matB_l$ and $\matK_l$ denote the $\left(\vert \vert \mathcal{L} \vert \vert-l_0\right) \times 2$ and $\left(\vert \vert \mathcal{L} \vert \vert-l_0\right) \times p$ matrices of basis functions and representers defined such that 
+Define the vector $\Phi^*_{1,J_2}$ with elements given by the functional main effect of $l$, $\phi^*_1$ evaluated at the penalized observed values of $l$, that is, $l_i\in \mathcal{L}$ such that $l_i > l_0$. Let $B_l$ and $K_l$ denote the $\left(\vert \vert \mathcal{L} \vert \vert-l_0\right) \times 2$ and $\left(\vert \vert \mathcal{L} \vert \vert-l_0\right) \times p$ matrices of basis functions and representers defined such that 
 \begin{eqnarray*}
-\mu^* \bfone + \Phi^*_{1,J_2} = \matB_l \bfd + \matK_l \bfc
+\mu^* \bfone + \Phi^*_{1,J_2} = B_l d + K_l c
 \end{eqnarray*}
 
 Using the standard machinery of primal-dual formulations in constrained optimization theory, four sets of Lagrange multipliers are introduced for the constraints \eqref{eta_constraints}: $\alpha_{+,i}$, $\alpha_{-,i}$, $\gamma_{+,i}$, and $\gamma_{+,i}$, $i=1,\dots, \vert \vert \mathcal{L}\vert \vert-l_0$ for $\mu^* + \phi^*\left(l_i\right) \le \eta_{i,+}$, $-\left(\mu^* + \phi^*\left(l_i\right)\right) \le \eta_{i,-}$, $\eta_{i,+} \ge 0$, and $\eta_{i,-} \ge 0$, respectively. The Lagrangian primal function is given by 
 
 \begin{eqnarray}
-\mathrm{l}_\mathcal{P} = \left(\bigY_{\textsc{\relsize{-2}{\textsl{(-1)}}}}  - \matZ \Phi \right)^T \matD^{-1} \left(\bigY_{\textsc{\relsize{-2}{\textsl{(-1)}}}} - \matZ \Phi \right) &+& \hat{\lambda}_1\bfc^T\matK\bfc + \lambda_2 \bfone^T\left( \bfeta_{+}+ \bfeta_{-}\right) - \bfalpha_+^T\bfeta_+ - \bfalpha_-^T\bfeta_  \\ \nonumber
-&-& \bfgamma_+^T\left(\bfeta_+ - \left(\matB_l\bfd + \matK_l\bfc \right)  \right) - \bfgamma_-^T\left(\bfeta_- + \left(\matB_l\bfd + \matK_l\bfc \right)  \right)      \label{primal}
+\mathrm{l}_\mathcal{P} = \left(Y_{\textsc{ {\textsl{(-1)}}}}  - Z \Phi \right)^T D^{-1} \left(Y_{\textsc{ {\textsl{(-1)}}}} - Z \Phi \right) &+& \hat{\lambda}_1c^TKc + \lambda_2 \bfone^T\left( \eta_{+}+ \eta_{-}\right) - \bfalpha_+^T\eta_+ - \bfalpha_-^T\eta_  \\ \nonumber
+&-& \bfgamma_+^T\left(\eta_+ - \left(B_ld + K_lc \right)  \right) - \bfgamma_-^T\left(\eta_- + \left(B_ld + K_lc \right)  \right)      \label{primal}
 \end{eqnarray} \noindent
 where 
 \begin{eqnarray*}
-\bfeta_+ &=& \left(\eta_{+,1}, \eta_{+,2},\dots,\eta_{\relsize{-5}+,\vert \vert \mathcal{L} \vert \vert-l_0 }\right)^T\\
-\bfeta_- &=& \left(\eta_{-,1}, \eta_{-,2},\dots,\eta_{\relsize{-5}-,\vert \vert \mathcal{L} \vert \vert-l_0 }\right)^T\\
-\bfalpha_+ &=& \left(\alpha_{+,1}, \alpha_{+,2},\dots,\alpha_{\relsize{-5}+,\vert \vert \mathcal{L} \vert \vert-l_0 }\right)^T\\
-\bfalpha_- &=& \left(\alpha_{-,1}, \alpha_{-,2},\dots,\alpha_{\relsize{-5}-,\vert \vert \mathcal{L} \vert \vert-l_0 }\right)^T\\
+\eta_+ &=& \left(\eta_{+,1}, \eta_{+,2},\dots,\eta_{ +,\vert \vert \mathcal{L} \vert \vert-l_0 }\right)^T\\
+\eta_- &=& \left(\eta_{-,1}, \eta_{-,2},\dots,\eta_{ -,\vert \vert \mathcal{L} \vert \vert-l_0 }\right)^T\\
+\bfalpha_+ &=& \left(\alpha_{+,1}, \alpha_{+,2},\dots,\alpha_{ +,\vert \vert \mathcal{L} \vert \vert-l_0 }\right)^T\\
+\bfalpha_- &=& \left(\alpha_{-,1}, \alpha_{-,2},\dots,\alpha_{ -,\vert \vert \mathcal{L} \vert \vert-l_0 }\right)^T\\
 \end{eqnarray*}
 
 Define
 \[
-\bfa = \begin{bmatrix} \bfd\\ \bfc \end{bmatrix},\;\;\;\;\; \matH = \begin{bmatrix} \matB^T\matZ^T\matD^{-1}\matZ \matB & \bfo \\ \bfo & \hat{\lambda}_1\matK + \matK\matZ^T\matD^{-1}\matZ \matK   \end{bmatrix},\;\;\;\;\;\bfb = -2\bigY_{\textsc{\relsize{-2}{\textsl{(-1)}}}}^T\begin{bmatrix}\matZ\matB & \bfo \\ \bfo & \matZ\matK \end{bmatrix}
+\bfa = \begin{bmatrix} d\\ c \end{bmatrix},\;\;\;\;\;  H = \begin{bmatrix} B^TZ^TD^{-1}Z B & \bfo \\ \bfo & \hat{\lambda}_1K + KZ^TD^{-1}Z K   \end{bmatrix},\;\;\;\;\;\bfb = -2Y_{\textsc{ {\textsl{(-1)}}}}^T\begin{bmatrix}ZB & \bfo \\ \bfo & ZK \end{bmatrix}
 \]
 \noindent
 Then the Lagrangian primal function may be written
 \begin{eqnarray}
-\mathrm{l}_{\mathcal{P}} = -\bfb^T\bfa + \frac{1}{2}\bfa^T \matH \bfa + \lambda_2 \bfone^T\left( \bfeta_{+}+ \bfeta_{-}\right) &-& \bfalpha_+^T\bfeta_+ - \bfalpha_-^T\bfeta_{-} \label{lagrange_primal} \\ \nonumber
- &-& \bfgamma_+^T\left(\bfeta_+ - \left(\matB_l\bfd + \matK_l\bfc \right)  \right) - \bfgamma_-^T\left(\bfeta_- + \left(\matB_l\bfd + \matK_l\bfc \right)  \right) 
+\mathrm{l}_{\mathcal{P}} = -\bfb^T\bfa + \frac{1}{2}\bfa^T  H \bfa + \lambda_2 \bfone^T\left( \eta_{+}+ \eta_{-}\right) &-& \bfalpha_+^T\eta_+ - \bfalpha_-^T\eta_{-} \label{lagrange_primal} \\ \nonumber
+ &-& \bfgamma_+^T\left(\eta_+ - \left(B_ld + K_lc \right)  \right) - \bfgamma_-^T\left(\eta_- + \left(B_ld + K_lc \right)  \right) 
 \end{eqnarray}
 
 with the following constraints
 \begin{eqnarray*}
-\frac{\partial \mathrm{l}_{\mathcal{P}}}{\partial \bfa} &=& -\bfb + \matH\bfa + \left[ \matB_l\;\matK_L \right]^T \left(\bfgamma_+ - \bfgamma_- \right) = 0 \Leftrightarrow \matH^{-1}\left[ \bfb - \left[ \matB_l\;\matK_L \right]^T \left(\bfgamma_+ - \bfgamma_-\right) \right]  \\
+\frac{\partial \mathrm{l}_{\mathcal{P}}}{\partial \bfa} &=& -\bfb +  H\bfa + \left[ B_l\;K_L \right]^T \left(\bfgamma_+ - \bfgamma_- \right) = 0 \Leftrightarrow  H^{-1}\left[ \bfb - \left[ B_l\;K_L \right]^T \left(\bfgamma_+ - \bfgamma_-\right) \right]  \\
 \frac{\partial \eta_+}{\partial \bfa} &=& \lambda_2\bfone - \bfalpha_+ - \bfgamma_+ = 0 \Leftrightarrow \bfgamma_+ = \lambda_2\bfone - \bfalpha_+\\
 \frac{\partial \eta_-}{\partial \bfa} &=& \lambda_2\bfone - \bfalpha_- - \bfgamma_- = 0 \Leftrightarrow \bfgamma_- = \lambda_2 \bfone - \bfalpha_-\\
 \alpha_{+,i},\;&\alpha_{-,i}& \ge 0 \mbox{ and } \gamma_{+,i},\;\gamma_{-,i} \ge0 \mbox{ for }i=1,\dots,\vert \vert \mathcal{L}\vert \vert-l_0
@@ -645,8 +642,8 @@ with the following constraints
 Simplifying the $\mathrm{l}_\mathcal{P}$ using the constraints, we have the dual problem of maximizing
 
 \begin{eqnarray}
-  -\frac{1}{2}\left[ \bfb - \left[\matB_l\;\matK_l\right]\left(\bfalpha_- -\bfalpha_+  \right) \right]^T\matH^{-1} \left[ \bfb - \left[\matB_l\;\matK_l\right]\left(\bfalpha_- -\bfalpha_+  \right) \right] \\
-  \propto  \bfb^T\matH^{-1}\left[\matB_l\;\matK_l \right]^T\matD \bfalpha - \frac{1}{2}\bfalpha^T\matD^T \left[\matB_l\;\matK_l \right] \matH^{-1}\left[\matB_l\;\matK_l \right]^T\matD\bfalpha \label{dual}
+  -\frac{1}{2}\left[ \bfb - \left[B_l\;K_l\right]\left(\bfalpha_- -\bfalpha_+  \right) \right]^T H^{-1} \left[ \bfb - \left[B_l\;K_l\right]\left(\bfalpha_- -\bfalpha_+  \right) \right] \\
+  \propto  \bfb^T H^{-1}\left[B_l\;K_l \right]^TD \bfalpha - \frac{1}{2}\bfalpha^TD^T \left[B_l\;K_l \right]  H^{-1}\left[B_l\;K_l \right]^TD\bfalpha \label{dual}
 \end{eqnarray} \noindent
 with respect to $\bfalpha = \left[ \bfalpha_+^T\;\bfalpha_-^T \right]^T$ subject to
 \begin{eqnarray}
@@ -654,7 +651,7 @@ with respect to $\bfalpha = \left[ \bfalpha_+^T\;\bfalpha_-^T \right]^T$ subject
 \alpha_{-,i} &\le& \lambda_2
 \end{eqnarray}
 \noindent
-for all $i = 1,\dots, \vert \vert \mathcal{L}\vert \vert - l_0$. Note that the dual problem is a quadratic programming problem with non-negative definite matrix given by $Q \equiv \matD^T \left[\matB_l\;\matK_l \right] \matH^{-1}\left[\matB_l\;\matK_l \right]^T\matD$. We may also note that the optimization problem \eqref{dual} relies on $\vert \vert \mathcal{L}\vert \vert - l_0$ dual variables, so that the number of observed values of $l$ and choice of $l_0$ are responsible for determining the size of the problem rather than the parameter dimension. This is a great advantage computationally when the number of penalized observed values of $l$ is relatively small and the dimension of $\bfa$ is large. 
+for all $i = 1,\dots, \vert \vert \mathcal{L}\vert \vert - l_0$. Note that the dual problem is a quadratic programming problem with non-negative definite matrix given by $Q \equiv D^T \left[B_l\;K_l \right]  H^{-1}\left[B_l\;K_l \right]^TD$. We may also note that the optimization problem \eqref{dual} relies on $\vert \vert \mathcal{L}\vert \vert - l_0$ dual variables, so that the number of observed values of $l$ and choice of $l_0$ are responsible for determining the size of the problem rather than the parameter dimension. This is a great advantage computationally when the number of penalized observed values of $l$ is relatively small and the dimension of $\bfa$ is large. 
 
 \section{The truncated power basis and an alternative decomposition of $\mathcal{H}$}
 
@@ -662,7 +659,7 @@ The estimation of $\phi^*\left(l,m\right)$ is quite different from the usual pro
 %%motivate discretized penalties with the penalty functionals
 This latter notion is instrumental in justifying the family of penalties
 \[
-J_{2,\left(p\right)} = \sum_{\relsize{-2} l_i \in \mathcal{L}: l_i > l_0} \vert \mu^* + \phi^*_1\left(l_i\right) \vert^p 
+J_{2,\left(p\right)} = \sum_{  l_i \in \mathcal{L}: l_i > l_0} \vert \mu^* + \phi^*_1\left(l_i\right) \vert^p 
 \]
 \noindent
 which we may view as a design-driven way of implementing the regularization which may be imposed by the penalty functionals taking the form
@@ -726,7 +723,7 @@ f\left(l\right) = \sum_{j=0}^k \beta_j l^j + \sum_{i=1}^n \beta_{k+i} T^*_{i,k}\
 so that $\mathcal{H}_l = span\lbrace 1,l,\dots,l^k, T^*_{1k},\dots, T^*_{\vert \vert \mathcal{L} \vert \vert},k \rbrace$. We express $\mathcal{H}_m$ as the span of the same basis functions, and as before, we define $\mathcal{H}$ as the tensor product space $\mathcal{H} = \mathcal{H}_l \otimes \mathcal{H}_m$. The null models previously discussed lead to natural decompositions of $\mathcal{H}_l$ and $\mathcal{H}_m$: to shrink toward banded inverse covariance functions, we decompose $\mathcal{H}_l$ into two subspaces: $span\lbrace T^*_{ik}: l_i < l_0 \rbrace$ and $span\lbrace 1,l,\dots,l^k, T^*_{ik}: l_i \ge l_0 \rbrace$. For regularization resulting in null models corresponding to inverse Toeplitz structures, only a trivial decomposition of $\mathcal{H}_m$ is required: $span\lbrace 0 \rbrace$ and $span\lbrace 1,m,\dots,m^k,T^*_{1k},\dots,T^*_{\vert \vert \mathcal{M}\vert \vert,k} \rbrace$. The elements of 
 %\begin{center}
 %\begin{tabular}{c|cccccccc} 
-%\relsize{-2}
+% 
 %    & $T^*_{1k}$ & $T^*_{2k}$ & $\dots$ & $T^*_{\vert \vert \mathcal{M}\vert\vert,k}$ &  $\lbrace 1\rbrace$ & $\lbrace m \rbrace$ & $\dots$ & $\lbrace m^k\rbrace$ \\ \hline\\
 %$T^*_{1k}$ & $T^*_{1k}\left(l\right)T^*_{1k}\left(m\right)$ &    &\dots & $T^*_{1k}\left(l\right)T^*_{\vert \vert \mathcal{M}\vert\vert,k}\left(m\right)$ & $T^*_{1k}\left(l\right)$ &    &\dots &$T^*_{1k}\left(l\right)m^k$ \\ 
 %
@@ -922,26 +919,26 @@ B_j,1\left(x\right) = \left\{ \begin{array}{lr}
 \]
 Properties \ref{eq:BS_property_1}, \ref{eq:BS_property_2}, and \ref{eq:BS_property_3} demonstrate that a sequence of B-splines form a \emph{partition of unity}: a set of non-negative functions which sum, pointwise, to one.
 \end{enumerate}
-
-\begin{example}
-Figure~\ref{fig:deboor_bspline_basis} show fives parabolic B-splines corresponding to the set of knots $\left\{0,1,1,3,4,6,6,6 \right\}$. It is clear that each spline has compact support and is non-negative on this support. The function values are provided at select domain values so that property \ref{eq:BS_property_2} is evident, though it is worth noting that 
-\[
-\sum_{i=1}^6 B_i\left(x\right) = 1
-\]
-only on $\left[\frac{1}{6},1\right]$. In particular, they do not sum to 1 on $\left(0,\frac{1}{6}\right)$. 
-
-Each $B_i$ is piecewise parabolic, with the breakpoints being locations of discontinuity of the function or one of its derivatives. $B_5$ is discontinuous at $x=6$, as the knot at 6 is repeated three times in the knot sequence defining $B_5$: $\left\{t_5,t_6,t_7,t_8\right\}$.
-
-$B_1$, $B_2$, and $B_4$ have discontinuous first derivatives since 1 is repeated twice in the knots defining $B_1$ and $B_2$, and 6 is repeated twice in the knots defining $B_4$. The relationship between knot replication and smoothness will be discussed in more detail in the following section.
-
-\begin{figure}[h]
- \begin{center}
- \graphicspath{{img/}}
-  \includegraphics[width=7in, height=5in]{deboor_parabolic_bsplines.png}
-  \caption{Parabolic B-splines corresponding to knot sequence $\{0,1,1,3,4,6,6,6\}$, illustrating the connection between knot multiplicity and smoothness.}\label{fig:deboor_bspline_basis}
-\end{center}
-\end{figure}
-\end{example}
+%
+%\begin{example}
+%Figure~\ref{fig:deboor_bspline_basis} show fives parabolic B-splines corresponding to the set of knots $\left\{0,1,1,3,4,6,6,6 \right\}$. It is clear that each spline has compact support and is non-negative on this support. The function values are provided at select domain values so that property \ref{eq:BS_property_2} is evident, though it is worth noting that 
+%\[
+%\sum_{i=1}^6 B_i\left(x\right) = 1
+%\]
+%only on $\left[\frac{1}{6},1\right]$. In particular, they do not sum to 1 on $\left(0,\frac{1}{6}\right)$. 
+%
+%Each $B_i$ is piecewise parabolic, with the breakpoints being locations of discontinuity of the function or one of its derivatives. $B_5$ is discontinuous at $x=6$, as the knot at 6 is repeated three times in the knot sequence defining $B_5$: $\left\{t_5,t_6,t_7,t_8\right\}$.
+%
+%$B_1$, $B_2$, and $B_4$ have discontinuous first derivatives since 1 is repeated twice in the knots defining $B_1$ and $B_2$, and 6 is repeated twice in the knots defining $B_4$. The relationship between knot replication and smoothness will be discussed in more detail in the following section.
+%
+%\begin{figure}[h]
+% \begin{center}
+% \graphicspath{{img/}}
+%  \includegraphics{deboor_parabolic_bsplines.png}
+%  %\caption{Parabolic B-splines corresponding to knot sequence $\{0,1,1,3,4,6,6,6\}$, illustrating the connection between knot multiplicity and smoothness.}\label{fig:deboor_bspline_basis}
+%\end{center}
+%\end{figure}
+%\end{example}
 
 
 \begin{definition} \label{B_representation_definition}
@@ -1086,7 +1083,7 @@ where $H = Q\left(Q^T Q\right)^{-1} Q^T$ is the ``hat'' matrix. This will be dis
 
 The mechanics in the previous section rely on apriori knowledge of the number and locations of the knots $\left\{t_j\right\}$, $j=1,\dots,K$. In practice this information is readily available, but has a considerable impact on the behaviour of the estimated coefficient functions, as the smoothness of a fitted curve can be controlled by the number of B-splines used in the basis expansion used to approximate the curve. Fewer knots (thus, fewer basis functions) lead to smoother fits. This choice presents a model selection problem, as too many knots lead to overfitting while too few knots lead to underfitting. Optimal knot placement has been closely examined, with some authors proposing automatic methods for optimizing the number and the positions of the knots (Friedman and Silverman, 1989; Kooperberg and Stone, 1991,1992). This is a difficult numerical problem requiring nonlinear optimization, and is still an open problem today. However, limiting the number of B-splines is not the only approach to controlling the complexity of the fitted function. 
 
-As in chapter {\needsparaphrased{smoothing spline chapter}}, we can append a penalty on the coefficients of the basis functions to the goodness of fit measure, and by optimizing this augmented objective function, we can achieve as much smoothness in the fitted function as desired. \cite{o1986statistical} was the first to propose using a rich B-spline basis and applying a discrete penalty to the spline coefficients. 
+As in chapter {\needsparaphrased{smoothing spline chapter}}, we can append a penalty on the coefficients of the basis functions to the goodness of fit measure, and by optimizing this augmented objective function, we can achieve as much smoothness in the fitted function as desired. cite{o1986statistical} was the first to propose using a rich B-spline basis and applying a discrete penalty to the spline coefficients. 
 
  He proposed a penalty on the second derivative to restrict the flexibility of the fitted curve, similar to the penalty pioneered for smoothing splines by Reinsch (1967). This penalty has become the standard in much of the spline literature; see Eubank (1988), Wahba (1990) and Green and Silverman (1994). This measure of roughness of a curve is given by 
  
@@ -1110,7 +1107,7 @@ As in chapter {\needsparaphrased{smoothing spline chapter}}, we can append a pen
  &=& \vert y - B\beta \vert  \vert^2 + \lambda\beta^\prime P \beta
  \end{eqnarray*}
 
-The computation of $P$ is nontrivial and becomes very tedious when the third and fourth derivative are used as the roughness measure. \cite{wand2008semiparametric} extend O'Sullivan's work to higher order derivatives for general degree B-splines and derive an exact matrix algebraic expression for the penalty matrices. In the cubic case, the expression is a result of the application of Simpson's Rule applied to the inter-knot differences since each $B_i^{\prime \prime} B_j^{\prime \prime}$ is a piecewise quadratic function. The penalty may be written
+The computation of $P$ is nontrivial and becomes very tedious when the third and fourth derivative are used as the roughness measure. cite{wand2008semiparametric} extend O'Sullivan's work to higher order derivatives for general degree B-splines and derive an exact matrix algebraic expression for the penalty matrices. In the cubic case, the expression is a result of the application of Simpson's Rule applied to the inter-knot differences since each $B_i^{\prime \prime} B_j^{\prime \prime}$ is a piecewise quadratic function. The penalty may be written
  \[
  P = \left(B^{\prime \prime}\right)^\prime \textup{diag}\left(\omega \right) B^{\prime \prime}, 
  \]
@@ -1152,7 +1149,7 @@ Consider the varying intercept-only model defined in \ref{eq:varying_intercept_o
 The integral of the square of the second derivative of a fitted function has become common as a smoothness penalty since the seminal work on smoothing splines by Reinsch (1967), though it is useful to note that there is nothing particularly special about the second derivative. One could easily specify higher or lower order derivatives in smoothness penalties. In the context of smoothing splines, the first derivative leads to simple equations and a piecewise linear fit, while higher derivatives lead to systems of equations with a high bandwidth and a very smooth fit. 
 
 
-Proposed for smoothing curves by \cite{whittaker1922new}, difference penalties have been utilized for nearly a century, with more recent applications  outlined in  \cite{eilers1991penalized}, \cite{eilers1991nonparametric}, and \cite{eilers1995indirect}. The finite difference penalty is easily introduced into regression equations, making it feasible to evaluate the impact of different orders of the differences on the fitted model. In some applications, it is useful to work with third and fourth order differences, since for high values of $\lambda$, the fitted curve approaches a parametric polynomial model. Detailed discussion on the effect of the smoothing parameter on fitted functions will follow. Let $D_d$ denote the matrix difference operator; that is, $D_d\beta = \Delta^d \beta$, where
+Proposed for smoothing curves by cite{whittaker1922new}, difference penalties have been utilized for nearly a century, with more recent applications  outlined in  cite{eilers1991penalized}, cite{eilers1991nonparametric}, and cite{eilers1995indirect}. The finite difference penalty is easily introduced into regression equations, making it feasible to evaluate the impact of different orders of the differences on the fitted model. In some applications, it is useful to work with third and fourth order differences, since for high values of $\lambda$, the fitted curve approaches a parametric polynomial model. Detailed discussion on the effect of the smoothing parameter on fitted functions will follow. Let $D_d$ denote the matrix difference operator; that is, $D_d\beta = \Delta^d \beta$, where
 
  \begin{eqnarray*}
  \Delta \alpha_j &=& \alpha_j - \alpha_{j-1},\\
@@ -1168,7 +1165,7 @@ The $\left(K - d\right) \times K$ differencing matrix $D_d$ is sparse for reason
 D_1 = \begin{bmatrix} -1&1&0&0\\ 0&-1&1&0\\ 0&0&-1&1 \end{bmatrix}; \qquad D_2 = \begin{bmatrix} 1&-2&1&0 \\ 0&-&-2&1\end{bmatrix}
 \]
 
-\cite{eilers1996flexible} propose to base the penalty on (higher-order) finite differences of the coefficients of adjacent B-splines:
+cite{eilers1996flexible} propose to base the penalty on (higher-order) finite differences of the coefficients of adjacent B-splines:
 
  \[
  \lambda\vert D_d\alpha\vert^2 = \lambda \alpha^\prime D^\prime_d D_d \alpha = \lambda \alpha^\prime P\alpha,
@@ -1182,7 +1179,7 @@ S_\lambda = \vert y- B \alpha \vert^2 + \lambda\vert D_d\alpha \vert^2
 \end{equation*}
 
 This approach reduces the dimensionality of the problem to the number of B-splines, $K$ instead of the number of observations, $M$ , as with smoothing splines. The tuning parameter $\lambda$ permits continuous control over smoothness of the fit. We will demonstrate that the difference penalty is a good discrete approximation to the integrated square of the $k^{th}$ derivative, and with this penalty, moments of the data are conserved and polynomial regression models occur as limits for large values of $\lambda$. We will explore the connection between a penalty on second-order differences of the B-spline coefficients and O'Sullivan's choice of a penalty on the second derivative of the fitted function. However, the difference penalty can be handled mechanically for any order of the differences.
-\cite{o1986statistical} used third-degree B-splines and the following penalty:
+cite{o1986statistical} used third-degree B-splines and the following penalty:
 
 \begin{equation} \label{eq:osullivan_univariate_bspline_penalty}
 h^2 P = \lambda \int_{t_{min}}^{t_{max}} \left\{ \sum_{j}  \alpha_j B_{j,3}^{\prime \prime} \left(t\right) \right\}^2\; dt
@@ -1398,7 +1395,7 @@ t_{k+i} &= \xi_{i+1}, & i=1,\dots,l-1\\
 t_{n+1} &= t_{n+2} = \dots = t_{n+k} = \xi_{l+1} & 
 \end{align*}
 
-Let $\left\{ B_{ik} \right\}$, $i=1,\dots,n$ be the corresponding sequence of B-splines of order $k$, which are a basis for $\PP_{k,\xi} \bigcap \mathscr{C}^{\left(k-2\right)}$ by Theorem~\ref{curryschoenbergthm}. Here, $\PP_{k,\xi} \bigcap \mathscr{C}^{\left(k-2\right)}$ denotes the space of pp functions with breakpoints $\xi$ having two continuous (global) derivatives. Then, \cite{schoenberg1953polya} have shown that there exists exactly one $f \in \PP_{k,\xi} \bigcap \mathscr{C}^{\left(k-2\right)}$ agreeing with $g$ at $\tau_1,\dots, \tau_n$ if and only if 
+Let $\left\{ B_{ik} \right\}$, $i=1,\dots,n$ be the corresponding sequence of B-splines of order $k$, which are a basis for $\PP_{k,\xi} \bigcap \mathscr{C}^{\left(k-2\right)}$ by Theorem~\ref{curryschoenbergthm}. Here, $\PP_{k,\xi} \bigcap \mathscr{C}^{\left(k-2\right)}$ denotes the space of pp functions with breakpoints $\xi$ having two continuous (global) derivatives. Then, cite{schoenberg1953polya} have shown that there exists exactly one $f \in \PP_{k,\xi} \bigcap \mathscr{C}^{\left(k-2\right)}$ agreeing with $g$ at $\tau_1,\dots, \tau_n$ if and only if 
 \[
 B_{ik}\left(\tau_i\right) \ne 0, \qquad \qquad i=1,\dots,n.
 \]
@@ -1545,7 +1542,7 @@ The previous derivations hold regardless of whether we are fitting the varying i
 %\noindent with norm
 %\begin{eqnarray}
 %\vert \vert f \vert \vert^2 &=& \sum_{j=0}^k \beta_j^2 + \sum_{i=1}^{\vert \vert \mathcal{L} \vert \vert}  \eta_i^2\\
-%&=& \vert \vert \bfbeta  \vert \vert^2 + \vert \vert \bfeta  \vert \vert^2
+%&=& \vert \vert \bfbeta  \vert \vert^2 + \vert \vert \eta  \vert \vert^2
 %\end{eqnarray}
 %
 %
@@ -1560,7 +1557,7 @@ The previous derivations hold regardless of whether we are fitting the varying i
 %\\ \hline\\
 %\end{tabular}
 
-% Convergence results given in \cite{cai2010optimal} show that the tapering estimator is shown to be minimax rate optimal for estimating the bandable covariance matrices. Rather than tapering the covariance matrix itself, \cite{cai2012estimating} have generalized banding the inverse covariance matrix as in \cite{bickel2008regularized}, \cite{huang2007estimation}, and \cite{levina2008sparse} by proposing $k$-tapered estimators of $\Sigma^{-1}$. In addition to tapering estimators, others have utilized penalized likelihood methods to induce sparsity in precision matrix estimates. Particularly, the $l_1$-penalized likelihood and variants of the $l_1$-penalized likelihood have been considered in a number of papers, producing what shall be referred to as $l_1$ MLE-type estimators. \cite{huang2006covariance} and \cite{levina2008sparse} propose such estimators under Gaussian likelihood in terms of the Cholesky decomposition. \cite{yuan2007model} and \cite{friedman2008sparse}  %considering the class of models for the sparsity of the $p \times p$ precision matrix $\Omega$ given by 
+% Convergence results given in cite{cai2010optimal} show that the tapering estimator is shown to be minimax rate optimal for estimating the bandable covariance matrices. Rather than tapering the covariance matrix itself, cite{cai2012estimating} have generalized banding the inverse covariance matrix as in cite{bickel2008regularized}, cite{huang2007estimation}, and cite{levina2008sparse} by proposing $k$-tapered estimators of $\Sigma^{-1}$. In addition to tapering estimators, others have utilized penalized likelihood methods to induce sparsity in precision matrix estimates. Particularly, the $l_1$-penalized likelihood and variants of the $l_1$-penalized likelihood have been considered in a number of papers, producing what shall be referred to as $l_1$ MLE-type estimators. cite{huang2006covariance} and cite{levina2008sparse} propose such estimators under Gaussian likelihood in terms of the Cholesky decomposition. cite{yuan2007model} and cite{friedman2008sparse}  %considering the class of models for the sparsity of the $p \times p$ precision matrix $\Omega$ given by 
 %\[
 %\mathcal{G}\left(c_{n,p},M_{n,p}\right) = \left \{  \begin{array}{c} \Omega = \left( \omega_{ij} \right)_{1 \le i,j\le p}: \mathop{\max}_{j} \sum_{i=1}^p \vert \omega_{ij} \vert^q \le c_{n,p};\\ 
 %\vert \vert \Omega \vert \vert_1 \le M_{n,p},\; \lambda_{max}\left(\Omega\right)/\lambda_{min}\left(\Omega\right) \le M_1,\;\Omega \prec 0  \end{array}\right \}
@@ -1575,7 +1572,7 @@ The previous derivations hold regardless of whether we are fitting the varying i
 %\]
 %where $\mathcal{L} = \lbrace l_i \rbrace$ denotes the set of unique observed values of $l$. Note that the penalty associated with an observed lag $l_i$ tends to $\infty$ as $l_i \rightarrow 1$ when $\vert \phi^*_1\left(l_i\right) \vert > 0$.
 
-%In addition to the structure imposed by $J_1$, we softly enforce monotonicity in $\vert \phi_1\left(l\right) \vert$, implying that the conditional dependence of $y\left(t\right)$ on $y\left(t-l\right)$ decreases as $l$ increases. To do this, we consider the penalty presented by \citet{tibshirani2011nearly}, which penalizes the fitted function at observed lags where $\phi_1^*$ is non-monotone decreasing in absolute value. We let 
+%In addition to the structure imposed by $J_1$, we softly enforce monotonicity in $\vert \phi_1\left(l\right) \vert$, implying that the conditional dependence of $y\left(t\right)$ on $y\left(t-l\right)$ decreases as $l$ increases. To do this, we consider the penalty presented by citet{tibshirani2011nearly}, which penalizes the fitted function at observed lags where $\phi_1^*$ is non-monotone decreasing in absolute value. We let 
 %	
 %	\begin{equation}
 %	\lambda_2 J_2\left( \phi \right) =  \lambda_2 \sum_{i=1}^{\vert \vert \mathcal{L} \vert \vert - 1} \omega_i \frac{\left[ \vert\phi_1^*\left( l_{i+1} \right)\vert - \vert\phi^*_1\left( l_{i} \right)\vert\right]_+}{l_{i+1} - l_{i}}  \label{hingepenalty}
@@ -1592,7 +1589,7 @@ The previous derivations hold regardless of whether we are fitting the varying i
 %
 %\begin{eqnarray}
 %\nonumber
-%-2\lmr{L} + \hat{\lambda}_1 J_1\left(\phi\right) + \lambda_2 J_2\left(\phi\right) = \sum_{i=1}^N \sum_{j=2}^{n_i}\sigma\left({t_j}\right)^{-2} \left(y\left({t_{ij}}\right) - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y\left({t_{ik}}\right) \right)^2\mbox{\;\;\;\;\;\;\;\;\;\;\;\;\;}\\  \mbox{\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;} + \hat{\lambda}_1 J_1\left(\phi^*\right)  + \lambda_2 \sum_{i=1}^{\vert \vert \mathcal{L} \vert \vert - 1} \omega_i \frac{\left[\vert\phi_1^*\left( l_{i+1} \right)\vert - \vert\phi^*_1\left( l_{i} \right)\vert\right]_+}{l_{i+1} - l_{i}} \label{penlik1}
+%-2L + \hat{\lambda}_1 J_1\left(\phi\right) + \lambda_2 J_2\left(\phi\right) = \sum_{i=1}^N \sum_{j=2}^{n_i}\sigma\left({t_j}\right)^{-2} \left(y\left({t_{ij}}\right) - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y\left({t_{ik}}\right) \right)^2\mbox{\;\;\;\;\;\;\;\;\;\;\;\;\;}\\  \mbox{\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;} + \hat{\lambda}_1 J_1\left(\phi^*\right)  + \lambda_2 \sum_{i=1}^{\vert \vert \mathcal{L} \vert \vert - 1} \omega_i \frac{\left[\vert\phi_1^*\left( l_{i+1} \right)\vert - \vert\phi^*_1\left( l_{i} \right)\vert\right]_+}{l_{i+1} - l_{i}} \label{penlik1}
 %\end{eqnarray}
 %
 %\noindent
@@ -1606,7 +1603,7 @@ The previous derivations hold regardless of whether we are fitting the varying i
 %
 %\begin{eqnarray}
 %\nonumber
-%-2\lmr{L} + \hat{\lambda}_1 J_1\left(\phi^*\right) + \lambda_2 J_2\left(\phi^*\right) =  \sum_{i=1}^{N} \sum_{j=1}^{n_i} \left(  y_{ij} - \sum_{k=1}^{j-1} \phi_{ik}y_{ik} \right)^2  
+%-2L + \hat{\lambda}_1 J_1\left(\phi^*\right) + \lambda_2 J_2\left(\phi^*\right) =  \sum_{i=1}^{N} \sum_{j=1}^{n_i} \left(  y_{ij} - \sum_{k=1}^{j-1} \phi_{ik}y_{ik} \right)^2  
 %+ \hat{\lambda}_1 J_1\left( \phi^* \right) +  \lambda_2 \sum_{i=1}^{\vert \vert \mathcal{L} \vert \vert -1} \frac{\omega_i}{l_{i+1}-l_i}\xi_i \label{xi_loss}\\
 %\text{subject to }\xi_i > 0,\;\; \left(\vert\phi_1^*\left( l_{i+1} \right)\vert-\vert\phi^*_1\left( l_{i}\right)\vert\right) \le \xi_i  \mbox{\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;} \label{xi_constraints}
 %\end{eqnarray}
@@ -1615,31 +1612,31 @@ The previous derivations hold regardless of whether we are fitting the varying i
 %
 %
 %
-%\subsection{Constrained optimization: finding $\hat{\bfc}$, $\hat{\bfd}$}
+%\subsection{Constrained optimization: finding $\hat{c}$, $\hat{d}$}
 %
-% Let $\matDelta$ be the $\left(\vert \vert \mathcal{L} \vert \vert - 1 \right) \times \vert \vert \mathcal{L} \vert \vert $ differencing matrix, and let $\matK_{l}$ be the $p \times p$ matrix with $ij^{th}$ entry defined by the decomposition of $K=$ according to \eqref{TPRK}. Let $\matU$ be the matrix defined so that we may write the $\vert \vert \mathcal{L} \vert \vert -1$ constraints given by \eqref{xi_constraints} in the following matrix form: 
+% Let $Delta$ be the $\left(\vert \vert \mathcal{L} \vert \vert - 1 \right) \times \vert \vert \mathcal{L} \vert \vert $ differencing matrix, and let $K_{l}$ be the $p \times p$ matrix with $ij^{th}$ entry defined by the decomposition of $K=$ according to \eqref{TPRK}. Let $\matU$ be the matrix defined so that we may write the $\vert \vert \mathcal{L} \vert \vert -1$ constraints given by \eqref{xi_constraints} in the following matrix form: 
 %\[
-%\left[ \phi_1^*\left( l_{2}\right)-\phi^*_1\left( l_{1}\right),\phi_1^*\left( l_{3}\right)-\phi^*_1\left( l_{2}\right),\dots,\phi_1^*\left( l_{\textsc{\relsize{-2}{\textsl{$\vert\vert \mathcal{L}\vert\vert$}}}}\right)-\phi^*_1\left( l_{\textsc{\relsize{-2}{\textsl{$\vert\vert \mathcal{L}\vert\vert$ -1}}}}\right) \right]^T  =\matDelta \matU \begin{bmatrix}\matB& \matK_l \end{bmatrix} \begin{bmatrix} \bfd\\ \bfc \end{bmatrix} \le \bfxi
+%\left[ \phi_1^*\left( l_{2}\right)-\phi^*_1\left( l_{1}\right),\phi_1^*\left( l_{3}\right)-\phi^*_1\left( l_{2}\right),\dots,\phi_1^*\left( l_{\textsc{ {\textsl{$\vert\vert \mathcal{L}\vert\vert$}}}}\right)-\phi^*_1\left( l_{\textsc{ {\textsl{$\vert\vert \mathcal{L}\vert\vert$ -1}}}}\right) \right]^T  =Delta \matU \begin{bmatrix}B& K_l \end{bmatrix} \begin{bmatrix} d\\ c \end{bmatrix} \le \bfxi
 %\]
 %\noindent
-%where $\xi$ is the vector of $\vert \vert \mathcal{L} \vert \vert -1$ slack variables. Let $\bfomega = \left[ \frac{\omega_2}{l_2-l_1}, \frac{\omega_1}{l_3-l_2}, \dots,\frac{\omega_{\textsc{\relsize{-2}{\textsl{$\vert\vert \mathcal{L}\vert\vert$ -1}}}}}{l_{\textsc{\relsize{-2}{\textsl{$\vert\vert \mathcal{L}\vert\vert$}}}}-l_{\textsc{\relsize{-2}{\textsl{$\vert\vert \mathcal{L}\vert\vert$ -1}}}}} \right]^T$ and $\bfa = \begin{bmatrix} \bfd & \bfc \end{bmatrix}^T$. We introduce lagrangian terms $\bfalpha$, $\bfgamma$ for the constraints given in \eqref{xi_constraints} so that we may write \eqref{stage2obj} 
+%where $\xi$ is the vector of $\vert \vert \mathcal{L} \vert \vert -1$ slack variables. Let $\bfomega = \left[ \frac{\omega_2}{l_2-l_1}, \frac{\omega_1}{l_3-l_2}, \dots,\frac{\omega_{\textsc{ {\textsl{$\vert\vert \mathcal{L}\vert\vert$ -1}}}}}{l_{\textsc{ {\textsl{$\vert\vert \mathcal{L}\vert\vert$}}}}-l_{\textsc{ {\textsl{$\vert\vert \mathcal{L}\vert\vert$ -1}}}}} \right]^T$ and $\bfa = \begin{bmatrix} d & c \end{bmatrix}^T$. We introduce lagrangian terms $\bfalpha$, $\bfgamma$ for the constraints given in \eqref{xi_constraints} so that we may write \eqref{stage2obj} 
 %
 %\begin{equation}
-%\lmr{l}_\mathcal{P} = -\bfb^T\bfa + \frac{1}{2} \bfa^T \matH \bfa + \bfomega^T \bfxi - \bfalpha^T  \left( \matC\bfa + \bfxi  \right) - \bfgamma^T \bfxi
+%L_\mathcal{P} = -\bfb^T\bfa + \frac{1}{2} \bfa^T  H \bfa + \bfomega^T \bfxi - \bfalpha^T  \left( \matC\bfa + \bfxi  \right) - \bfgamma^T \bfxi
 %\end{equation}
-%where $\matC = \matDelta \matU \begin{bmatrix}\matB& \matK_l \end{bmatrix}$ and $\bfa = \begin{bmatrix} \bfd^T & \bfc^T \end{bmatrix}^T$. Taking partial derivatives and setting them to zero, we have
+%where $\matC = Delta \matU \begin{bmatrix}B& K_l \end{bmatrix}$ and $\bfa = \begin{bmatrix} d^T & c^T \end{bmatrix}^T$. Taking partial derivatives and setting them to zero, we have
 %\begin{eqnarray}
-%\frac{\partial}{\partial \bfa} \lmr{l}_{\mathcal{P}} &=& -\bfb + \matH\bfa - \matC^T\bfalpha \Leftrightarrow \bfa = \matH^{-1}\left(\matC^T\bfalpha + \bfb\right) \label{normeq1} \\
-%\frac{\partial}{\partial \bfxi} \lmr{l}_{\mathcal{P}} &=& \bfomega \bfalpha - \bfgamma = 0 \Leftrightarrow \bfgamma = \bfomega - \bfalpha \label{normeq2}
+%\frac{\partial}{\partial \bfa} L_{\mathcal{P}} &=& -\bfb +  H\bfa - \matC^T\bfalpha \Leftrightarrow \bfa =  H^{-1}\left(\matC^T\bfalpha + \bfb\right) \label{normeq1} \\
+%\frac{\partial}{\partial \bfxi} L_{\mathcal{P}} &=& \bfomega \bfalpha - \bfgamma = 0 \Leftrightarrow \bfgamma = \bfomega - \bfalpha \label{normeq2}
 %\end{eqnarray}
 %
-%Substituting \eqref{normeq1} and \eqref{normeq2} into $\lmr{l}_\mathcal{P}$, we can show that the dual problem as the form 
+%Substituting \eqref{normeq1} and \eqref{normeq2} into $L_\mathcal{P}$, we can show that the dual problem as the form 
 %\begin{equation}
-%\mathop{\min}_{\bfalpha} -\frac{1}{2} \bfalpha^T\matC \matH^{-1}\matC^T\bfalpha + \bfb^T \matH^{-1}\matC^T\bfalpha\;\;\;\mbox{subject to }\bfo \le \bfalpha \le \bfomega 
+%\mathop{\min}_{\bfalpha} -\frac{1}{2} \bfalpha^T\matC  H^{-1}\matC^T\bfalpha + \bfb^T  H^{-1}\matC^T\bfalpha\;\;\;\mbox{subject to }\bfo \le \bfalpha \le \bfomega 
 %\end{equation}
 
 %\[
-%\bfb = -2\bigY_{\textsc{\relsize{-2}{\textsl{(-1)}}}}^T\begin{bmatrix} \matZ \matB & \bfo\\ \bfo & \matZ \matK \end{bmatrix}\;\;\;\;\;\matH = \begin{bmatrix} \matB^T \matZ^T \matD^{-1}\matZ \matB  & \bfo\\ \bfo & \hat{\lambda}_1\matK \matZ^T \matD^{-1}\matZ \matK \end{bmatrix}
+%\bfb = -2Y_{\textsc{ {\textsl{(-1)}}}}^T\begin{bmatrix} Z B & \bfo\\ \bfo & Z K \end{bmatrix}\;\;\;\;\; H = \begin{bmatrix} B^T Z^T D^{-1}Z B  & \bfo\\ \bfo & \hat{\lambda}_1K Z^T D^{-1}Z K \end{bmatrix}
 %\]
 
 
