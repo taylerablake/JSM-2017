@@ -134,9 +134,9 @@ E\left[ Y \right] = 0.
 The entries of $T$ and $D$ are easily interpretable if we consider regressing $y_{j}$ on its predecessors:
 
 \begin{equation}
-{y}_{j}  = \sum_{k=1}^{j-1} \phi_{jk} y_{k} + \sigma_{j}e_{j}, \qquad j=2,\dots,m. \label{data_ARmodel}
+{y}_{j}  = \sum_{k=1}^{j-1} \phi_{jk} y_{k} + \sigma_{j}e_{j}, \qquad j=2,\dots,m. \label{eq:data_ARmodel}
 \end{equation}
-\noindent We define $y_{1}=\epsilon_{1}$. Standard regression theory gives us that if $\lbrace \phi_{jk} \rbrace$ are the coefficients of the linear least squares predictor of $y_{j}$ based on its predecessors, then the residuals $\bfe =\left( e_{1}, e_{2},\dots, e_{m} \right)^T$ have diagonal covariance. Let $T$ be the unit lower triangular matrix with elements $T_{jk}$, $j,k=1,\dots,m$, where
+\noindent We define $y_{1}=e_{1}$. Standard regression theory gives us that if $\lbrace \phi_{jk} \rbrace$ are the coefficients of the linear least squares predictor of $y_{j}$ based on its predecessors, then the residuals $e =\left( e_{1}, e_{2},\dots, e_{m} \right)^T$ have diagonal covariance. Let $T$ be the unit lower triangular matrix with elements $T_{jk}$, $j,k=1,\dots,m$, where
 
 \[
 T_{jk} = \left{
@@ -147,7 +147,32 @@ T_{jk} = \left{
 \end{array}\right.
 \]
 
-Let $\bfY_i$ denote the random vector giving rise to observed data $\bfy_i$, and let $\bfeps_i$ denote the associated vector of random errors. Then we may write the model \eqref{data_ARmodel} as follows: 
+Then model~\ref{eq:data_ARmodel} as follows: 
+
+\begin{equation}
+\e = T Y, \label{epsilon}
+\end{equation}
+\noindent
+Taking covariances on both sides of \eqref{epsilon}, we have
+
+\begin{equation}
+\nonumber
+D = T \Sigma T^T
+\end{equation} 
+
+
+Immediately, we can express the precision matrix (and thus its inverse) entirely in terms of the regression parameters defining Model~\ref{eq:}:
+\begin{equation} \label{eq:omega_decomp}
+\Omega= \Sigma^{-1} = T^T D{-1} T.
+\end{equation}
+
+We refer to the regression coefficients $\lbrace \phi_{jk} \rbrace$ as the \emph{generalized autoregressive parameters}, or GARPs and the $\lbrace \sigma_{j} \rbrace$ as the \emph{innovation variances} or IVs. Given an i.i.d. sample $Y_1,Y_2,\dots, Y_N$, estimation of model parameters can be carried out as in the usual regression setting. 
+
+To relax the assumption that individuals must share a common set of equally-spaced observation times, we take $Y$ and $e$ to be the discrete versions of the stochastic processes: $Y\left(t\right)$ and $e\left(t\right)$.  We assume $Y\left(t\right)$ has covariance function $G\left(s,t\right)$, and
+\[
+e\left(s\right) \sim \mathcal{WN}\left(0,1\right)
+\] 
+is a zero mean Gaussian white noise process with unit variance. It is reasonable to assume that if $Y$ is reasonably well-behaved, then $G\left(s,t\right)$ satisfies some smoothness conditions, where smoothness is defined in terms of square integrability of certain derivatives. We view the entries of $\Sigma_i$ as values of $G$ evaluated at the distinct pairs of observed time points on individual $i$. 
 
 Observed time points may be individual-specific and not necessarily on a regular grid. 
 
