@@ -139,7 +139,7 @@ The entries of $T$ and $D$ are easily interpretable if we consider regressing $y
 \noindent We define $y_{1}=e_{1}$. Standard regression theory gives us that if $\lbrace \phi_{jk} \rbrace$ are the coefficients of the linear least squares predictor of $y_{j}$ based on its predecessors, then the residuals $e =\left( e_{1}, e_{2},\dots, e_{m} \right)^T$ have diagonal covariance. Let $T$ be the unit lower triangular matrix with elements $T_{jk}$, $j,k=1,\dots,m$, where
 
 \[
-T_{jk} = \left{
+T_{jk} = \left\{
 \begin{array}{ll}
 -\phi_{jk} & j > k\\
 1 & j = k \\
@@ -150,7 +150,7 @@ T_{jk} = \left{
 Then model~\ref{eq:data_ARmodel} as follows: 
 
 \begin{equation}
-\e = T Y, \label{epsilon}
+e = T Y, \label{epsilon}
 \end{equation}
 \noindent
 Taking covariances on both sides of \eqref{epsilon}, we have
@@ -180,17 +180,33 @@ Observed time points may be individual-specific and not necessarily on a regular
 
 If we assume that the data follow an autoregressive process with (possibly) heteroskedastic errors, then the two matrices comprising the Cholesky decomposition, the Cholesky factor (which diagonalizes the covariance matrix) and diagonal matrix itself, hold the autoregressive coefficients and the error variances, respectively. The autoregressive coefficients are often referred to in the literature as the \emph{generalized autoregressive parameters}, or \emph{GARPs}, and the error variances are often called the \emph{innovation variances}, or \emph{IVs}.
 
-\subsection{Regularization of $T$}
-
+\section{Enforcing Smoothness of $\phi^*$}
 
 Several approaches have been taken in effort to overcome the issue of high dimensionality in covariance estimation. Regularization improves stability of covariance estimates in high dimensions, particularly in the case where the parameter dimensionality $p$ is much larger than the number of observations $n$.  Regularization of the covariance matrix and its Cholesky decomposition has been explored extensively> Previous work employs a number of approaches including banding, tapering, kernel smoothing, penalized likelihood, and penalized regression; see citet{pourahmadi2011covariance} for a comprehensive overview.
 
 
+\subsection{Outline Smoothing Spline Approach}
+
+\subsection{The truncated power basis and an alternative decomposition of $\mathcal{H}$}
+
+The estimation of $\phi^*\left(l,m\right)$ is quite different from the usual problem of estimating an arbitrary bivariate function via smoothing. In the case of the latter, we most typically treat both arguments equally in terms of regularization, but in the case of covariance estimation and the generalized coefficient function equal treatment of $l$ and $m$ in terms of penalization perhaps is not the most appropriate approach. The lag component, $l$, has particularly significant meaning in terms of the covariance function and thus also in terms of $\phi^*$ and is of considerable more interest than the orthogonal component, $m$. As discussed in Section 2, we can define an entire class of stationary functional autoregressive models using only the $l$ direction, and additionally, as discussed in Section 3, there is a natural expectation about the functional form of the autoregressive coefficient function (and hence covariance) as a function of $l$, making imposing that conditional dependence between observation decay as $l$ and the time between observations increase a reasonable way to institute regularization.
 %citet{chen2011efficient}, citet{pourahmadi1999joint}, and citet{pourahmadi2002dynamic} have elicited parametric models for the generalized autoregressive coefficients, letting the GARPs depend only on the distance between two time points.
 
-\section{Outline Smoothing Spline Approach}
+This latter notion is instrumental in justifying the family of penalties
+\[
+J_{2,\left(p\right)} = \sum_{  l_i \in \mathcal{L}: l_i > l_0} \vert \mu^* + \phi^*_1\left(l_i\right) \vert^p 
+\]
+\noindent
+which we may view as a design-driven way of implementing the regularization which may be imposed by the penalty functionals taking the form
 
-\subsection{Introduce specialized penalties for the smoothing spline decomposition}
+\begin{eqnarray} \nonumber
+J\left(\phi^*\right) &=& \int_{l_0}^1 \vert \mu^* + \phi^*_1\left(l\right) \vert^p\; dl\\
+&=& \int_{0}^1 \vert \mu^* + \phi^*_1\left(l\right) \vert^p I\left(l > l_0\right) \; dl \label{eq:truncated_penalty}
+\end{eqnarray}
+
+The penalty functionals given by \eqref{truncated_penalty} motivate a different decomposition of $\mathcal{H}$ than the derivative-based penalty. The form of \eqref{truncated_penalty} is significantly different in nature from the penalty discussed in Section 2.1 and those typically encountered in the setting smoothing spline ANOVA models, particularly because \eqref{truncated_penalty} effects only a subset of the domain for $l$. Therefore, an appropriate decomposition of the function space into the null space of $J$ and the penalized space should perhaps be formulated in terms of basis functions for the lag component, $l$ with domains which do not include the entire unit interval. 
+
+The truncated power basis, as in their use in defining polynomial regression splines, enjoy a particular ease of interpretation, as the coefficient $\beta_{i+k}$ may be identified as the size of the jump at $x_i$ in the $k^{th}$ derivative of $f$. This fact is especially useful when tracking change points or, in general, any abrupt changes in the regression curve. If we reflect these basis functions about each of their corresponding knot points and denote these reflections $\lbrace T^-_{ik}\rbrace$, then expressing the regularization corresponding to the penalty functionals \eqref{truncated_penalty} becomes quite natural in terms of the reflected basis functions $\left(\cdot - l_1 \right)^k_-,\dots, \left(\cdot - l_n \right)^k_-$, where $\left( \alpha \right)_- = \max\left(-\alpha,0\right)$.  While the truncated power basis initially appears very attractive for representing functions in terms of the decomposition induced by penalties of the same form as that in Equation~\ref{eq:truncated_penalty}, they 
 
 \section{P-splines}
 
@@ -198,3 +214,5 @@ Several approaches have been taken in effort to overcome the issue of high dimen
 
 \subsection{B-spline Basis}
 \subsection{Difference penalties}
+
+\end{document}
