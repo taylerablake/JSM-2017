@@ -126,17 +126,18 @@ To present a comprehensive overview our estimation procedure, we begin with the 
 \end{equation}
 \noindent
 
-Let $Y = \left( y_{1}, y_{2}, \dots, y_{m} \right)^T$ denote a random vector of measurements taken at times $t_{1} < t_{2} < \dots< t_{m}$, with
+Let $Y = \left( y_{1}, y_{2}, \dots, y_{m} \right)^T$ denote a mean-zero random vector of observations with corresponding measurement times 
+
 \[
-E\left[ Y \right] = 0.
+t_{1} < t_{2} < \dots< t_{m}.
 \]
 
-The entries of $T$ and $D$ are easily interpretable if we consider regressing $y_{j}$ on its predecessors:
+The entries of $T$ and $D$ enjoy a useful interpretation if we consider regressing $y_{j}$ on its predecessors:
 
 \begin{equation}
 {y}_{j}  = \sum_{k=1}^{j-1} \phi_{jk} y_{k} + \sigma_{j}e_{j}, \qquad j=2,\dots,m, \label{eq:data_ARmodel}
 \end{equation}
-\noindent where we define $y_{1}=e_{1}$. The regression coefficients $\lbrace \phi_{jk} \rbrace$ are referred to as the \emph{generalized autoregressive parameters} (or GARPs), and the $\lbrace \sigma_{j} \rbrace$ are referred to as the \emph{innovation variances} (or IVs.) Standard regression theory gives us that if $\lbrace \phi_{jk} \rbrace$ are the coefficients of the linear least squares predictor of $y_{j}$ based on its predecessors, then the residuals $e =\left( e_{1}, e_{2},\dots, e_{m} \right)^T$ have diagonal covariance. Let $T$ be the unit lower triangular matrix with elements $T_{jk}$, $j,k=1,\dots,m$, where
+\noindent where we define $y_{1}=e_{1}$. Standard regression theory gives us that if $\lbrace \phi_{jk} \rbrace$ are the coefficients of the linear least squares predictor of $y_{j}$ based on its predecessors, then the residuals $e =\left( e_{1}, e_{2},\dots, e_{m} \right)^T$ have diagonal covariance. Let $T$ be the unit lower triangular matrix with elements $T_{jk}$, $j,k=1,\dots,m$, where
 
 \[
 T_{jk} = \left\{
@@ -160,12 +161,12 @@ Taking covariances on both sides of \eqref{epsilon}, we have
 D = T \Sigma T^T
 \end{equation} 
 
-Immediately, we can express the precision matrix (and thus its inverse) entirely in terms of the regression parameters defining Model~\ref{eq:}:
+The regression coefficients $\lbrace \phi_{jk} \rbrace$ are referred to as the \emph{generalized autoregressive parameters} (or GARPs), and the $\lbrace \sigma_{j} \rbrace$ are referred to as the \emph{innovation variances} (or IVs.) Immediately, we can express the precision matrix (and thus its inverse) entirely in terms of these parameters:
 \begin{equation} \label{eq:omega_decomp}
 \Omega= \Sigma^{-1} = T^T D{-1} T.
 \end{equation}
 
-To accommodate unequally spaced and subject-specific observation times, we consider $Y$ and $e$ as vectorized the stochastic processes: $Y\left(t\right)$ and $e\left(t\right)$.  We assume $Y\left(t\right)$ has covariance function $G\left(s,t\right)$, and
+We extend this framework to accommodate unequally spaced and subject-specific observation times and consider $Y$ and $e$ as vectorized the stochastic processes: $Y\left(t\right)$ and $e\left(t\right)$.  We assume $Y\left(t\right)$ has covariance function $G\left(s,t\right)$, and
 \[
 e\left(s\right) \sim \mathcal{WN}\left(0,1\right)
 \] 
