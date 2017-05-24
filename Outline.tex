@@ -132,7 +132,7 @@ Let $Y = \left( y_{1}, y_{2}, \dots, y_{m} \right)^T$ denote a mean-zero random 
 t_{1} < t_{2} < \dots< t_{m}.
 \]
 
-The entries of $T$ and $D$ enjoy a useful interpretation if we consider regressing $y_{j}$ on its predecessors:
+If we assume that the data follow an autoregressive model, then the entries of the Cholesky factor $T$ and $D$ enjoy a useful interpretation. Regress $y_{j}$ on its predecessors:
 
 \begin{equation}
 {y}_{j}  = \sum_{k=1}^{j-1} \phi_{jk} y_{k} + \sigma_{j}e_{j}, \qquad j=2,\dots,m, \label{eq:data_ARmodel}
@@ -148,7 +148,7 @@ T_{jk} = \left\{
 \end{array}\right.
 \]
 
-Then model~\ref{eq:data_ARmodel} as follows: 
+Then model~\ref{eq:ARmodel} as follows: 
 
 \begin{equation}
 e = T Y, \label{epsilon}
@@ -161,7 +161,7 @@ Taking covariances on both sides of \eqref{epsilon}, we have
 D = T \Sigma T^T
 \end{equation} 
 
-The regression coefficients $\lbrace \phi_{jk} \rbrace$ are referred to as the \emph{generalized autoregressive parameters} (or GARPs), and the $\lbrace \sigma_{j} \rbrace$ are referred to as the \emph{innovation variances} (or IVs.) Immediately, we can express the precision matrix (and thus its inverse) entirely in terms of these parameters:
+The regression coefficients $\lbrace \phi_{jk} \rbrace$ are referred to as the \emph{generalized autoregressive parameters} (or GARPs), and the $\lbrace \sigma_{j} \rbrace$ are referred to as the \emph{innovation variances} (or IVs.) It is worth noting that  particularly attractive property of decomposing $\Omega$ in this way is that the $\left\{ \phi_{jk} \right\}$ are not constrained. (Estimation of the  $\left\{ \sigma_{k}^2 \right\}$ is also unconstrained, but we leave the details for section 2.) Immediately, we can express the precision matrix (and thus its inverse) entirely in terms of these parameters:
 \begin{equation} \label{eq:omega_decomp}
 \Omega= \Sigma^{-1} = T^T D{-1} T.
 \end{equation}
@@ -170,7 +170,7 @@ We extend this framework to accommodate unequally spaced and subject-specific ob
 \[
 e\left(s\right) \sim \mathcal{WN}\left(0,1\right)
 \] 
-is a zero mean Gaussian white noise process with unit variance. For a well-behaved process $Y$, we may assume that $G\left(s,t\right)$ satisfies some smoothness conditions, where smoothness is defined in terms of square integrability of certain derivatives. The entries of $\Sigma$ then correspond to $G$ evaluated at the distinct pairs of observed time points, and similarly, we treat the elements of the precision matrix $\Omega$ as the values of some smooth function, $\omega\left(s,t\right)$ evaluated at observed time points. A natural extention of the same perspective to the elements of the Cholesky decomposition $T$ and $D$ leads us to  %view the GARPs $\lbrace \phi_{ijk} \rbrace$ and innovation variances as the evaluation of the smooth functions $\phi\left(s,t\right)$ and $\sigma^2\left(t\right)$ at observed time points and interpret $\phi_{ijk} = \phi\left(t_{ij},t_{ik}\right)$ and $\sigma_{ij}^2 = \sigma^2\left(t_{ij}\right)$. 
+is a zero mean Gaussian white noise process with unit variance. For a well-behaved process $Y$, we may assume that $G\left(s,t\right)$ satisfies some smoothness conditions, where smoothness is defined in terms of square integrability of certain derivatives. The entries of $\Sigma$ then correspond to $G$ evaluated at the distinct pairs of observed time points, and similarly, we treat the elements of the precision matrix $\Omega$ as the values of some smooth function, $\omega\left(s,t\right)$ evaluated at observed time points. A natural extention of the same perspective to the elements of $D$ as well as the Cholesky factor $T$ leads us to  %view the GARPs $\lbrace \phi_{ijk} \rbrace$ and innovation variances as the evaluation of the smooth functions $\phi\left(s,t\right)$ and $\sigma^2\left(t\right)$ at observed time points and interpret $\phi_{ijk} = \phi\left(t_{ij},t_{ik}\right)$ and $\sigma_{ij}^2 = \sigma^2\left(t_{ij}\right)$. 
 the varying coefficient (VC) models first introduced by Hastie and Tibshirani, which assume that  regressors and response variables vary according to an \emph{indexing variable}. These models are particularly attractive because they permit interpolation of regressors and response variables at values of this indexing variable where there is either missing data of only a single observation and slope estimation is not feasible. Replacing  $\left \{ \phi_{jk} \right\}$ and $\left\{ \sigma_j \right\}$ with smooth functions, we model 
 
 \begin{equation}   
@@ -178,18 +178,80 @@ y\left(t_j \right)  = \sum_{k=1}^{j-1} \phi\left(t_j ,t_k\right) y\left(t_k\righ
 \label{eq:MyModel} 
 \end{equation}
 
-\noindent for $t_1 < t_2 < \dots < t_m$. Several approaches to estimate the coefficient function $\phi\left(\cdot,\cdot\right)$ have been proposed. cite{wu2003nonparametric}, for example, used locally weighted polynomials to smooth down the sub-diagonals of $T$. cite{huang2007estimation} smoothed the sub-diagonals of $T$ using univariate smoothing splines.  Within our formulation, the task of estimating a covariance matrix is equivalent to estimating the function $\phi\left(s,t\right)$ using bivariate smoothing. For ease of exposition, we assume that $\sigma^2\left(t\right)$ is fixed and known. Like other nonparametric situations, we make no assumption about the functional form of $\phi$ other than that $\phi$ is smooth, with smoothness defined in terms of square integrability of certain derivatives and let $\phi$ belong to a reproducing kernel Hilbert space, $\mathcal{H}$.
-
-
+\noindent for $t_1 < t_2 < \dots < t_m$. 
+Within our proposed framework, the task of estimating a covariance matrix is equivalent to estimating the function $\phi\left(s,t\right)$. We explore using both smoothing splines and B-spline expansions for function approximation; to induce smoothness and parsimony of estimated Cholesky For ease of exposition, we first assume that $\sigma^2\left(t\right)$ is fixed and known; we will later relax this assumption and discuss the estimation of $\sigma^2$ and $\phi$ simultaneously.  We assume nothing about the functional form of $\phi$ other than that $\phi$ is smooth, with smoothness, which is defined in terms of families of penalties which we will discuss in detail in sections to follow. %square integrability of certain derivatives. 
+Our approach presents a flexible, comprehensive framework for covariance estimation in a wide variety of contexts in which the data may be generated according to a broad class of dependency structures.
 %Observed time points may be individual-specific and not necessarily on a regular grid. 
 
- 
+\section{Penalized Maximum Likelihood Estimation of $\phi$}
 
-If we assume that the data follow an autoregressive process with (possibly) heteroskedastic errors, then the two matrices comprising the Cholesky decomposition, the Cholesky factor (which diagonalizes the covariance matrix) and diagonal matrix itself, hold the autoregressive coefficients and the error variances, respectively. The autoregressive coefficients are often referred to in the literature as the \emph{generalized autoregressive parameters}, or \emph{GARPs}, and the error variances are often called the \emph{innovation variances}, or \emph{IVs}.
+Along with citet{huang2006covariance}, citet{levina2008sparse}, and citet{pourahmadi2000maximum} we employ the Gaussian log-likelihood as a goodness of fit measure for the varying  autoregressive coefficient function, $\phi\left(t,s\right)$ and the innovation variance function $\sigma\left(t\right)$, though neither the derivation of model~\ref{eq:ARmodel} nor model~\ref{eq:MyModel} rely on any distributional assumption on $e$.   Under the assumption that $e\left(t\right)$ follows a Gaussian process, the negative log-likelihood of $N$ i.i.d. vectors of observations $y_1,y_2,\dots,y_N$ is given by
 
-\section{Enforcing Smoothness of $\phi^*$}
+\begin{equation}
+-2 L\left(y_1, y_2, \dots,y_N ,\Phi \right) = \sum_{i=1}^N \sum_{j=2}^{m_i} \sigma\left({t_j}\right)^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y_{ik} \right)^2 \label{loglikelihood}
+\end{equation}
+\noindent
+where 
+\[
+y_i = \left( y_{i1}, y_{i2}, \dots, y_{i,m_i}\right), \quad i=1,\dots,N 
+\] 
 
-Several approaches have been taken in effort to overcome the issue of high dimensionality in covariance estimation. Regularization improves stability of covariance estimates in high dimensions, particularly in the case where the parameter dimensionality $p$ is much larger than the number of observations $n$.  Regularization of the covariance matrix and its Cholesky decomposition has been explored extensively> Previous work employs a number of approaches including banding, tapering, kernel smoothing, penalized likelihood, and penalized regression; see citet{pourahmadi2011covariance} for a comprehensive overview.
+%% explain here that we omit y_{i1} from the likelihood here because in the first stage of estimation (for $\phi$), the first observation in each vector doesn't contribute to the likelihood
+\noindent
+denotes the vector of observations for subject $i$ with corresponding measurement times $t_{i1} < t_{i2} < \dots < t_{i,m_i}$. We allow the number of measurements as well as the observation times to varying across subjects, and the $\left\{t_{ij} \right\}$ are not necessarily evenly-spaced within or across individuals.  In the case that subjects share a common set of observation times $t_1 < \dots < t_n$,  it is well known that the MLE for $\Sigma$, $S = \sum{i=1}^N y_i y_i^T$ is highly unstable in high dimensions. [cite those who have proposed mitigating this using penalized maximum likelihood for the distinct elements of T.] This condition is potentially worsened when one or more subjects has at least one unique observation time. To simultaneously permit the estimation of $\phi\left(\cdot,\cdot\right)$ as a smooth bivariate function and address any ill-conditioning introduced by high dimensionality, we present covariance estimation by applying bivariate smoothing of the elements of the Cholesky factor. We impose two families of penalties on fitted functions, leading to two distinct parameterizations of the smoothed function [blah blah something about flexibility and penalty being problem-specific.]  
+
+
+
+
+\section{Penalties for $\phi^* \in \mathcal{H}$}
+
+To impose structure on the estimated autoregressive coefficient function, we append a penalty functional to the negative log-likelihood and define our estimator of $\phi$ to be the minimizer of 
+
+%\begin{itemize}
+%\item {\bf Step 1:} Select $\hat{\lambda}_1$, where
+\begin{equation} 
+\hat{\phi} = \mathop{\mbox{arg min}}_{\phi} \left( -2 L + \lambda J\left(\phi\right) \right) \label{stage1obj}
+\end{equation}
+%\item {\bf Step 2:} Define $\hat{\phi}$ to the the minimizer of 
+
+
+
+cite{craven1978smoothing}
+Rather than imposing structure on $\phi\left(t,s\right)$ in terms of $t$ and $s$, it is convenient to transform the pairs of time points and apply regularization to the coefficient function in the reparameterized space. We rotate the axes of the time points, letting 
+\begin{align*}
+l &= s-t, \mbox{ and} \\
+m &= \frac{1}{2}\left(s+t\right).
+\end{align*}
+\noindent
+Our goal is to estimate the reparameterized function
+\begin{equation}
+\phi^*\left(l,m\right) = \phi^*\left(s-t, \frac{1}{2}\left(s+t\right)\right) = \phi\left(s,t\right)
+\end{equation}
+
+We first follow ,letting $\phi^*$ be an element of a reproducing kernel Hilbert space (r.k.h.s.), $\mathcal{H}$. If we equip$l$ and $m$ each with r.k.h.s. of functions, $\mathcal{H}_l$ and $\otimes \mathcal{H}_m$, then $\mathcal{H}$ may be written as a tensor product of the two marginal spaces:
+
+\[
+\mathcal{H} = \mathcal{H}_l \otimes \mathcal{H}_m.
+\]
+
+Adopting the smoothing spline ANOVA decomposition presented by citet{gu2002smoothing},  we let 
+
+\begin{equation}
+\phi^*\left(l,m\right) = \mu^* + \phi_1^*\left(l\right) + \phi_2^*\left(m\right) + \phi_{12}^*\left(l,m\right)   \label{ANOVA}
+\end{equation}
+\noindent 
+
+We let $\mathcal{H}_l = \mathcal{H}_m = W_2\left(0,1\right)$ where $W_2$ denotes the second-order Sobolev space:
+\[
+W_2\left(0,1\right) = \lbrace f: \;\;f, f^\prime \mbox{absolutely continuous}, \int_0^1 \left(f^{\left( 2 \right)}\right)^2 dt < \infty \rbrace
+\]  
+
+
+
+When $\phi^*$ corresponds to the simple models of the form \eqref{covmodel}, the bivariate function may be written in terms of only its first argument. 
+Several approaches to estimate the coefficient function $\phi\left(\cdot,\cdot\right)$ have been proposed including See cite{wu2003nonparametric},  cite{huang2007estimation} , ... . %cite{wu2003nonparametric}, for example, used locally weighted polynomials to smooth down the sub-diagonals of $T$. cite{huang2007estimation} smoothed the sub-diagonals of $T$ using univariate smoothing splines. 
+
+Several approaches have been taken in effort to overcome the issue of high dimensionality in covariance estimation. Regularization improves stability of covariance estimates in high dimensions, particularly in the case where the parameter dimensionality $p$ is much larger than the number of observations $n$.  Regularization of the covariance matrix and its Cholesky decomposition has been explored extensively. Previous work employs a number of approaches including banding, tapering, kernel smoothing, penalized likelihood, and penalized regression; see citet{pourahmadi2011covariance} for a comprehensive overview.
 
 
 \subsection{Outline Smoothing Spline Approach}
