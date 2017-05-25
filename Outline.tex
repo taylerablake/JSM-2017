@@ -217,14 +217,13 @@ To impose structure on the estimated autoregressive function, we append a penalt
 \end{equation}
 %\item {\bf Step 2:} Define $\hat{\phi}$ to the the minimizer of 
 
-
-The task of estimating of $\phi\left(t,s\right)$ is an inherently different problem than the estimation of an arbitrary bivariate function. Since $\phi$ explicitly defines an inverse covariance function, there is more interest in imposing particular kinds of structure on $\phi$ than others. It is natural to define covariance models for longitudinal or time series data in terms of lag, or in the continuous case, the difference between two measurement times. By transforming the original $t-s$ axis according to  
+The first term in \ref{eq:phi-objective-fnc} discourages the lack of fit of $\phi$ to the data, and $\lambda$ is a smoothing parameter which controls the tradeoff between the lack of fit and amount of regularization imposed on the fitted function through the penalty, $J_\phi$.The task of estimating of $\phi\left(t,s\right)$ is an inherently different problem than the estimation of an arbitrary bivariate function. Since $\phi$ explicitly defines an inverse covariance function, imposing specific types of structure on $\phi$ is of particular interest. Covariance models for longitudinal or time series data are commonly defined in terms of lag, or in the continuous case, the difference between two measurement times. By transforming the original $t-s$ axis according to  
 \begin{align*}
 l &= s-t, \mbox{ and} \\
 m &= \frac{1}{2}\left(s+t\right),
 \end{align*}
 \noindent
-we may parameterize the coefficient function in terms of functional component that are naturally of more interest than the corresponding components in the original input space. Writing $phi$ in terms of the rotation gives the reparameterized coefficient function 
+we may parameterize the coefficient function in terms of components defined by functions of $l$ and $m$. Writing $phi$ in terms of the rotation gives the reparameterized coefficient function 
 \begin{equation}
 \phi^*\left(l,m\right) = \phi^*\left(s-t, \frac{1}{2}\left(s+t\right)\right) = \phi\left(s,t\right).
 \end{equation}
@@ -244,35 +243,33 @@ We consider models that capture the marginal effects of $l$ and $m$, as well as 
 \end{equation}
 \noindent 
 
-As in cite{gu2002smoothing}, cite{craven1978smoothing},[ more Wahba citations here ], we consider functions $\phi^*$ belonging to a reproducing kernel Hilbert space (r.k.h.s.), $\mathcal{H}$. The space of bivariate functions can be constructed from the tensor product of the univariate function spaces for $l$ and $m$. We equip $l$ and $m$ each with r.k.h.s., $\mathcal{H}_l$ and $\mathcal{H}_m$. Then the space of bivariate functions $\mathcal{H}$ may be written:
+As in cite{gu2002smoothing}, cite{craven1978smoothing},[ more Wahba citations here ], we consider functions $\phi^*$ belonging to a reproducing kernel Hilbert space (r.k.h.s.), $\mathcal{H}$. We equip $l$ and $m$ each with r.k.h.s., $\mathcal{H}_l$ and $\mathcal{H}_m$;  the space of bivariate functions $\mathcal{H}$ can be constructed from the tensor product of the univariate function spaces for $l$ and $m$:
 
 \[
 \mathcal{H} = \mathcal{H}_l \otimes \mathcal{H}_m.
 \]
 \noindent
-One choice is to let the marginal spaces correspond to the second-order Sobolev space: $\mathcal{H}_l = \mathcal{H}_m = W_2\left(0,1\right)$, where
+One choice for the marginal spaces is the second-order Sobolev space, letting $\mathcal{H}_l = \mathcal{H}_m = W_2\left(0,1\right)$, where
 \[
 W_2\left(0,1\right) = \lbrace f: \;\;f, f^\prime \mbox{absolutely continuous}, \int_0^1 \left(f^{\left( 2 \right)}\right)^2 dt < \infty \rbrace.
 \]  
 
 \subsection{Decomposition of $\mathcal{H}$ via $J_{\phi^*}$}
 
-Several approaches have been taken in effort to overcome the issue of high dimensionality in covariance estimation'  citet{pourahmadi2011covariance} provides a comprehensive overview of covariance estimation from a generalized linear modeling perspective. Several have proposed methods for applying regularization of Cholesky decomposition including banding, tapering, kernel smoothing, penalized likelihood, and penalized regression. See [  ] Within the function estimation paradigm, a number of  approaches to estimate the coefficient function $\phi\left(\cdot,\cdot\right)$ have been proposed including See cite{wu2003nonparametric},  cite{huang2007estimation} .  Common techniques for inducing structure to produce simple and stable covariance estimates include shrinking estimated functions or the elements of the covariance matrix itself so that the resulting dependency structure corresponds to parsimonious covariance models frequently adopted in the time series and longitudinal  data literature.
+Several have proposed methods for applying regularization of Cholesky decomposition including banding, tapering, kernel smoothing, penalized likelihood, and penalized regression. See [  ] Within the function estimation paradigm, a number of  approaches to estimate the coefficient function $\phi\left(\cdot,\cdot\right)$ have been proposed including See cite{wu2003nonparametric},  cite{huang2007estimation} .  Common techniques for inducing structure to produce simple and stable covariance estimates include shrinking estimated functions or the elements of the covariance matrix itself so that the resulting dependency structure corresponds to parsimonious covariance models frequently adopted in the time series and longitudinal  data literature.
 [
 CITE PAPERS PROPOSING PARSIMONIOUS MODELS FOR phi ij
 ]
 The ANOVA model in \ref{eq:ANOVA} allows us to easily specify penalties $J$ that encourage estimates to adhere to the structure of these models.   [cite some general time series/longitudinal sources ] When $\phi^*$ corresponds to the simple models of the form \eqref{covmodel}, the bivariate function may be written in terms of only its first argument. 
 . . %cite{wu2003nonparametric}, for example, used locally weighted polynomials to smooth down the sub-diagonals of $T$. cite{huang2007estimation} smoothed the sub-diagonals of $T$ using univariate smoothing splines. 
 
-
-The penalty functional penalty functional $J$ induces a decomposition of $\mathcal{H}$ into a direct sum of two function spaces: the null space of $J$ composed of functions incurring no penalty, and the orthogonal space of penalized functions. 
+The penalty functional penalty functional $J$ induces a decomposition of $\mathcal{H}$ as a direct sum of two subspaces: 
 
 \[
-\mathcal{H} = \mathcal{H}_0 \oplus \mathcal{H}_1
+\mathcal{H} = \mathcal{H}_0 \oplus \mathcal{H}_1,
 \]
 \noindent
-
-Let $P_1 \phi^*$  denote the projection of $\phi^*$ onto the penalized space $\mathcal{H}_1$. We can express $J$ in terms of the projection of $\phi^* \in \mathcal{H}$ onto $\mathcal{H}_1$:
+where $\mathcal{H}_0$ denotes the null space of $J$, which is composed of functions such that $J\left(\phi^*\right)=0$, and $\mathcal{H}_1$ is the subspace orthogonal to $\mathcal{H}_0$. Let $P_1 \phi^*$  denote the projection of $\phi^*$ onto the penalized space $\mathcal{H}_1$. We can express $J$ in terms of the projection of $\phi^* \in \mathcal{H}$ onto $\mathcal{H}_1$:
 \begin{align}
 \begin{split} 
 J\left(\phi\right) &= \vert \vert P_1 \phi^* \vert \vert^2\\
@@ -281,7 +278,21 @@ J\left(\phi\right) &= \vert \vert P_1 \phi^* \vert \vert^2\\
 \end{align} 
 \noindent
 
-$P_1 \phi^*$ denotes the projection of $\phi^* \in \mathcal{H}$ onto $\mathcal{H}_1$.The penalty functional $J_1$ induces a decomposition of $\mathcal{H}$ as follows: $\mathcal{H}_l = \mathcal{H}_l^0 \oplus \mathcal{H}_l^1$ and $\mathcal{H}_m = \mathcal{H}_m^0 \oplus \mathcal{H}_m^1$ where let $\mathcal{H}_l^0 =  \lbrace 1 \rbrace \oplus \lbrace k_1 \rbrace$, $\mathcal{H}_m^0 =  \lbrace  1 \rbrace$, and where $\lbrace k_r \rbrace$ denotes the subspace spanned by $k_r$. $\mathcal{H}_l^1$ and $\mathcal{H}_m^1$ are the subspaces orthogonal to $\mathcal{H}_l^0$ and $\mathcal{H}_m^0$, respectively:
+The decomposition of $\mathcal{H}$ can be further reduced by express $\mathcal{H}_0$ and $\mathcal{H}_1$ as tensor products of the marginal subspaces:
+
+\begin{align}
+\mathcal{H}_l &= \mathcal{H}_l^0 \oplus \mathcal{H}_l^1\\
+\mathcal{H}_m &= \mathcal{H}_m^0 \oplus \mathcal{H}_m^1
+\end{align*}
+\noindent
+where we let
+\begin{align}
+\mathcal{H}_l^0 &=  \lbrace 1 \rbrace \oplus \lbrace k_1 \rbrace\\
+\mathcal{H}_m^0 &=  \lbrace  1 \rbrace
+\end{align*}
+
+
+ and where $\lbrace k_r \rbrace$ denotes the subspace spanned by $k_r$. $\mathcal{H}_l^1$ and $\mathcal{H}_m^1$ are the subspaces orthogonal to $\mathcal{H}_l^0$ and $\mathcal{H}_m^0$, respectively:
 \begin{eqnarray*}
 \mathcal{H}_l^1 = \lbrace \phi^*_1: \int_0^1 {\phi_1^*}^{\left( \nu \right)}\left(l\right) dl = 0,\;\; \nu = 0,1\rbrace\\
 \mathcal{H}_m^1 = \lbrace \phi^*_2: \int_0^1 \phi_2^* \left(m\right) dm = 0 \rbrace\\
