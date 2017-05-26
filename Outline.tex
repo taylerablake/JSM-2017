@@ -14,6 +14,11 @@
 \usepackage{times}
 \usepackage{cite}
 \usepackage{amsthm}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tabularx,ragged2e,booktabs,caption}
+\newcolumntype{C}[1]{>{\Centering}m{#1}}
+\renewcommand\tabularxcolumn[1]{C{#1}}
 \usepackage[letterpaper, left=1in, top=1in, right=1in, bottom=1in,nohead,includefoot, verbose, ignoremp]{geometry}
 \newcommand{\comment}[1]{\text{\phantom{(#1)}} \tag{#1}}
 \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
@@ -49,14 +54,6 @@
 \newcommand{\bfS}{\mbox{\boldmath $S$}}
 \newcommand{\bfZ}{\mbox{\boldmath $Z$}}
 \newcommand{\cardT}{\vert \mathcal{T} \vert}
-%\newenvironment{theorem}[1][Theorem]{\begin{trivlist}
-%\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
-%\newenvironment{corollary}[1][Corollary]{\begin{trivlist}
-%\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
-%\newenvironment{proposition}[1][Proposition]{\begin{trivlist}
-%\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
-%\newenvironment{definition}[1][Definition]{\begin{trivlist}
-%\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
@@ -249,7 +246,7 @@ We consider models that capture the marginal effects of $l$ and $m$, as well as 
 \end{equation}
 \noindent 
 
-As in cite{gu2002smoothing}, cite{craven1978smoothing},[ more Wahba citations here ], we consider functions $\phi^*$ belonging to a reproducing kernel Hilbert space (r.k.h.s.), $\mathcal{H}$. We equip $l$ and $m$ each with r.k.h.s., $\mathcal{H}_l$ and $\mathcal{H}_m$, letting  corresponding to the second-order Sobolev space $W_2\left(0,1\right)$ and first-order Sobolev space $W_1\left(0,1\right)$, respectively, where
+As in cite{gu2002smoothing}, cite{craven1978smoothing},[ more Wahba citations here ], we consider functions $\phi^*$ belonging to a reproducing kernel Hilbert space (r.k.h.s.), $\mathcal{H}$. We equip each $l$ and $m$  with corresponding univariate Hilbert spaces, $\mathcal{H}_l$ and $\mathcal{H}_m$, choosing to let $\mathcal{H}_l$ correspond to the second-order Sobolev space $W_2\left(0,1\right)$ and $\mathcal{H}_m$ to the first-order Sobolev space $W_1\left(0,1\right)$, where
 \[
 W_m\left(0,1\right) = \lbrace f: \;\;f, f^\prime \mbox{absolutely continuous}, \int_0^1 \left(f^{\left( m \right)}\right)^2 dt < \infty \rbrace.
 \]
@@ -283,7 +280,7 @@ The penalty functional $J$ induces a decomposition of $\mathcal{H}$ as a direct 
 \mathcal{H} = \mathcal{H}_0 \oplus \mathcal{H}_1,
 \]
 \noindent
-where $\mathcal{H}_0$ denotes the null space of $J$, which is composed of functions such that $J\left(\phi^*\right)=0$, and $\mathcal{H}_1$ is the subspace orthogonal to $\mathcal{H}_0$. Let $P_1 \phi^*$  denote the projection of $\phi^*$ onto the penalized space $\mathcal{H}_1$. We can express $J$ in terms of the projection of $\phi^* \in \mathcal{H}$ onto $\mathcal{H}_1$:
+where $\mathcal{H}_0$ denotes the null space of $J$, spanned by $\tau_1, \tau_2, \dots \tau_M$, and $\mathcal{H}_1$ is the subspace orthogonal to $\mathcal{H}_0$. Let $P_1 \phi^*$  denote the projection of $\phi^*$ onto the penalized space $\mathcal{H}_1$. We can express $J$ in terms of the projection of $\phi^* \in \mathcal{H}$ onto $\mathcal{H}_1$:
 \begin{align}
 \begin{split} 
 J\left(\phi\right) &= \vert \vert P_1 \phi^* \vert \vert^2\\
@@ -334,31 +331,80 @@ Using the properties of tensor product spaces, we may write $\mathcal{H}_0$ and 
 \mathcal{H}_1 &= \mathcal{H}_{l1} \oplus \mathcal{H}_{m1} \oplus  \left[ \lbrace k_1 \rbrace  \otimes  \mathcal{H}_{m1} \right]  \oplus  \left[\mathcal{H}_{l1} \otimes  \mathcal{H}_{m1}.\right]   
 \end{align*}
 
-One may show that the reproducing kernels for $\mathcal{H}_{l0}$ and $\mathcal{H}_{l1}$ are given by $R^0_{l}\left(l,l^\prime\right) = \sum_{\nu=0}^1 k_\nu\left(l\right)k_\nu\left(l^\prime\right)$ and $R_l^1\left(l,l^\prime\right) = k_2\left(l \right)k_2\left(l^\prime \right) - k_{4}\left(\left[ l-l^\prime \right] \right)$, respectively, where $\left[ z \right]$ denotes the integer part of $z \in \R$. The reproducing kernel for the full marginal space $\mathcal{H}_l$ is simply the sum of the reproducing kernels for each of the subspaces: 
+\begin{minipage}[h]{\linewidth}
+\vspace{0.5in}
+\centering
+\captionof{table}{Tensor product space $\mathcal{H}$} \label{tab:tensor_product_subspaces} 
+\begin{tabularx}{\linewidth}{@{} C{1in} | C{.85in} *4X @{}}\toprule[1.5pt]
+ &  $\left\{ 1 \right\}$ & $ \left\{ k_1\left( l \right) \right\}$  & $\left\{ \mathcal{H}_{l1} \right\}$ \\
+\midrule
+$\left\{ 1 \right\}$   & $\left\{ 1 \right\}$   &  $\left\{ k_1\left( l \right) \right\}$ & $\left\{ \mathcal{H}_{l1} \right\}$ \\
+&&&\\
+$\left\{ \mathcal{H}_{m1} \right\}$   & $\left\{ \mathcal{H}_{m1} \right\}$  & $ \left\{ \mathcal{H}_{m1} \right\} \otimes \left\{ k_1\left( l \right) \right\}$   &	$\left\{ \mathcal{H}_{m1} \right\} \otimes \left\{ \mathcal{H}_{l1} \right\}$
+\end{tabularx} \par
+\bigskip
+The subspaces of $W_1\left[ 0,1 \right] \otimes W_2\left[ 0,1 \right]$ by the tensor product of the marginal subspaces of $\mathcal{H}_l$, $\mathcal{H}_m$.
+\end{minipage}
+\vspace{0.5in}
+
+Table~\ref{tab:tensor_product_subspaces} shows how the space of two-dimensional functions is constructed by taking tensor products of each of the subspaces which define the two univariate spaces, $\mathcal{H}_l$ and $\mathcal{H}_m$.  One may show that the reproducing kernels for $\mathcal{H}_{l0}$ and $\mathcal{H}_{l1}$ are given by $R^0_{l}\left(l,l^\prime\right) = \sum_{\nu=0}^1 k_\nu\left(l\right)k_\nu\left(l^\prime\right)$ and $R_l^1\left(l,l^\prime\right) = k_2\left(l \right)k_2\left(l^\prime \right) - k_{4}\left(\left[ l-l^\prime \right] \right)$, respectively, where $\left[ z \right]$ denotes the integer part of $z \in \R$. The reproducing kernel for the full marginal space $\mathcal{H}_l$ is simply the sum of the reproducing kernels for each of the subspaces: 
 \[
 R_l\left(l,l^\prime\right) = \sum_{\nu=0}^1 k_\nu\left(l\right)k_\nu\left(l^\prime\right) + k_2\left(l \right)k_2\left(l^\prime \right) - k_{4}\left(\left[ l-l^\prime \right] \right).
 \]
 \noindent
-One can also show that the reproducing kernels for $\mathcal{H}_{m0}$ and $\mathcal{H}_{m1}$ are given by  $R^0_{m}\left(m,m^\prime\right) = 1$ and $R_m^1\left(m,m^\prime\right) = k_1\left(m \right)k_1\left(m^\prime \right) + k_2\left(m \right)k_2\left(m^\prime \right) - k_{4}\left(\left[ m-m^\prime \right] \right)$, and similarly, the reproducing kernel $R_m$ for the full marginal space $\mathcal{H}_m$ is taken to be the sum of the kernels for each subspace.
+One can also show that the reproducing kernels for $\mathcal{H}_{m0}$ and $\mathcal{H}_{m1}$ are given by  $R^0_{m}\left(m,m^\prime\right) = 1$ and $R_m^1\left(m,m^\prime\right) = k_1\left(m \right)k_1\left(m^\prime \right) + k_2\left(m \right)k_2\left(m^\prime \right) - k_{4}\left(\left[ m-m^\prime \right] \right)$, and similarly, the reproducing kernel $R_m$ for the full marginal space $\mathcal{H}_m$ is taken to be the sum of the kernels for each subspace. The tensor product reproducing kernel for $W_1\left[ 0,1 \right] \otimes W_2\left[ 0,1 \right]$ is obtained by simply taking the product of each of the reproducing kernels for the univariate function spaces:
+\[
+R\left( \left(l,l^\prime \right), \left(m,m^\prime\right) \right)
+\]
+\noindent
+Table~\ref{tab:tensor_product_RK} shows the decomposition of the reproducing kernel for the space of bivariate functions into the product of the reproducing kernels for each of the univariate subspaces. 
 
-\begin{table}
-  \begin{tabular}{cccc}
-   \end{tabular}
-\end{table}
+\begin{minipage}[h]{\linewidth}
+\vspace{0.5in}
+\centering
+\captionof{table}{Tensor product reproducing kernel $R\left(\left(l,m\right),\left(l^\prime,m^\prime\right)\right)$} \label{tab:tensor_product_RK} 
+\begin{tabularx}{\linewidth}{@{} C{1in} | C{.85in} *4X @{}}\toprule[1.5pt]
+			 &  $\left\{ 1 \right\}$ & $ \left\{ k_1\left( l \right) \right\}$  			& $\left\{ \mathcal{H}_{l1} \right\}$ \\
+\midrule
+$\left\{ 1 \right\}$   & $\left\{ 1 \right\}$   &  $ k_1\left( l \right) k_1\left( l^\prime \right) $	 & 	$ R^l_{1}$ \\
+&&&\\
+$\left\{ \mathcal{H}_{m1} \right\}$   & 	 $R^1_{m}\left(m,m^\prime\right)$  &  $R^1_{m}\left(m,m^\prime\right)  k_1\left( l \right) k_1\left( l^\prime \right) $  &   $R^1_{m}\left(m,m^\prime\right)R^1_{l}\left(l,l^\prime\right)$
+\end{tabularx} \par
+\bigskip
+%The  reproducing kernel for each of the subspaces of $\mathcal{H}$.
+\end{minipage}
+\vspace{0.5in}
 
- To find the solution $\hat{\phi^*}$ which is the stage-wise minimizer of \eqref{objfun2}: we first set $\lambda_2 = 0$ and find $\tilde{\phi}^*$ which minimizes \eqref{objfun1}:
+
+For $\mathcal{H}$ defined as above, our goal is to find $\phi^* \in \mathcal{H}$  that minimizes 
+
+\begin{equation} \label{eq:penalized_loglikelihood}
+-2L + \lambda \vert \vert P_1 \phi^* \vert \vert^2 =  \sum_{i=1}^N \sum_{j=2}^{m_i} \sigma\left({t_j}\right)^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi^*\left({l_{ijk},m_{ijk}}\right)y_{ik} \right)^2 + \lambda  \vert \vert P_1 \phi^* \vert \vert^2
+\end{equation}
+\noindent
+where $\left(l_{ijk}, m_{ijk}\right)$ are the result of transforming subject $i$'s $j$ and $k^{th}$ observation times, $t_{ij}$ and $t_{ik}$.  Let  $B$ denote the $p \times M$  matrix  with columns correponding to the $M$ basis functions spanning $\mathcal{H}_0$ evaluated at the $p = \sum_i=1^N {n_i \choose 2}$ within-subject pairs of observed time points.  In spirit of the result on the representation of a univariate $f \mathcal{H}$ given by cite{kimeldorf1971some}, we can similarly show that the minimizer of \ref{eq:penalized_loglikelihood} lies within a finite dimensional space despite the minimization being carried out over an infinite dimensional space, $\mathcal{H}$. 
+
+\begin{theorem} \label{phi_representer_thm}
+Let $p= \sum_{i=1}^N {n_i \choose 2}$ be the total number of distinct within-subject pairs of design points, and index the transformed pairs $\left( l,m \right)_i$, $i=1, \dots,p$. Let $B$ be the $p \times 2$ matrix with $\left(i,j\right)^{th}$ entry $k_j\left( \left( l,m \right)_i \right)$ with rank $r=2$. Then, the unique minimizer of the penalized likelihood \eqref{penlik1}, $\phi^* \in \mathcal{H}$ is of the form
 
 \begin{equation}
--2L + \lambda_1 J_1\left(\phi^*\right) = \sum_{i=1}^N \sum_{j=2}^{p_i} \sigma\left({t_j}\right)^{-2} \left(y\left({t_{ij}}\right) - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y\right)^2 + \lambda_1 \left(\vert \vert {P_1 \phi_l} \vert \vert^2 + \vert \vert {P_1 \phi_m} \vert \vert^2 + \vert \vert {P_1 \phi_{lm}^*} \vert \vert^2 \right) \label{stage1obj}
+\phi^*\left(l,m\right) = d_0 + d_1 k_1\left(l\right) + \sum_{i=1}^{p} c_i R^1\left( \left(l,m\right) , \left(l,m \right)_i\right)
+ \label{eq:finitedimsolution}
 \end{equation}
+\end{theorem}
+
+The proof is left to the appendix; see also scholkopf2001generalized for a generalization of the result in cite{kimeldorf1971some} which relaxes the assumption of squared-error loss. 
+
+\subsection{Demonstration of the smoothing spline fitting procedure: Examples}
 
 
+\section{ Optimal shrinkage of $T$: smoothness may not be enough }
 
-\subsection{Outline Smoothing Spline Approach}
+The procedure outlined in Section~\ref{}
 
 \subsection{The truncated power basis and an alternative decomposition of $\mathcal{H}$}
 
-The estimation of $\phi^*\left(l,m\right)$ is quite different from the usual problem of estimating an arbitrary bivariate function via smoothing. In the case of the latter, we most typically treat both arguments equally in terms of regularization, but in the case of covariance estimation and the generalized coefficient function equal treatment of $l$ and $m$ in terms of penalization perhaps is not the most appropriate approach. The lag component, $l$, has particularly significant meaning in terms of the covariance function and thus also in terms of $\phi^*$ and is of considerable more interest than the orthogonal component, $m$. As discussed in Section 2, we can define an entire class of stationary functional autoregressive models using only the $l$ direction, and additionally, as discussed in Section 3, there is a natural expectation about the functional form of the autoregressive coefficient function (and hence covariance) as a function of $l$, making imposing that conditional dependence between observation decay as $l$ and the time between observations increase a reasonable way to institute regularization.
+The varying coefficient function $\phi^*$ is quite different from the usual problem of estimating an arbitrary bivariate function via smoothing. In the case of the latter, we most typically treat both arguments equally in terms of regularization, but in the case of covariance estimation and the generalized coefficient function equal treatment of $l$ and $m$ in terms of penalization perhaps is not the most appropriate approach. The lag component, $l$, has particularly significant meaning in terms of the covariance function and thus also in terms of $\phi^*$ and is of considerable more interest than the orthogonal component, $m$. As discussed in Section 2, we can define an entire class of functional autoregressive models using only the $l$ direction, and additionally, as discussed in Section 3, there is a natural expectation about the functional form of the autoregressive coefficient function (and hence covariance) as a function of $l$, making imposing that conditional dependence between observation decay as $l$ and the time between observations increase a reasonable way to institute regularization.
 %citet{chen2011efficient}, citet{pourahmadi1999joint}, and citet{pourahmadi2002dynamic} have elicited parametric models for the generalized autoregressive coefficients, letting the GARPs depend only on the distance between two time points.
 
 This latter notion is instrumental in justifying the family of penalties
@@ -383,5 +429,56 @@ The truncated power basis, as in their use in defining polynomial regression spl
 
 \subsection{B-spline Basis}
 \subsection{Difference penalties}
+
+
+
+
+
+
+\section{Appendix}
+
+
+Proof of Theorem~\ref{phi_representer_thm}"
+
+Then we may verify that any $\phi^* \in \mathcal{H}$ can be written 
+\[
+\phi^*\left(l,m \right) = d_0 + d_1k_1\left(l\right) + \sum_{i=1}^n  c_i R_1\left( \left(l,m\right) , \left(l_i,m_i \right)\right) + \rho\left(l,m\right)
+\]
+\noindent
+where $\rho \perp \mathcal{H}_0 = \lbrace 1\rbrace \oplus \lbrace k_1\rbrace,\; span\lbrace R_1\left(\left(l_i, m_i \right),\cdot \right)  \rbrace$. We do so by demonstrating that  $\rho$ does not improve the first term in \eqref{eq:objectivefun} (the data fit functional) and only adds to the penalty term, $J\left(\phi^*\right)$. Consequently, if $\hat{\phi^*}$ is the minimizer of \eqref{eq:objectivefun}, then $\rho = 0$. Using the properties of reproducing kernels, we can rewrite $\phi^*$ as an inner product of itself with $R$:
+ 
+\begin{eqnarray*}
+\phi^*\left(l_j,m_j \right)  &=& \left< R\left(\left(l_j,m_j\right),\left(\cdot,\cdot\right) \right),\phi^*\left(\cdot,\cdot\right)\right>\\
+&=& \left<R_0\left( \left(l_j,m_j\right),\left(\cdot,\cdot\right) \right) + R_1\left(\left(l_j,m_j\right),\left(\cdot,\cdot\right) \right),d_0 + d_1k_1\left(\cdot \right)\right. \\ 
+&\mbox{ }&\left. \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;+ \sum_{i=1}^{N_{\phi^*}}  c_i R_1\left( \left(l_i,m_i \right),\left(\cdot,\cdot\right) \right) + \rho\left(\left(\cdot,\cdot \right)\right)\right>\\
+&=& \left<R_0\left( \left(l_j,m_j\right),\left(\cdot,\cdot\right) \right) , d_0 + d_1k_1\left(\cdot\right)\right> + \left< R_0\left( \left(l_j,m_j\right),\left(\cdot,\cdot\right) \right),\sum_{i=1}^{N_{\phi^*}}  c_i R_1\left( \left(l_i,m_i \right),\left(\cdot,\cdot\right) \right)\right> \\
+&\mbox{ }& + \left<R_0\left( \left(l_j,m_j\right),\left(\cdot,\cdot\right) \right), \rho\left(\left(\cdot,\cdot \right)\right)\right> + \left<R_1\left(\left(l_j,m_j\right),\left(\cdot,\cdot\right) \right), d_0 + d_1k_1\left(\cdot \right)\right> \\
+&\mbox{ }& + \left<R_1\left(\left(l_j,m_j\right),\left(\cdot,\cdot\right) \right),\sum_{i=1}^{N_{\phi^*}}  c_i R_1\left( \left(l_i,m_i \right),\left(\cdot,\cdot\right) \right) \right> + \left<R_1\left(\left(l_j,m_j\right),\left(\cdot,\cdot\right) \right), \rho\left(\left(\cdot,\cdot \right)\right)\right>\\
+&=& \left<R_0\left( \left(l_j,m_j\right),\left(\cdot,\cdot\right) \right) , d_0 + d_1k_1\left(\cdot\right)\right> + \left<R_1\left(\left(l_j,m_j\right),\left(\cdot,\cdot\right) \right),\sum_{i=1}^{N_{\phi^*}}  c_i R_1\left( \left(l_i,m_i \right),\left(\cdot,\cdot\right) \right) \right> \\
+&\mbox{ }& + \underbrace{\left<R_0\left( \left(l_j,m_j\right),\left(\cdot,\cdot\right) \right)  , \rho\left(\cdot,\cdot\right) \right>}_{0} + \underbrace{\left<R_1\left( \left(l_j,m_j\right),\left(\cdot,\cdot\right) \right)  , \rho\left(\cdot,\cdot\right) \right>}_{0}\\
+&=& d_0 + d_1k_1\left(\cdot \right) + \sum_{i=1}^{N_{\phi^*}}  c_i R_1\left( \left(l_i,m_i \right),\left(l_j,m_j\right) \right)
+\end{eqnarray*}
+\noindent
+
+
+Rewriting the data fit functional, we have that  
+ \begin{eqnarray*}
+&\mbox{ }&\sum_{i=1}^N \sum_{j=1}^{n_i} \sigma_{ij}^{-2} \left(y\left(t_{ij}\right) - \sum_{k=1}^{j-1} \phi^*\left(t_{ij}, t_{ik}  \right) y\left(t_{ik}\right)  \right)^2  \\ 
+&=& \sum_{i=1}^N \sum_{j=1}^{n_i} \sigma_{ij}^{-2} \left(y\left(t_{ij}\right) - \sum_{k=1}^{j-1} \left< R\left(\left(l^i_{jk},m^i_{jk}\right),\left(\cdot,\cdot\right) \right),\phi^*\left(\cdot,\cdot\right)\right> y\left(t_{ik}\right)  \right)^2  \\
+ \end{eqnarray*}
+\noindent
+which is free of $\rho$. Consider the contribution of any nonzero $\rho$ to $J\left(\phi^*\right)$: 
+  
+ \begin{eqnarray*}
+ J\left(\phi^*\right) &=& \vert \vert  P_1\phi^* \vert \vert^2\\
+ &=& \left< \sum_{i=1}^{N_{\phi^*}}  c_i R_1\left( \left(l_i,m_i\right),\left(\cdot,\cdot\right) \right) + \rho\left(\cdot,\cdot \right), \sum_{j=1}^{N_{\phi^*}} c_j R_1\left( \left(l_j,m_j\right),\left(\cdot,\cdot\right) \right) + \rho\left(\cdot,\cdot\right)\right> \\
+ &=& \vert \vert \sum_{i=1}^{N_{\phi^*}}  c_i R_1\left(\left(l_i,m_i\right),\left(\cdot,\cdot\right) \right) \vert \vert^2 + \vert \vert  \rho \vert \vert^2 
+ \end{eqnarray*}
+\noindent
+Thus, including $\rho$ in $\phi^*$ only increases the penalty without improving (decreasing) the data fit functional, so we indeed have that the minimizer of \eqref{eq:objectivefun} has the form
+\begin{equation}
+ \phi^*\left(l,m\right) =  d_0 + d_1k_1\left(l\right) + \sum_{i=1}^{N_{\phi^*}} c_i R_1\left( \left(l,m\right) , \left(l_i,m_i \right)\right)
+ \label{eq:finitedimsolution}
+ \end{equation}
 
 \end{document}
