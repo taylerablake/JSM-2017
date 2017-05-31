@@ -160,7 +160,7 @@ Taking covariances on both sides of \ref{eq:epsilon}, we have
 D = T \Sigma T^T
 \end{equation} 
 
- The unconstrained regression coefficients $\lbrace \phi_{jk} \rbrace$ are referred to as the \emph{generalized autoregressive parameters} (GARPs). The $\lbrace \sigma_{j} \rbrace$ are called the \emph{innovation variances} (IVs.)  Unconstrained estimation of the $\left\{ \sigma_{k}^2 \right\}$ is achieved by log transformation;  we leave these details for section 2.) Expressing the precision matrix  in terms of the GARPs and IVs, we have
+ The unconstrained regression coefficients $\lbrace \phi_{jk} \rbrace$ are referred to as the \emph{generalized autoregressive parameters} (GARPs). The $\lbrace \sigma^2_{j} \rbrace$ are called the \emph{innovation variances} (IVs.)  Unconstrained estimation of the $\left\{ \sigma_{k}^2 \right\}$ is achieved by log transformation;  we leave these details for section 2. Expressing the precision matrix  in terms of the GARPs and IVs, we have
 \begin{equation} \label{eq:omega_decomp}
 \Omega= \Sigma^{-1} = T^T D^{-1} T.
 \end{equation}
@@ -169,9 +169,9 @@ Rather than estimating a specific covariance matrix for data observed on a fixed
 \[
 e\left(s\right) \sim \mathcal{WN}\left(0,1\right)
 \] 
-is a zero mean Gaussian white noise process with unit variance. For a well-behaved process $Y$, we may assume that $G\left(s,t\right)$ satisfies some smoothness conditions, where smoothness is defined in terms of square integrability of certain derivatives. The entries of $\Sigma$, then, correspond to $G$ evaluated at the distinct pairs of observed time points. Similarly, we treat the elements of the precision matrix $\Omega$ as the values of some smooth function, $\omega\left(s,t\right)$ evaluated at observed pairs of time points.
+is a zero mean Gaussian white noise process with unit variance. We assume that $G\left(s,t\right)$ satisfies some smoothness conditions, where smoothness is defined in terms of square integrability of certain derivatives. [TODO: clean up statement about smoothness of covariance function; integrability of covariance function of a stochastic process?] The entries of $\Sigma$, then, correspond to $G$ evaluated at the distinct pairs of observed time points. Similarly, we treat the elements of the precision matrix $\Omega$ as the values of some smooth function, $\omega\left(s,t\right)$ evaluated at observed pairs of time points.
 
-Extention of this perspective to the elements of $D$ and the elements of the Cholesky factor $T$ leads us to  %view the GARPs $\lbrace \phi_{ijk} \rbrace$ and innovation variances as the evaluation of the smooth functions $\phi\left(s,t\right)$ and $\sigma^2\left(t\right)$ at observed time points and interpret $\phi_{ijk} = \phi\left(t_{ij},t_{ik}\right)$ and $\sigma_{ij}^2 = \sigma^2\left(t_{ij}\right)$. 
+Extending this perspective to the elements of $D$ and the elements of the Cholesky factor $T$ leads us to  %view the GARPs $\lbrace \phi_{ijk} \rbrace$ and innovation variances as the evaluation of the smooth functions $\phi\left(s,t\right)$ and $\sigma^2\left(t\right)$ at observed time points and interpret $\phi_{ijk} = \phi\left(t_{ij},t_{ik}\right)$ and $\sigma_{ij}^2 = \sigma^2\left(t_{ij}\right)$. 
 the varying coefficient (VC) models first introduced by Hastie and Tibshirani. A generalization of traditional linear regression models, varying coefficient models offer more flexibility than their static analogues by allowing the effect of covariates to change smoothly with the value other variables. Both regressors and response variables are assumed to vary according to an \emph{indexing variable}, which is particularly attractive because this permits interpolation of regressors and response variables at values of this indexing variable where there is either missing data of only a single observation and slope estimation is not feasible.
 
 Replacing  $\left \{ \phi_{jk} \right\}$ and $\left\{ \sigma_j \right\}$ with smooth functions, we model 
@@ -183,8 +183,8 @@ y\left(t_j \right)  = \sum_{k=1}^{j-1} \phi\left(t_j ,t_k\right) y\left(t_k\righ
 
 \noindent for $t_1 < t_2 < \dots < t_m$. 
 
-We propose the smoothing splines of [cite craven and wahba] as well as the penalized B-splines proposed by Marx and Eiler for estimation of $\phi\left(s,t\right)$ and $\sigma^2\left(\right)$ alongside novel penalties to induce smoothness and parsimony in the estimated functions.  For ease of exposition, we first focus our attention on the estimation of $\phi$ assume that $\sigma^2\left(t\right)$ is fixed and known; we will later relax this assumption and discuss the estimation of $\sigma^2$ and $\phi$ simultaneously.  We assume nothing about the functional form of $\phi$ other than that $\phi$ is smooth, with smoothness, which is defined in terms of families of penalties which we will discuss in detail in sections to follow. %square integrability of certain derivatives. 
-Our approach presents a flexible, comprehensive framework for covariance estimation in a wide variety of contexts in which the data may be generated according to a broad class of dependency structures.
+We propose the smoothing splines of [cite craven and wahba] as well as the penalized B-splines proposed by Marx and Eiler for estimation of $\phi\left(s,t\right)$ and $\sigma^2\left(\right)$ alongside novel penalties to induce smoothness and parsimony in the estimated functions.  For ease of exposition, we first focus our attention on the estimation of $\phi$ assume that $\sigma^2\left(t\right)$ is fixed and known; we will later relax this assumption and discuss the estimation of $\sigma^2$ and $\phi$ simultaneously. Assumptions about the functional nature of $\phi$ drive the choice of the penalty; suggested choices are discussed in sections [INSERT PENALTY SECTIONS HERE].   %square integrability of certain derivatives. 
+Recasting the problem as the estimation of model~\ref{eq:MyModel} allows us access to the existing set of tools developed in the bivariate smoothing literature; our approach provides a flexible, comprehensive framework for covariance estimation.
 %Observed time points may be individual-specific and not necessarily on a regular grid. 
 
 \section{Penalized Maximum Likelihood Estimation of $\phi$}
@@ -400,11 +400,20 @@ The proof is left to the appendix; see also scholkopf2001generalized for a gener
 
 \section{ Optimal shrinkage of $T$: smoothness may not be enough }
 
-The procedure outlined in Section~\ref{}
+
+The varying coefficient function $\phi^*$ is quite different from the usual problem of estimating an arbitrary bivariate function via smoothing. In the case of the latter, we most typically treat both arguments equally in terms of regularization, but in the case of covariance estimation and the generalized coefficient function equal treatment of $l$ and $m$ in terms of penalization perhaps is not the most appropriate approach. The lag component, $l$, has particularly significant meaning in terms of the covariance function and thus also in terms of $\phi^*$ and is of considerable more interest than the orthogonal component, $m$. As discussed in Section 2, we can define an entire class of functional autoregressive models using only the $l$ direction, and additionally, as discussed in Section 3, there is a natural expectation about the functional form of the autoregressive coefficient function (and hence covariance) as a function of $l$, making imposing that conditional dependence between observation decay as $l$ and the time between observations increase a reasonable way to institute regularization.
+
 
 \subsection{The truncated power basis and an alternative decomposition of $\mathcal{H}$}
 
-The varying coefficient function $\phi^*$ is quite different from the usual problem of estimating an arbitrary bivariate function via smoothing. In the case of the latter, we most typically treat both arguments equally in terms of regularization, but in the case of covariance estimation and the generalized coefficient function equal treatment of $l$ and $m$ in terms of penalization perhaps is not the most appropriate approach. The lag component, $l$, has particularly significant meaning in terms of the covariance function and thus also in terms of $\phi^*$ and is of considerable more interest than the orthogonal component, $m$. As discussed in Section 2, we can define an entire class of functional autoregressive models using only the $l$ direction, and additionally, as discussed in Section 3, there is a natural expectation about the functional form of the autoregressive coefficient function (and hence covariance) as a function of $l$, making imposing that conditional dependence between observation decay as $l$ and the time between observations increase a reasonable way to institute regularization.
+
+cite{bickel2008regularized} discuss 
+2004; 2008a; Wu and Pourahmadi, 2009) and generally those based on the Cholesky decomposition
+of the covariance matrix or its inverse (Pourahmadi, 1999, 2000; Rothman et al.
+2010) do impose an order among the components of Y and are not permutation-invariant.
+
+The parameters of the functional autoregressive model given by \ref{eq:MyModel} define the elements of the precision matrix $\Omega$, rather than the elements of $\Sigma$ itself. It is well known that if we let $Y = \left(Y_1, \dots, Y_m\right)^T$ denote the random vector having joint distribution with mean zero and covariance matrix $\Sigma$, then the elements of $\Sigma^{-1}=\Omega$, $\left\{ \omega_{ij} \right\}$ may be interpreted as partial covariances between the elements of $Y$.  [ reference proposals for banding the cholesky factor, either by manual truncation or by nested lasso penalty ] This suggests shrinking $\phi^*$ to zero for large values of $l$. One can show that if $T$ has $k$ non-zero diagonals, then the middle $k$ diagonals of $\Sigma^{-1}$ are non-zero.  The procedure outlined in Section~\ref{} yields null models that are linear in $l$, and are not necessarily monotonic. 
+
 %citet{chen2011efficient}, citet{pourahmadi1999joint}, and citet{pourahmadi2002dynamic} have elicited parametric models for the generalized autoregressive coefficients, letting the GARPs depend only on the distance between two time points.
 
 This latter notion is instrumental in justifying the family of penalties
