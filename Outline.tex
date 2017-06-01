@@ -423,7 +423,7 @@ J_{\mathcal{B}} = \sum_{  l_i \in \mathcal{L}: l_i > l_0} \vert \mu^* + \phi^*_1
 which we may view as a design-driven way of implementing the regularization which may be imposed by the penalty functionals taking the form
 
 
-
+\section{Banding the inverse covariance}
 
 %citet{chen2011efficient}, citet{pourahmadi1999joint}, and citet{pourahmadi2002dynamic} have elicited parametric models for the generalized autoregressive coefficients, letting the GARPs depend only on the distance between two time points.
 
@@ -432,8 +432,13 @@ J_{\mathcal{B}} = \int_{ l_0}^1 \vert \phi^*\left(l,m\right) \vert^p dl.
 \end{equation}
 \noindent
 
-The form of these penalties is significantly different in nature from the penalty discussed in Section 2.1 and those typically encountered in the smoothing spline ANOVA setting. A function $f \in \mathcal{H}$ incurs penalty via \ref{eq:banded-penalty} through its behaviour on only a  subset of its domain, inducing an alternative class of function space decompositions than those induced by the traditional derivative-based penalties. An appropriate decomposition of the function space into the null space of $J$ and the penalized space should perhaps be formulated in terms of basis functions for the lag component, $l$ with domains which do not include the entire unit interval. 
+The form of these penalties is significantly different in nature from the penalty discussed in Section 2.1 and those typically encountered in the smoothing spline ANOVA setting. A function $\phi^* \in \mathcal{H}$ incurs penalty via \ref{eq:banded-penalty-functional} through its behaviour on only a  subset of its domain, inducing an alternative class of function space decompositions than those induced by the traditional derivative-based penalties. Zero penalty is assigned to functions having bounded support:
 
+\begin{equation} \label{eq:banded-penalty-nullspace}
+\mathcal{H}_0\left(\mathcal{B}\right) = \left\{ \phi^*: \phi^*\left(l,m\right) = 0 \mbox{ for all } l \ge l_0 \right\}.
+\end{equation}
+
+Decomposing $\mathcal{H}$ into $\mathcal{H}_0\left(\mathcal{B}\right)$ and its orthogonal complement necessitates an alternative to the smoothing spline basis functions. 
 
 
 
