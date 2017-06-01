@@ -99,7 +99,7 @@ Within regularization framework, we propose novel covariance penalties which are
 
 \section{Introduction}
 
-An estimate of the covariance matrix or its inverse is required for nearly all statistical procedures in classical multivariate data analysis, time series analysis, spatial statistics and, more recently, the growing field of statistical learning. Covariance estimates play a critical role in the performance of techniques for clustering and classification such as linear discriminant analysis (LDA), quadratic discriminant analysis (QDA), factor analysis, and principal components analysis (PCA), analysis of conditional independence through graphical models, classical multivariate regression, prediction, and Kriging. Covariance estimation with high dimensional data has has recently gained growing interest; it is generally recognized that there are two primary hurdles responsible for the difficulty in covariance estimation: the instability of sample covariance matrices in high dimensions and a positive-definite constraint we wish estimates to obey.
+Covariance estimation with high dimensional data has has recently gained growing interest; it is generally recognized that there are two primary hurdles responsible for the difficulty in covariance estimation: the instability of sample covariance matrices in high dimensions and a positive-definite constraint we wish estimates to obey. Estimation of population covariance matrices from samples of multivariate data has been important for methods in classical multivariate data analysis, time series analysis, spatial statistics and, more recently, the growing field of statistical learning. Covariance estimates play a critical role in establishing independence or conditional independence through graphical models, constructing discriminant functions as in linear discriminant analysis (LDA) and quadratic discriminant analysis (QDA) for the classification of Gaussian data, building confidence intervals for component means and contrasts, and constructing a low-dimensional representation of data via principal components analysis (PCA). One may note that the last two techniques require an estimate of the covariance matrix, and the first two require estimation of the inverse.
 
 Prevalent technological advances in industry and many areas of science make high dimensional longitudinal and functional data a common occurrence, arising in numerous areas including medicine, public health, biology, and environmental science with specific applications including fMRI, spectroscopic imaging, gene microarrays among many others, presenting a need for effective covariance estimation in the challenging situation where parameter dimensionality is possibly much larger than the number of observations. Additional difficulty due to constraints required to yield positive definite estimates make covariance estimation a potentially complex optimization problem. Further, most existing approaches to covariance estimation require data to be sampled at regular grid (time) points, with subjects sharing a set of common observation points. However, in many practical situations, data are irregularly sampled, and subjects may share few common observation times, and methods are needed to accommodate for data collected in this way.  
 
@@ -120,16 +120,16 @@ To present a comprehensive overview our estimation procedure, we begin with the 
 \end{equation}
 \noindent
 
-If we assume that the data having covariance matrix $\Sigma$ follow an autoregressive model, then the entries of the Cholesky factor $T$ and $D$ enjoy a useful interpretation. Let $Y = \left( y_{1}, y_{2}, \dots, y_{m} \right)^T$ denote a mean-zero random vector of observations with corresponding measurement times 
+If we assume that the data having covariance matrix $\Sigma$ follow an autoregressive model, then the entries of the Cholesky factor $T$ and $D$ enjoy a useful interpretation. Let $Y = \left( Y_{1}, Y_{2}, \dots, Y_{m} \right)^T$ be defined on a probability space with some probability measure $\mathcal{P}$ corresponding to the multivariate Normal distribution with mean $0$ and covariance $\Sigma$, and let $Y_1,Y_2,\dots, Y_m$ have associated measurement times 
 
 \[
 t_{1} < t_{2} < \dots< t_{m}.
 \]
 
-Consider regressing $y_{j}$  on its predecessors:
+Consider regressing $Y_{j}$  on its predecessors:
 
 \begin{equation}
-{y}_{j}  = \sum_{k=1}^{j-1} \phi_{jk} y_{k} + \sigma_{j}e_{j}, \qquad j=2,\dots,m, \label{eq:ARmodel}
+{Y}_{j}  = \sum_{k=1}^{j-1} \phi_{jk} Y_{k} + \sigma_{j}e_{j}, \qquad j=2,\dots,m, \label{eq:ARmodel}
 \end{equation}
 \noindent where we define $y_{1}=e_{1}$. Standard regression theory gives us that if $\lbrace \phi_{jk} \rbrace$ are the coefficients of the linear least squares predictor of $y_{j}$ based on its predecessors, then the residuals $e =\left( e_{1}, e_{2},\dots, e_{m} \right)^T$ have diagonal covariance. Let $T$ denote the $m \times m$  matrix with elements 
 
@@ -164,7 +164,7 @@ Rather than estimating a specific covariance matrix for data observed on a fixed
 Gaussian white noise model [9] is the appropriate infinite-dimensional model into
 which all objects of interest are embedded. In estimation of matrices, a natural
 analogue is the space B(l2,l2), which we write as B, of bounded linear operators
-from l2 to l2. These can be represented as matrices
+from l2 to l2. These can be represented as matrices [cite \textit{Regularized estimation of large covariance matrices by Bickel and Levina - section 4.}]
 
 Rather than $m$-dimensional vectors, consider $Y$ and $e$ as the values of the stochastic processes $Y\left(t\right)$ and $e\left(t\right)$ at the set of observation times.  We assume that $Y\left(t\right)$ is equipped with covariance function $G\left(s,t\right)$, and
 \[
@@ -184,13 +184,13 @@ y\left(t_j \right)  = \sum_{k=1}^{j-1} \phi\left(t_j ,t_k\right) y\left(t_k\righ
 
 \noindent for $t_1 < t_2 < \dots < t_m$. 
 
-To model and estimate the varying coefficient function and the innovation variances, we consider tensor product smoothing splines and penalized tensor product B-splines alongside penalties to induce simplicity in $\phi$ and $\sigma^2$  to produce final covariance estimates exhibiting the desired null structure.  For ease of exposition, we first focus our attention on the estimation of $\phi$ assume that $\sigma^2\left(t\right)$ is fixed and known; we will later propose an iterative procedure for simultaneous estimation of $\sigma^2$ and $\phi$.    %square integrability of certain derivatives. 
+We represent the varying coefficient function and the innovation variances using tensor product smoothing splines and penalized tensor product B-splines alongside penalties to induce simplicity in $\phi$ and $\sigma^2$  to produce final covariance estimates exhibiting the desired null structure.  For ease of exposition, we first focus our attention on the estimation of $\phi$ assume that $\sigma^2\left(t\right)$ is fixed and known; we will later propose an iterative procedure for simultaneous estimation of $\sigma^2$ and $\phi$.    %square integrability of certain derivatives. 
 Recasting the problem as the estimation of model~\ref{eq:MyModel} allows us access to the existing set of tools developed in the bivariate smoothing literature; our approach provides a flexible, comprehensive framework for covariance estimation.
 
 
 \section{Penalized Maximum Likelihood Estimation of $\phi$}
 
-Along with \citet{huang2006covariance}, \citet{levina2008sparse}, and \citet{pourahmadi2000maximum} we employ the Gaussian log-likelihood as a goodness of fit measure for the varying  autoregressive coefficient function, $\phi\left(t,s\right)$ and the innovation variance function $\sigma\left(t\right)$, though neither the derivation of model~\ref{eq:ARmodel} nor model~\ref{eq:MyModel} rely on any assumptions about the distribution of $e$. Fixing $\sigma_j^2$, the negative loglikelihood as a function of $\phi_{jk}$ corresponds to the usual error sums of squares.  Under the gaussian assumption, for fixed $\left\{ \sigma_j^2 \right\}$, the negative log-likelihood of $N$ i.i.d. vectors of observations $y_1,y_2,\dots,y_N$ is proportional to
+We employ maximum likelihood  for the estimation of  the varying coefficient function $\phi\left(t,s\right)$ and the innovation variance function $\sigma\left(t\right)$, though neither the derivation the form of model~\ref{eq:ARmodel} nor model~\ref{eq:MyModel} via the Cholesky decomposition rely on any assumptions about the distribution of $Y$. Fixing $\sigma_j^2$,  for a sample of $N$  i.i.d. observations $Y_1,Y_2,\dots,Y_N$ from a multivariate Gaussian distribution, the negative log-likelihood as a function of $\phi_{jk}$ corresponds to the usual error sums of squares and is proportional to
 
 \begin{equation}
 -2 L\left(y_1, y_2, \dots,y_N ,\Phi \right) \propto \sum_{i=1}^N \sum_{j=2}^{m_i} \sigma\left({t_j}\right)^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y_{ik} \right)^2 \label{loglikelihood}
@@ -214,7 +214,7 @@ In the case that subjects share a common set of observation times $t_1 < \dots <
 
 \section{Representation of $\phi$ as a smooth function}
 
-To impose structure on the estimated autoregressive function, we append a penalty functional to the negative log-likelihood \ref{eq:}. that discourages the flexibility of the fitted function. We take the estimator of $\phi$ to minimize
+To impose structure on the estimated varying coefficient function, we augment the negative log-likelihood \ref{eq:loglikelihood} with penalty functional, which discourages the flexibility of the fitted function. We take the estimator of $\phi$ to minimize
 
 %\begin{itemize}
 %\item {\bf Step 1:} Select $\hat{\lambda}_1$, where
@@ -223,7 +223,7 @@ To impose structure on the estimated autoregressive function, we append a penalt
 \end{equation}
 %\item {\bf Step 2:} Define $\hat{\phi}$ to the the minimizer of 
 
-The first term in \ref{eq:phi-objective-fnc} discourages the lack of fit of $\phi$ to the data, and $\lambda$ is a smoothing parameter which controls the tradeoff between the lack of fit and amount of regularization imposed on the fitted function through the penalty, $J_\phi$.The task of estimating of $\phi\left(t,s\right)$ is an inherently different problem than the estimation of an arbitrary bivariate function. Since $\phi$ explicitly defines an inverse covariance function, imposing specific types of structure on $\phi$ is of particular interest. Covariance models for longitudinal or time series data are commonly defined in terms of lag, or in the continuous case, the difference between two measurement times.  To express the coefficient function in terms of functional components reflecting this particular interest, we transform the original input axis, letting  
+The first term in \ref{eq:phi-objective-fnc} discourages the lack of fit of $\phi$ to the data, and $\lambda$ is a smoothing parameter which controls the tradeoff between the lack of fit and amount of regularization imposed on the fitted function through the penalty, $J_\phi$. Since $\phi$ explicitly defines an inverse covariance function, imposing specific types of structure on $\phi$ is of particular interest; covariance models for longitudinal or time series data are commonly defined in terms of lag, or in the continuous case, the difference between two measurement times.  By transforming the $s-t$ input axis, we reparameterize $\phi$ and express the coefficient function in terms of   
 \begin{align*}
 l &= s-t \\
 m &= \frac{1}{2}\left(s+t\right).
@@ -408,9 +408,44 @@ Estimating the varying coefficient function $\phi^*$ is quite different from the
 
 There has been a recent upsurge in both the theoretical analysis and study of the practical application of regularization procedures for large empirical covariance matrices, including \citet{huang2006covariance}, \citet{furrer2007estimation}, \citet{fan2008high}, \citet{ledoit2004well}. These works examine different types of regularization imposed on different ; \citet{furrer2007estimation} propose stabilizing the sample covariance matrix by ``tapering,'' or gradually shrinking the off-diagonal elements to zero. \citet{d2008first} propose a sparse estimator by applying an $L_1$ penalty directly to the elements of the covariance matrix. Instead of regularizing the covariance matrix itself, others have opted to regularize its inverse;  \cite{wu2003nonparametric} use the Cholesky decomposition to band the inverse covariance matrix by setting certain diagonals of the Cholesky factor to zero. \citet{huang2006covariance} and \citet{levina2008sparse} use $L_1$ penalties to achieve parsimony of the entries of the Cholesky factor; sparsity of the Cholesky factor, however, does not necessarily imply sparsity in the inverse covariance matrix. \citet{levina2008sparse} propose banding the Cholesky factor using a nested Lasso penalty which yields sparse estimators of the precision matrix.  
 
-These approaches implicitly adopt different notions of sparsity. Like \citet{huang2006covariance} and \citet{levina2008sparse}, we are interested in regularizing the inverse of the covariance matrix through the Cholesky factor (or rather, the function defining its elements). The elements of $\Omega$ can be interpreted as the partial correlations between the pairs of observations, so it is reasonable to expect for $y_i$ and $y_j$ to be conditionally uncorrelated (or nearly so) for large $\vert i-j \vert$; this suggests that enforcing that the conditional dependence between observations decay to zero as $l$ increases is a reasonable way to institute regularization. \cite{pourahmadi1999joint} was one of the first to hueristically argue that the GARPs, $\phi_{t,t-l}$ should be monotonically decreasing in absolute value as $l$ increases, implying that the effect of $y_{t-l}$ on $y_t$ through model~\ref{eq:MyModel} should decrease as the time between the two measurements increases. They propose banding $T$ by setting all elements of $T$ beyond the $K^{th}$ off-diagonal to zero, i.e. setting $\phi_{t,t-l}=0$ for $l > K$ for some choice of $K$.  (See \citet{wu2003nonparametric}, \cite{bickel2008regularized}, and \cite{huang2007estimation}.) In terms of model~\ref{eq:ARmodel}, this is equivalent to regressing $y_t$  on only its $K$ immediate predecessors and setting the regression coefficient for $y_{t-l}$ to zero for $l>K$.
+These approaches implicitly adopt different notions of sparsity. Like \citet{huang2006covariance} and \citet{levina2008sparse}, we are interested in regularizing the inverse of the covariance matrix through the Cholesky factor (or rather, the function defining its elements). The elements of $\Omega$ can be interpreted as the partial correlations between the pairs of observations, so it is reasonable to expect for $y_i$ and $y_j$ to be conditionally uncorrelated (or nearly so) for large $\vert i-j \vert$; this suggests that enforcing that the conditional dependence between observations decay to zero as $l$ increases is a reasonable way to institute regularization. \cite{pourahmadi1999joint} was one of the first to hueristically argue that the GARPs, $\phi_{t,t-l}$ should be monotonically decreasing in absolute value as $l$ increases. In effect, this is equivalent to proposing that the effect of $y_{t-l}$ on $y_t$ through model~\ref{eq:MyModel} should decrease as the time between the two measurements increases. They and several others propose regularized estimators of the inverse covariance by banding $T$: setting all elements of $T$ beyond the $K^{th}$ off-diagonal to zero, i.e. setting $\phi_{t,t-l}=0$ for $l > K$ for some choice of $K$.  (See \citet{wu2003nonparametric}, \cite{bickel2008regularized}, and \cite{huang2007estimation}.) In terms of model~\ref{eq:ARmodel}, this is equivalent to regressing $y_t$  on only its $K$ immediate predecessors and setting the regression coefficient for $y_{t-l}$ to zero for $l>K$. We refer to this regularization as ``banding the Cholesky factor,'' and it is particularly attractive because it has the effect of enforcing conditional independence between pairs of observations with measuring times that are more than $K$ lags apart. To show this, we will establish an instrumental relationship between patterns of zeros in positive definite matrices and their Cholesky factors.  
 
-\subsection{The truncated power basis and an alternative decomposition of $\mathcal{H}$}
+\begin{proposition} \label{prop:cholesky-inverse-banding-equivalence}
+Let $\Omega$ denote a $m \times m$ positive definite matrix with elements $\omega_{ij}$ with modified Cholesky decomposition $T^T D^{-1} T$, where $T$ is unit lower triangular. Let  $t_{ij}$ denote the $ij^{th}$ element of $T$. For any column $j$ and row $r\left(j\right) > j$,  $\omega_{mj} = \dots = \omega_{r\left(j\right),j} = 0$ if and only if  $t_{mj} = \dots = t_{r\left(j\right),j} = 0$.
+\end{proposition}
+
+The proof is left to the appendix. Proposition~\ref{prop:cholesky-inverse-banding-equivalence} maintains that the modified Cholesky factor $T$ with arbitrary column band lengths corresponds to inverse covariance matrix $\Omega$ with the same column band lengths, and hence the inverse covariance matrix is $K$-banded if and only if its Cholesky factor is $K$-banded. This notion is instrumental in justifying the following family of penalties:
+
+\begin{equation} \label{eq:banded-penalty}
+J_{\mathcal{B}} = \sum_{  l_i \in \mathcal{L}: l_i > l_0} \vert \mu^* + \phi^*_1\left(l_i\right) \vert^p 
+\end{equation}
+\noindent
+which we may view as a design-driven way of implementing the regularization which may be imposed by the penalty functionals taking the form
+
+
+
+
+%citet{chen2011efficient}, citet{pourahmadi1999joint}, and citet{pourahmadi2002dynamic} have elicited parametric models for the generalized autoregressive coefficients, letting the GARPs depend only on the distance between two time points.
+
+\begin{equation} \label{eq:banded-penalty-functional}
+J_{\mathcal{B}} = \int_{ l_0}^1 \vert \phi^*\left(l,m\right) \vert^p dl.  
+\end{equation}
+\noindent
+
+The form of these penalties is significantly different in nature from the penalty discussed in Section 2.1 and those typically encountered in the smoothing spline ANOVA setting. A function $f \in \mathcal{H}$ incurs penalty via \ref{eq:banded-penalty} through its behaviour on only a  subset of its domain, inducing an alternative class of function space decompositions than those induced by the traditional derivative-based penalties. An appropriate decomposition of the function space into the null space of $J$ and the penalized space should perhaps be formulated in terms of basis functions for the lag component, $l$ with domains which do not include the entire unit interval. 
+
+
+
+
+
+To further impose simplicity in the structure of the inverse covariance, we consider ``banding'' the functional components of these of these null models; specifically, if we consider any $\phi^*$ corresponding to a Toeplitz precision matrix, that is any $\phi^*$ of the form
+
+\begin{equation}
+\phi^*\left(l,m\right) = \mu^* + \phi^*_1\left(l\right)
+\end{equation}
+\noindent
+we propose truncating the functional lag components:  the overall mean and the main effect of $l$ to zero for any $l > l_0$ for some truncation point $l_0 \in \left(0,1\right)$. We consider the class of penalty functions that can be written in terms of an $L_p$ norm of the sum of the overall mean and the functional main effect of $l$. We follow in the work of cite{huang2006covariance} and consider penalties which may be written
+
 
 
 \citet{bickel2008regularized} discuss 
@@ -420,19 +455,24 @@ of the covariance matrix or its inverse (Pourahmadi, 1999, 2000; Rothman et al.
 
 
 
-%citet{chen2011efficient}, citet{pourahmadi1999joint}, and citet{pourahmadi2002dynamic} have elicited parametric models for the generalized autoregressive coefficients, letting the GARPs depend only on the distance between two time points.
-
-This latter notion is instrumental in justifying the family of penalties
-\[
-J_{2,\left(p\right)} = \sum_{  l_i \in \mathcal{L}: l_i > l_0} \vert \mu^* + \phi^*_1\left(l_i\right) \vert^p 
-\]
-\noindent
-which we may view as a design-driven way of implementing the regularization which may be imposed by the penalty functionals taking the form
-
+where $\mathcal{L}$ denotes the observed values of $l$, so that any $\phi^*$ to which $J_2$ assigns zero penalty is one that inherits nonzero contribution from stationary functional components only for lags $l \le l_0$. We focus our attention to two important members of this family of penalties: the $L_2$ penalty and the $L_1$ penalty, given by
 \begin{eqnarray} \nonumber
-J\left(\phi^*\right) &=& \int_{l_0}^1 \vert \mu^* + \phi^*_1\left(l\right) \vert^p\; dl\\
-&=& \int_{0}^1 \vert \mu^* + \phi^*_1\left(l\right) \vert^p I\left(l > l_0\right) \; dl \label{eq:truncated_penalty}
-\end{eqnarray}
+ J_{2,\left(2\right)} = \sum_{ l_i \in \mathcal{L}: l_i > l_0} \left( \mu^* + \phi^*_1\left(l_i\right) \right)^2 \label{L2penalty} \;\;\mbox{and}\\
+ J_{2,\left(1\right)} = \sum_{ l_i \in \mathcal{L}: l_i > l_0} \vert \mu^* + \phi^*_1\left(l_i\right) \vert \label{L1penalty}
+ \end{eqnarray}\noindent
+respectively. These penalties will induce shrinkage in the autoregressive coefficient function $\phi^*$ (and hence in the overall inverse covariance function) as in ridge regression and LASSO, respectively. Considering both types of regularization introduced in this section and in the previous, any $\phi^*$ belonging to the set of models incurring zero penalty from both $J_1$ and $J_2$ may be written
+
+\[
+\phi^*\left(l,m\right) = \left\{ \begin{array}{lr} d_0 + d_1 k_1\left(l\right), & l \le l_0 \\ 0, & l > l_0 \end{array} \right.
+\]
+
+%The truncation penalty given by \eqref{bandedpenalty} sums over observed values of $l$ so as to approximate the integral 
+%\[
+%\int_{L}^1 \vert \mu^* + \phi_1^*\left(l\right) \vert dl
+%\]
+
+\subsection{The truncated power basis and an alternative decomposition of $\mathcal{H}$}
+
 
 The penalty functionals given by \eqref{truncated_penalty} motivate a different decomposition of $\mathcal{H}$ than the derivative-based penalty. The form of \eqref{truncated_penalty} is significantly different in nature from the penalty discussed in Section 2.1 and those typically encountered in the setting smoothing spline ANOVA models, particularly because \eqref{truncated_penalty} effects only a subset of the domain for $l$. Therefore, an appropriate decomposition of the function space into the null space of $J$ and the penalized space should perhaps be formulated in terms of basis functions for the lag component, $l$ with domains which do not include the entire unit interval. 
 
@@ -453,7 +493,7 @@ The truncated power basis, as in their use in defining polynomial regression spl
 \section{Appendix}
 
 
-Proof of Theorem~\ref{phi_representer_thm}"
+Proof of Theorem~\ref{phi_representer_thm}
 
 Then we may verify that any $\phi^* \in \mathcal{H}$ can be written 
 \[
@@ -496,6 +536,24 @@ Thus, including $\rho$ in $\phi^*$ only increases the penalty without improving 
  \label{eq:finitedimsolution}
  \end{equation}
 
+
+Proof: Proposition~\ref{prop:cholesky-inverse-banding-equivalence}
+
+\underline{\bf Proof:} Using the expression
+\[
+\sigma^{ij} = \sum_{k=i}^p d_{ii}t_{ki}t_{kj}
+\]
+it follows immediately that $t_{pj} = \dots = t_{r\left(j\right),j} = 0$ implies that $\sigma^{pj} = \dots = \sigma^{r\left(j\right),j} = 0$.
+
+From cite{watkins2004fundamentals}, we can show that we can sequentially derive the elements of $T$ and $D$ according to 
+
+\begin{eqnarray*}
+d_{ii} = \sqrt{\sigma^{ii}-\sum_{k=1}^{i-1} t_{ki}^2 }\\
+t_{ij} = \frac{1}{d_{ii}}\left(\sigma^{ij} - \sum_{k=1}^{i-1} t_{ki}t_{kj} \right)
+\end{eqnarray*}
+\noindent
+
+We proceed by induction. For the first row of $T^T$, 
 
 
 
