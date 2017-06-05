@@ -401,29 +401,84 @@ The proof is left to the appendix.
 \subsection{Demonstration of the smoothing spline fitting procedure: Examples}
 
 
-\section{ Optimal shrinkage of $T$: smoothness may not be enough }
+\section{Banding the inverse covariance}
 %The parameters of the functional autoregressive model given by \ref{eq:MyModel} define the elements of the precision matrix $\Omega$, rather than the elements of $\Sigma$ itself. It is well known that if we let $Y = \left(Y_1, \dots, Y_m\right)^T$ denote the random vector having joint distribution with mean zero and covariance matrix $\Sigma$, then the elements of $\Sigma^{-1}=\Omega$, $\left\{ \omega_{ij} \right\}$ may be interpreted as partial covariances between the elements of $Y$. This suggests shrinking $\phi^*$ to zero for large values of $l$. One can show that if $T$ has $k$ non-zero diagonals, then the middle $k$ diagonals of $\Sigma^{-1}$ are non-zero.  
 
 Estimating the varying coefficient function $\phi^*$ is quite different from the usual problem of estimating an arbitrary bivariate function via smoothing. In the case of the latter, we most typically treat both arguments equally in terms of regularization, but in the case of covariance estimation and the generalized coefficient function equal treatment of $l$ and $m$ in terms of penalization perhaps is not the most appropriate approach. The lag component, $l$, has particularly significant meaning in terms of the covariance function and thus also in terms of $\phi^*$ and is of considerable more interest than the orthogonal component, $m$. As discussed in Section 2, we can define an entire class of functional autoregressive models using only the $l$ direction, and additionally, as discussed in Section 3, there is a natural expectation about the functional form of the autoregressive coefficient function (and hence covariance) as a function of $l$. The use of smoothing splines to estimate $\phi$ outlined in Section~\ref{} yields smooth null models, but smoothness of the elements of the Cholesky factor alone may not lead to desirable structure in the inverse covariance matrix.  
 
-There has been a recent upsurge in both the theoretical analysis and study of the practical application of regularization procedures for large empirical covariance matrices, including \citet{huang2006covariance}, \citet{furrer2007estimation}, \citet{fan2008high}, \citet{ledoit2004well}. These works examine different types of regularization imposed on different ; \citet{furrer2007estimation} propose stabilizing the sample covariance matrix by ``tapering,'' or gradually shrinking the off-diagonal elements to zero. \citet{d2008first} propose a sparse estimator by applying an $L_1$ penalty directly to the elements of the covariance matrix. Instead of regularizing the covariance matrix itself, others have opted to regularize its inverse;  \cite{wu2003nonparametric} use the Cholesky decomposition to band the inverse covariance matrix by setting certain diagonals of the Cholesky factor to zero. \citet{huang2006covariance} and \citet{levina2008sparse} use $L_1$ penalties to achieve parsimony of the entries of the Cholesky factor; sparsity of the Cholesky factor, however, does not necessarily imply sparsity in the inverse covariance matrix. \citet{levina2008sparse} propose banding the Cholesky factor using a nested Lasso penalty which yields sparse estimators of the precision matrix.  
+There has been a recent upsurge in both the theoretical analysis and study of the practical application of regularization procedures for large empirical covariance matrices, including \citet{huang2006covariance}, \citet{furrer2007estimation}, \citet{fan2008high}, \citet{ledoit2004well}.  \citet{furrer2007estimation} propose stabilizing the sample covariance matrix by ``tapering,'' or gradually shrinking the off-diagonal elements to zero. \citet{d2008first} propose a sparse estimator by applying an $L_1$ penalty directly to the elements of the covariance matrix. Instead of regularizing the covariance matrix itself, some have opted to regularize its inverse;  \cite{wu2003nonparametric} band the Cholesky decomposition  by setting certain diagonals of the Cholesky factor to zero. \citet{huang2006covariance} and \citet{levina2008sparse} use $L_1$ penalties to achieve parsimony of the entries of the Cholesky factor; sparsity of the Cholesky factor, however, does not necessarily imply sparsity in the inverse covariance matrix. \citet{levina2008sparse} propose banding the Cholesky factor using a nested Lasso penalty which yields sparse estimators of the precision matrix.  
 
-These approaches implicitly adopt different notions of sparsity. Like \citet{huang2006covariance} and \citet{levina2008sparse}, we are interested in regularizing the inverse of the covariance matrix through the Cholesky factor (or rather, the function defining its elements). The elements of $\Omega$ can be interpreted as the partial correlations between the pairs of observations, so it is reasonable to expect for $y_i$ and $y_j$ to be conditionally uncorrelated (or nearly so) for large $\vert i-j \vert$; this suggests that enforcing that the conditional dependence between observations decay to zero as $l$ increases is a reasonable way to institute regularization. \cite{pourahmadi1999joint} was one of the first to hueristically argue that the GARPs, $\phi_{t,t-l}$ should be monotonically decreasing in absolute value as $l$ increases. In effect, this is equivalent to proposing that the effect of $y_{t-l}$ on $y_t$ through model~\ref{eq:MyModel} should decrease as the time between the two measurements increases. They and several others propose regularized estimators of the inverse covariance by banding $T$: setting all elements of $T$ beyond the $K^{th}$ off-diagonal to zero, i.e. setting $\phi_{t,t-l}=0$ for $l > K$ for some choice of $K$.  (See \citet{wu2003nonparametric}, \cite{bickel2008regularized}, and \cite{huang2007estimation}.) In terms of model~\ref{eq:ARmodel}, this is equivalent to regressing $y_t$  on only its $K$ immediate predecessors and setting the regression coefficient for $y_{t-l}$ to zero for $l>K$. We refer to this regularization as ``banding the Cholesky factor,'' and it is particularly attractive because it has the effect of enforcing conditional independence between pairs of observations with measuring times that are more than $K$ lags apart. To show this, we will establish an instrumental relationship between patterns of zeros in positive definite matrices and their Cholesky factors.  
+These approaches implicitly adopt different notions of sparsity. Like \citet{huang2006covariance} and \citet{levina2008sparse}, our aim is to regularize the inverse of the covariance matrix through the Cholesky factor.\cite{pourahmadi1999joint} presented a hueristic argument that the GARPs, $\phi_{t,t-l}$ should be monotonically decreasing in absolute value as $l$ increases. The following proposition establishes the relationship between zeros in the Cholesky factor and zeroes in the inverse covariance, connecting the regularization of $\phi^*$  to the structure in the resulting inverse covariance matrix. 
 
 \begin{proposition} \label{prop:cholesky-inverse-banding-equivalence}
 Let $\Omega$ denote a $m \times m$ positive definite matrix with elements $\omega_{ij}$ with modified Cholesky decomposition $T^T D^{-1} T$, where $T$ is unit lower triangular. Let  $t_{ij}$ denote the $ij^{th}$ element of $T$. For any column $j$ and row $r\left(j\right) > j$,  $\omega_{mj} = \dots = \omega_{r\left(j\right),j} = 0$ if and only if  $t_{mj} = \dots = t_{r\left(j\right),j} = 0$.
 \end{proposition}
 
-The proof is left to the appendix. Proposition~\ref{prop:cholesky-inverse-banding-equivalence} maintains that the modified Cholesky factor $T$ with arbitrary column band lengths corresponds to inverse covariance matrix $\Omega$ with the same column band lengths, and hence the inverse covariance matrix is $K$-banded if and only if its Cholesky factor is $K$-banded. This notion is instrumental in justifying the following family of penalties:
+The proof is left to the appendix. Proposition~\ref{prop:cholesky-inverse-banding-equivalence} maintains that the modified Cholesky factor $T$ with arbitrary column band lengths corresponds to inverse covariance matrix $\Omega$ with the same column band lengths, and hence the inverse covariance matrix is $K$-banded if and only if its Cholesky factor is $K$-banded. That is, if $\phi^*$ is zero or nearly zero for  large $\vert i-j \vert$, then $y_i$ and $y_j$ are conditionally uncorrelated (or nearly so). This suggests that the effect of $y_{t-l}$ on $y_t$ through model~\ref{eq:MyModel} should decrease as the time between the two measurements increases, such that
+ 
+\[
+\phi^*\left(l,m\right) \approx 0
+\]
+\noindent
+for large $l$ is a reasonable way to institute regularization. 
 
-\begin{equation} \label{eq:banded-penalty}
-J_{\mathcal{B}} = \sum_{  l_i \in \mathcal{L}: l_i > l_0} \vert \mu^* + \phi^*_1\left(l_i\right) \vert^p 
+Several have proposed regularization of the inverse covariance matrix by ``banding'' the Cholesky factor $T$: setting all elements of $T$ beyond the $K^{th}$ off-diagonal to zero, i.e. setting $\phi_{t,t-l}=0$ for $l > K$ for some choice of $K$.  (See \cite{pourahmadi1999joint}, \citet{wu2003nonparametric}, \cite{bickel2008regularized}, and \cite{huang2007estimation}.) In terms of model~\ref{eq:ARmodel}, this is equivalent to regressing $y_t$  on only its $K$ immediate predecessors, setting the regression coefficient for $y_{t-l}$ to zero for $l>K$.  This notion is instrumental in justifying a family of penalties which induces an alternative decomposition of the function space for which the null space of these penalties comprises functions $\phi^*$ taking nonzero values on a subset of the domain:
+
+\begin{equation} \label{eq:banded-penalty-nullspace}
+\mathcal{H}_0\left(\mathcal{B}\right) = \left\{ \phi^*: \phi^*\left(l,m\right) = 0 \mbox{ for all } l > l_0 \right\},
 \end{equation}
 \noindent
-which we may view as a design-driven way of implementing the regularization which may be imposed by the penalty functionals taking the form
+which is equivalent to the set of functions having compact support:
 
+\[
+supp\left( \phi^* \right) = \left(0,l_0\right].
+\]
 
-\section{Banding the inverse covariance}
+\subsection{An alternative basis for $\mathcal{H}$}
+
+Functions having compact support arise from penalties differing significantly from the penalty discussed in Section 2.1 and the derivative-based penalties typically encountered in the smoothing spline ANOVA setting: the decomposition of $\mathcal{H}$ into \ref{eq"banded-penalty-nullspace} and its orthogonal complement requires basis functions having compact support. Consider a sequence of knots partitioning the unit interval $0 < x_1 < x_2 < \dots <x_n < 1$; the truncated power functions (TPFs) of degree $k$, $\lbrace T_{i,k} \rbrace_{i=1}^n$, are given by
+\begin{equation}
+T^+_{i,k}\left(x\right) = \left(x - x_i\right)^{k}_+ = \left\{\begin{array}{lr} \left(x-x_i\right)^{k-1}, & x-x_i \ge0\\ 0 & x-x_i < 0\end{array}\right.
+\end{equation}
+
+Polynomial regression splines are continuous piecewise polynomials where the definition of the function changes at the collection of knot points. A polynomial of degree $k$ has basis
+\[
+\lbrace 1,l,\dots,l^k, \left(l - l_1\right)^{k}_+,\dots, \left(l - l_n\right)^{k}_+ \rbrace
+\]
+
+A univariate function can be represented as a linear combination of these basis functions: 
+
+\[
+f = \sum_{j=0}^k \beta_j l^j + \sum_{i=1}^n \beta_{k+i} T_{i,k}
+\]
+\noindent
+
+The truncated power basis, as in their use in defining polynomial regression splines, enjoy a particular ease of interpretation. The coefficient $\beta_{i+k}$ corresponds to the size of the jump at $x_i$ in the $k^{th}$ derivative of $f$. This fact is especially useful when tracking change points or in general, any abrupt changes in the regression curve, as the decomposition according to \ref{eq:banded-penalty-nullspace} demands. Rather than constructing a basis for $\mathcal{H}$, we instead consider representing the set of piecewise polynomial functions using B-splines, which exhibit numerical properties which are preferable to those of the TPFs. Let $t= \left\{ t_i \right\}$ denote a non-decreasing sequence. The $i^{th}$ B-spline of order $k$ which corresponds to the knot sequence $t$ is defined by 
+
+\begin{equation} \label{eq:bspline_definition}
+B_{i,k,t}\left(l\right) = \left(t_{i+k}-t_i\right)\left[t_i,\dots,t_{i+k}\right]\left(\cdot -l\right)_+^{k-1}.
+\end{equation}  
+\noindent
+The placeholder notation, $\left(\cdot - l\right)_+^{k-1}$, is used to indicate that the $k^{th}$ divided difference of the function $g\left(t \right) = \left(t-l\right)^{k-1}_+$ is obtained by fixing $l$ and applying the divided difference to $g\left(t \right)$ as a function of $t$ alone. Henceforth, we will write $B_i$ rather than $B_{i,k,t}$ when the spline order and knot sequence can be inferred from surrounding context. Using the properties of the divided difference, one can show that  $B_i\left(x\right)$ has isolated support:
+
+\[
+B_i\left(l\right) = 0, \quad l \not \in \left[t_{i},t_{i+k}\right]
+\]
+\noindent
+As a result, for a set of B-splines of order $k$ corresponding to the knot sequence $t$, only $k$ of them are nonzero on $\left[t_{j},t_{j+k}\right]$: $B_{j-k+1},B_{j-k+2},\dots,B_{j}$. See \citet{de1978practical} for a complete review of B-splines and their properties. We may represent a univariate function as a B-spline:
+
+\[
+f\left(l\right) =  \sum_{i=1}^n \beta_{k+i} B_{i}\left(l\right).
+\]
+
+This representation permits the intuitive expression of a penalty to be used for banding the Cholesky factor. If $$ 
+
+\begin{equation} \label{eq:banded-penalty}
+J_{B} = \sum_{  l_i \in \mathcal{L}: l_i > l_0} \vert \mu^* + \phi^*_1\left(l_i\right) \vert^p .
+\end{equation}
+\noindent
+
+This may be viewed as a design-driven way of enforcing the regularization imposed by the penalty functionals of the form
 
 %citet{chen2011efficient}, citet{pourahmadi1999joint}, and citet{pourahmadi2002dynamic} have elicited parametric models for the generalized autoregressive coefficients, letting the GARPs depend only on the distance between two time points.
 
@@ -432,13 +487,6 @@ J_{\mathcal{B}} = \int_{ l_0}^1 \vert \phi^*\left(l,m\right) \vert^p dl.
 \end{equation}
 \noindent
 
-The form of these penalties is significantly different in nature from the penalty discussed in Section 2.1 and those typically encountered in the smoothing spline ANOVA setting. A function $\phi^* \in \mathcal{H}$ incurs penalty via \ref{eq:banded-penalty-functional} through its behaviour on only a  subset of its domain, inducing an alternative class of function space decompositions than those induced by the traditional derivative-based penalties. Zero penalty is assigned to functions having bounded support:
-
-\begin{equation} \label{eq:banded-penalty-nullspace}
-\mathcal{H}_0\left(\mathcal{B}\right) = \left\{ \phi^*: \phi^*\left(l,m\right) = 0 \mbox{ for all } l \ge l_0 \right\}.
-\end{equation}
-
-Decomposing $\mathcal{H}$ into $\mathcal{H}_0\left(\mathcal{B}\right)$ and its orthogonal complement necessitates an alternative to the smoothing spline basis functions. 
 
 
 
@@ -479,10 +527,6 @@ respectively. These penalties will induce shrinkage in the autoregressive coeffi
 \subsection{The truncated power basis and an alternative decomposition of $\mathcal{H}$}
 
 
-The penalty functionals given by \eqref{truncated_penalty} motivate a different decomposition of $\mathcal{H}$ than the derivative-based penalty. The form of \eqref{truncated_penalty} is significantly different in nature from the penalty discussed in Section 2.1 and those typically encountered in the setting smoothing spline ANOVA models, particularly because \eqref{truncated_penalty} effects only a subset of the domain for $l$. Therefore, an appropriate decomposition of the function space into the null space of $J$ and the penalized space should perhaps be formulated in terms of basis functions for the lag component, $l$ with domains which do not include the entire unit interval. 
-
-The truncated power basis, as in their use in defining polynomial regression splines, enjoy a particular ease of interpretation, as the coefficient $\beta_{i+k}$ may be identified as the size of the jump at $x_i$ in the $k^{th}$ derivative of $f$. This fact is especially useful when tracking change points or, in general, any abrupt changes in the regression curve. If we reflect these basis functions about each of their corresponding knot points and denote these reflections $\lbrace T^-_{ik}\rbrace$, then expressing the regularization corresponding to the penalty functionals \eqref{truncated_penalty} becomes quite natural in terms of the reflected basis functions $\left(\cdot - l_1 \right)^k_-,\dots, \left(\cdot - l_n \right)^k_-$, where $\left( \alpha \right)_- = \max\left(-\alpha,0\right)$.  While the truncated power basis initially appears very attractive for representing functions in terms of the decomposition induced by penalties of the same form as that in Equation~\ref{eq:truncated_penalty}, they 
-
 \section{P-splines}
 
 \subsection{Truncated Power Basis}
@@ -499,7 +543,10 @@ The truncated power basis, as in their use in defining polynomial regression spl
 
 
 Proof of Theorem~\ref{phi_representer_thm}
-
+ For simplicity of presentation, relabel the elements of $\mathcal{W}^*$ so that 
+\[
+\mathcal{W}^* = \lbrace \left( l_1,m_1 \right), \left( l_2,m_2 \right), \dots, \left( l_{N_{\phi^*}},m_{N_{\phi^*}} \right)  \rbrace.
+\]
 Then we may verify that any $\phi^* \in \mathcal{H}$ can be written 
 \[
 \phi^*\left(l,m \right) = d_0 + d_1k_1\left(l\right) + \sum_{i=1}^n  c_i R_1\left( \left(l,m\right) , \left(l_i,m_i \right)\right) + \rho\left(l,m\right)
