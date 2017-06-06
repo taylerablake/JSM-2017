@@ -7,6 +7,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
  \usepackage{natbib} 
+ \usepackage[T1]{fontenc}
 \usepackage{enumitem}
 \usepackage{accents}
 \usepackage{framed}
@@ -15,7 +16,6 @@
 \usepackage{IEEEtrantools}
 \usepackage{times}
 \usepackage{amsthm}
-\usepackage[T1]{fontenc}
 \usepackage{tabularx,ragged2e,booktabs,caption}
 
 \newcolumntype{C}[1]{>{\Centering}m{#1}}
@@ -414,6 +414,7 @@ These approaches implicitly adopt different notions of sparsity. Like \citet{hua
 Let $\Omega$ denote a $m \times m$ positive definite matrix with elements $\omega_{ij}$ with modified Cholesky decomposition $T^T D^{-1} T$, where $T$ is unit lower triangular. Let  $t_{ij}$ denote the $ij^{th}$ element of $T$. For any column $j$ and row $r\left(j\right) > j$,  $\omega_{mj} = \dots = \omega_{r\left(j\right),j} = 0$ if and only if  $t_{mj} = \dots = t_{r\left(j\right),j} = 0$.
 \end{proposition}
 
+
 The proof is left to the appendix. Proposition~\ref{prop:cholesky-inverse-banding-equivalence} maintains that the modified Cholesky factor $T$ with arbitrary column band lengths corresponds to inverse covariance matrix $\Omega$ with the same column band lengths, and hence the inverse covariance matrix is $K$-banded if and only if its Cholesky factor is $K$-banded. That is, if $\phi^*$ is zero or nearly zero for  large $\vert i-j \vert$, then $y_i$ and $y_j$ are conditionally uncorrelated (or nearly so). This suggests that the effect of $y_{t-l}$ on $y_t$ through model~\ref{eq:MyModel} should decrease as the time between the two measurements increases, such that
  
 \[
@@ -436,56 +437,62 @@ supp\left( \phi^* \right) = \left(0,l_0\right].
 
 \subsection{An alternative basis for $\mathcal{H}$}
 
-Functions having compact support arise from penalties differing significantly from the penalty discussed in Section 2.1 and the derivative-based penalties typically encountered in the smoothing spline ANOVA setting: the decomposition of $\mathcal{H}$ into \ref{eq"banded-penalty-nullspace} and its orthogonal complement requires basis functions having compact support. Consider a sequence of knots partitioning the unit interval $0 < x_1 < x_2 < \dots <x_n < 1$; the truncated power functions (TPFs) of degree $k$, $\lbrace T_{i,k} \rbrace_{i=1}^n$, are given by
-\begin{equation}
-T^+_{i,k}\left(x\right) = \left(x - x_i\right)^{k}_+ = \left\{\begin{array}{lr} \left(x-x_i\right)^{k-1}, & x-x_i \ge0\\ 0 & x-x_i < 0\end{array}\right.
-\end{equation}
+Functions having compact support arise from penalties differing significantly from the penalty discussed in Section 2.1 and the derivative-based penalties typically encountered in the smoothing spline ANOVA setting: the decomposition of $\mathcal{H}$ into \ref{eq"banded-penalty-nullspace} and its orthogonal complement requires basis functions having compact support. Consider a sequence of knots partitioning the unit interval $0 < \ell_1 < \ell_2 < \dots < \ell_n < 1$; the truncated power functions (TPFs) of degree $k$, $\lbrace T_{i,k} \rbrace_{i=1}^n$, are given by
+\begin{equation*}
+T^+_{i,k}\left(l\right) = \left(l - \ell_i\right)^{k}_+ = \left\{\begin{array}{lr} \left(l-\ell_i\right)^{k-1}, & l-\ell_i \ge0\\ 0 & l-\ell_i < 0\end{array}\right.
+\end{equation*}
 
 Polynomial regression splines are continuous piecewise polynomials where the definition of the function changes at the collection of knot points. A polynomial of degree $k$ has basis
 \[
-\lbrace 1,l,\dots,l^k, \left(l - l_1\right)^{k}_+,\dots, \left(l - l_n\right)^{k}_+ \rbrace
+\lbrace 1,l,\dots,l^k, \left(l - \ell_1\right)^{k}_+,\dots, \left(l - \ell_n\right)^{k}_+ \rbrace
 \]
 
 A univariate function can be represented as a linear combination of these basis functions: 
 
 \[
-f = \sum_{j=0}^k \beta_j l^j + \sum_{i=1}^n \beta_{k+i} T_{i,k}
+\phi_1 = \sum_{j=0}^k \beta_j l^j + \sum_{i=1}^n \beta_{k+i} T_{i,k}
 \]
 \noindent
 
-The truncated power basis, as in their use in defining polynomial regression splines, enjoy a particular ease of interpretation. The coefficient $\beta_{i+k}$ corresponds to the size of the jump at $x_i$ in the $k^{th}$ derivative of $f$. This fact is especially useful when tracking change points or in general, any abrupt changes in the regression curve, as the decomposition according to \ref{eq:banded-penalty-nullspace} demands. Rather than constructing a basis for $\mathcal{H}$, we instead consider representing the set of piecewise polynomial functions using B-splines, which exhibit numerical properties which are preferable to those of the TPFs. Let $t= \left\{ t_i \right\}$ denote a non-decreasing sequence. The $i^{th}$ B-spline of order $k$ which corresponds to the knot sequence $t$ is defined by 
+The truncated power basis, as in their use in defining polynomial regression splines, enjoy a particular ease of interpretation. The coefficient $\beta_{i+k}$ corresponds to the size of the jump at $\ell_i$ in the $k^{th}$ derivative of $f$. This fact is especially useful when tracking change points or in general, any abrupt changes in the regression curve, as the decomposition according to \ref{eq:banded-penalty-nullspace} demands. Rather than constructing a basis for $\mathcal{H}$, we instead consider representing the set of piecewise polynomial functions using B-splines, which exhibit numerical properties which are preferable to those of the TPFs. Let $\ell= \left\{ \ell_i \right\}$ denote a non-decreasing sequence. The $i^{th}$ B-spline of order $k$ which corresponds to the knot sequence $t$ is defined by 
 
 \begin{equation} \label{eq:bspline_definition}
-B_{i,k,t}\left(l\right) = \left(t_{i+k}-t_i\right)\left[t_i,\dots,t_{i+k}\right]\left(\cdot -l\right)_+^{k-1}.
+B_{i,k,t}\left(l\right) = \left(\ell_{i+k}-\ell_i\right)\left[\ell_i,\dots,\ell_{i+k}\right]\left(\cdot -l \right)_+^{k-1},
 \end{equation}  
 \noindent
-The placeholder notation, $\left(\cdot - l\right)_+^{k-1}$, is used to indicate that the $k^{th}$ divided difference of the function $g\left(t \right) = \left(t-l\right)^{k-1}_+$ is obtained by fixing $l$ and applying the divided difference to $g\left(t \right)$ as a function of $t$ alone. Henceforth, we will write $B_i$ rather than $B_{i,k,t}$ when the spline order and knot sequence can be inferred from surrounding context. Using the properties of the divided difference, one can show that  $B_i\left(x\right)$ has isolated support:
+where $\left[ x_i,\dots,x_{i+k} \right] f\left(x\right)$ denotes the $k^{th}$ order divdied difference of the function $f$ at $\left\{ x_i,\dots,x_{i+k} \right\}$. The placeholder notation, $\left(\cdot - l\right)_+^{k-1}$, is used to indicate that the $k^{th}$ divided difference of the function $g\left(t \right) = \left(t-l\right)^{k-1}_+$ is obtained by fixing $l$ and applying the divided difference to $g\left(t \right)$ as a function of $t$ alone. Henceforth, we will write $B_i$ rather than $B_{i,k,t}$ when the spline order and knot sequence can be inferred from surrounding context. Using the properties of the divided difference, one can show that  $B_i\left(x\right)$ has isolated support:
 
 \[
-B_i\left(l\right) = 0, \quad l \not \in \left[t_{i},t_{i+k}\right]
+B_i\left(l\right) = 0, \quad l \not \in \left[\ell_{i},\ell_{i+k}\right]
 \]
 \noindent
-As a result, for a set of B-splines of order $k$ corresponding to the knot sequence $t$, only $k$ of them are nonzero on $\left[t_{j},t_{j+k}\right]$: $B_{j-k+1},B_{j-k+2},\dots,B_{j}$. See \citet{de1978practical} for a complete review of B-splines and their properties. We may represent a univariate function as a B-spline:
+As a result, for a set of B-splines of order $k$ corresponding to the knot sequence $\ell$, only $k$ of them are nonzero on $\left[\ell_{j},\ell_{j+k}\right]$: $B_{j-k+1},B_{j-k+2},\dots,B_{j}$. See \citet{de1978practical} for a complete review of B-splines and their properties. A B-spline function is a linear combination of B-spline basis functions:
 
-\[
-f\left(l\right) =  \sum_{i=1}^n \beta_{k+i} B_{i}\left(l\right).
-\]
-
-This representation permits the intuitive expression of a penalty to be used for banding the Cholesky factor. If $$ 
-
-\begin{equation} \label{eq:banded-penalty}
-J_{B} = \sum_{  l_i \in \mathcal{L}: l_i > l_0} \vert \mu^* + \phi^*_1\left(l_i\right) \vert^p .
+\begin{equation} \label{eq:b-spline-representation}
+\phi_1\left(l\right) =  \sum_{i=1}^n \beta_{k+i} B_{i}\left(l\right)
 \end{equation}
 \noindent
+permits the intuitive expression of a penalty to be used for banding the Cholesky factor. The B-spline basis functions are non-negative on their support; therefore, if a B-spline (as in \ref{eq:b-spline-representation}) is zero for $\mathscr{l} > l_0$, then the coefficients of the B-splines contributing to that region of the domain are also zero. For functions represented using order $k$ B-spline basis functions $\lbrace B_i \rbrace$, $i=1,\dots,n$, one may truncate the function to zero at some truncation point $l_0 \in \left(0,1\right)$ by penalizing the size of the coefficients corresponding to any basis functions having support on $l > l_0$. This naturally leads to penalties of the form
 
-This may be viewed as a design-driven way of enforcing the regularization imposed by the penalty functionals of the form
+\begin{equation} \label{eq:banded-pspline-penalty}
+J_{B} = \sum_{ i=i^* -k }^n \vert \beta_i \vert^p
+\end{equation}
+\noindent
+where
+\[
+i^* = \max\limits_{i} \left\{ \ell_i: \ell_i \le l_0 \right\}
+\]
+is the index of the largest knot which is smaller than the truncation point $l_0$. Setting $p=1$ in \ref{eq:banded-pspline-penalty} corresponds to putting a LASSO penalty (see \citet{tibshirani1996regression}) on the coefficients contributing to the function value on $l > l_0$, while setting $p=2$ corresponds to the usual ridge regression setting. So far, we have discussed regularization of  
+
+
+%This may be viewed as a design-driven way of enforcing the regularization imposed by the penalty functionals of the form
 
 %citet{chen2011efficient}, citet{pourahmadi1999joint}, and citet{pourahmadi2002dynamic} have elicited parametric models for the generalized autoregressive coefficients, letting the GARPs depend only on the distance between two time points.
 
-\begin{equation} \label{eq:banded-penalty-functional}
-J_{\mathcal{B}} = \int_{ l_0}^1 \vert \phi^*\left(l,m\right) \vert^p dl.  
-\end{equation}
-\noindent
+%\begin{equation} \label{eq:banded-penalty-functional}
+%J_{\mathcal{B}} = \int_{ l_0}^1 \vert \phi^*\left(l,m\right) \vert^p dl.  
+%\end{equation}
+%\noindent
 
 
 
