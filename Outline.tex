@@ -230,7 +230,7 @@ m &= \frac{1}{2}\left(s+t\right).
 \end{align*}
 \noindent
 Writing $\phi$ in terms of the rotation gives the reparameterized coefficient function 
-\begin{equation}
+\begin{equation} \label{eq:phi-star}
 \phi^*\left(l,m\right) = \phi^*\left(s-t, \frac{1}{2}\left(s+t\right)\right) = \phi\left(s,t\right).
 \end{equation}
 
@@ -387,7 +387,7 @@ For $\mathcal{H}$ defined as above, our goal is to find $\phi^* \in \mathcal{H}$
 where $\left(l_{ijk}, m_{ijk}\right)$ are the result of transforming subject $i$'s $j$ and $k^{th}$ observation times, $t_{ij}$ and $t_{ik}$.  Let  $B$ denote the $p \times M$  matrix  with columns correponding to the $M$ basis functions spanning $\mathcal{H}_0$ evaluated at the $p = \sum_i=1^N {n_i \choose 2}$ within-subject pairs of observed time points.  In spirit of the result on the representation of a univariate $f \mathcal{H}$ given by cite{kimeldorf1971some}, we can similarly show that the minimizer of \ref{eq:penalized_loglikelihood} lies within a finite dimensional space despite the minimization being carried out over an infinite dimensional space, $\mathcal{H}$. 
 
 \begin{theorem} \label{phi_representer_thm}
-Let $p= \sum_{i=1}^N {n_i \choose 2}$ be the total number of distinct within-subject pairs of design points, and index the transformed pairs $\left( l,m \right)_i$, $i=1, \dots,p$. Let $B$ be the $p \times 2$ matrix with $\left(i,j\right)^{th}$ entry $k_j\left( \left( l,m \right)_i \right)$ with rank $r=2$. Then, the unique minimizer of the penalized likelihood \eqref{penlik1}, $\phi^* \in \mathcal{H}$ is of the form
+Let $p$ denote the total number of unique within-subject pairs of design points, and index the transformed pairs $\left( l,m \right)_i$, $i=1, \dots,p$. Let $B$ be the $p \times 2$ matrix with $\left(i,j\right)^{th}$ entry $k_j\left( \left( l,m \right)_i \right)$ with rank $r=2$. Then, the unique minimizer of the penalized likelihood \eqref{penlik1}, $\phi^* \in \mathcal{H}$ is of the form
 
 \begin{equation}
 \phi^*\left(l,m\right) = d_0 + d_1 k_1\left(l\right) + \sum_{i=1}^{p} c_i R^1\left( \left(l,m\right) , \left(l,m \right)_i\right)
@@ -460,7 +460,7 @@ The truncated power basis, as in their use in defining polynomial regression spl
 B_{i,k,t}\left(l\right) = \left(\ell_{i+k}-\ell_i\right)\left[\ell_i,\dots,\ell_{i+k}\right]\left(\cdot -l \right)_+^{k-1},
 \end{equation}  
 \noindent
-where $\left[ x_i,\dots,x_{i+k} \right] f\left(x\right)$ denotes the $k^{th}$ order divdied difference of the function $f$ at $\left\{ x_i,\dots,x_{i+k} \right\}$. The placeholder notation, $\left(\cdot - l\right)_+^{k-1}$, is used to indicate that the $k^{th}$ divided difference of the function $g\left(t \right) = \left(t-l\right)^{k-1}_+$ is obtained by fixing $l$ and applying the divided difference to $g\left(t \right)$ as a function of $t$ alone. Henceforth, we will write $B_i$ rather than $B_{i,k,t}$ when the spline order and knot sequence can be inferred from surrounding context. Using the properties of the divided difference, one can show that  $B_i\left(x\right)$ has isolated support:
+where $\left[ x_i,\dots,x_{i+k} \right] f\left(x\right)$ denotes the $k^{th}$ order divided difference of the function $f$ at $\left\{ x_i,\dots,x_{i+k} \right\}$. The placeholder notation, $\left(\cdot - l\right)_+^{k-1}$, is used to indicate that the $k^{th}$ divided difference of the function $g\left(t \right) = \left(t-l\right)^{k-1}_+$ is obtained by fixing $l$ and applying the divided difference to $g\left(t \right)$ as a function of $t$ alone. Henceforth, we will write $B_i$ rather than $B_{i,k,t}$ when the spline order and knot sequence can be inferred from surrounding context. Using the properties of the divided difference, one can show that  $B_i\left(x\right)$ has isolated support:
 
 \[
 B_i\left(l\right) = 0, \quad l \not \in \left[\ell_{i},\ell_{i+k}\right]
@@ -484,7 +484,7 @@ i^* = \max\limits_{i} \left\{ \ell_i: \ell_i \le l_0 \right\}
 \]
 is the index of the largest knot which is smaller than the truncation point $l_0$. Setting $p=1$ in \ref{eq:banded-pspline-penalty} corresponds to putting a LASSO penalty (see \citet{tibshirani1996regression}) on the coefficients contributing to the function value on $l > l_0$, while setting $p=2$ corresponds to the usual ridge regression setting. 
 
-\subsection{Additional smoothing with P-splines}
+\subsection{Additional smoothing with P-splines} \label{subsection:univariate-psplines}
 
 Representing the varying coefficient function as a B-spline lays the foundation of a flexible framework for seamlessly instituting multiple types of regularization on the fitted function at once. As in Section~\ref{}, one may wish for fitted functions to exhibit smoothness on their support. By using a rich B-spline basis along with a discrete difference penalty on the spline coefficients, we can achieve as much smoothness in the fitted function as desired. \cite{o1986statistical} was the first to propose using a rich B-spline basis and using a penalty to restrict the flexibility of the fitted curve. Like \citet{wahba1990spline} in the smoothing spline literature, he applied a penalty to the second derivative of the fitted curve: $J = \int_0^1 \left[ \phi_1^{\prime \prime}\left(l\right)\right]^2\;dl$.  Using the properties of B-splines, if $\phi_1\left(l\right) = \sum\limits_{j=1}^n \beta_j B_j\left(l\right)$, one can derive a banded matrix $P$ such that 
  \[
@@ -562,7 +562,7 @@ This gives us that the traditional smoothness penalty on the squared second deri
 
 The following figures display the impact of the squared distance on adjacent basis coefficients on the function itself. When examining the relationship between P-spline curves and their coefficients, it is helpful to consider the coefficients as the skeleton of the function, then draping the B-splines over them to ``put the flesh on the bones.'' A smoother sequence of coefficients leads to a smoother curve, which is clearly illustrated in Figure~\ref{fig:second_ord_PS_pen_SML_lambda}. As long as the coefficient sequence is smooth, the number of basis functions (and coefficients) is unimportant since the penalty ensures the smoothness of the skeleton.
 
-\begin{figure}[H]
+\begin{figure}[H] \label{fig:PS-smoothing-figure-1}
 \begin{subfigure}{.5\textwidth}
   \centering
    \graphicspath{{img/}}
@@ -588,11 +588,11 @@ The following figures display the impact of the squared distance on adjacent bas
   \label{fig:pspline_small_lambda}
 \end{subfigure}
 \caption{\textit{Illustration of the impact of the second order difference penalty. The number of B-splines used is the same in each plot, with the value of the penalty parameter increasing from left to right and top to bottom across each plot. The fitted curve in the upper left plot is the most ``wiggly'' of any of the fits, as the penalty plays the weakest roll in the fitted coefficients there. The red circles are the values of each of the B-spline coefficients; as the penalty increases, they form as smoother sequence as we move across the four plots, which results in a smoother fitted function. As the penalty parameter approaches infinity, the fit approaches a linear function as shown in the bottom right plot.}}
-\label{fig:second_ord_PS_pen_SML_lambda}
+\label{fig:second-ord-PS-pen-SML-lambda}
 \end{figure}
 
 
-The number of B-splines can be much larger than the number of observations because penalty ensures that the fitting procedure is well-conditioned. Figure~\ref{fig:overcomplete_basis_pspline} illustrates this utility of the penalty for simulated data; there are $m=10$ observations and $40 + 3$ cubic B-splines. This property of P-splines cannot be overly appreciated because it frees us from the concern of choosing the optimal set of knots. Unless computational constraints are of concern, which is possible with large models, it is prudent to use even more B-splines. Figure~\ref{fig:PS_penalty_section_figure_3} shows how the fitted function changes as the tuning parameter $\lambda$ is varied in the presence of sparsely sampled data. 
+The number of B-splines can be much larger than the number of observations because penalty ensures that the fitting procedure is well-conditioned. Figure~\ref{fig:overcomplete_basis_pspline} illustrates this utility of the penalty for simulated data; there are $m=10$ observations and $60$ cubic B-splines. This property of P-splines cannot be overly appreciated because it frees us from the concern of choosing the optimal set of knots. Unless computational constraints are of concern, which is possible with large models, it is prudent to use even more B-splines. Figure~\ref{fig:PS_penalty_section_figure_2} shows how the fitted function changes as the tuning parameter varies when the data are sparsely sampled. 
 
 \begin{figure}[H]   \label{fig:overcomplete_basis_pspline}
   \centering
@@ -601,7 +601,7 @@ The number of B-splines can be much larger than the number of observations becau
   \caption{P-spline smoothing of 10 observations using 60 B-spline basis functions.}
 \end{figure}
 
-\begin{figure}[H] \label{fig:PS_penalty_section_figure_3}
+\begin{figure}[H] \label{fig:PS_penalty_section_figure_2}
 \centering
  \graphicspath{{img/}}
   \includegraphics[width=4in, height=4in]{PS_penalty_section_figure_3.png}
@@ -614,21 +614,103 @@ P-splines enjoy many advantageous properties, many of which are inherited from t
 
 P-splines can fit polynomial data exactly. Given data $\left(l_i,y_i\right)$, if the $y_i$ are a polynomial in $l$ of degree $k$, then B-splines of degree $k$ or higher will fit the data exactly.  The same is true for P-splines if the order of the penalty is $k+1$ or higher, irrespective of the value of $\lambda$. An informal proof is left to the appendix.
 
-Under a difference penalty of order $k$, the fitted function will approach a polynomial of degree $k-1$ for large values of $\lambda$ as long as the degree of the B-splines is greater than or equal to $k$. This can be shown by once again considering the relationship between the derivatives of a B-spline fit and the differences in neighboring coefficients; detailed discussion is left to the appendix.
+Under a difference penalty of order $k$, the fitted function will approach a polynomial of degree $k-1$ for large values of $\lambda$ as long as the degree of the B-splines is greater than or equal to $k$. This can be shown by once again considering the relationship between the derivatives of a B-spline fit and the differences in neighboring coefficients; detailed discussion is left to the appendix. Figure~\ref{fig:PS_penalty_section_figure_6} visually demonstrates this property by examining the behavior of the fitted function as the tuning parameter varies under a difference penalty of order $d=0,1,2,3$.
 
 We will leverage several properties of the smoothing matrix, $H$, for model evaluation and selection, so focus on the linearized smoothing problem solved at each value of the penalty parameter, $\lambda$, is prudent. The trace of $H$ approaches the order of the differencing operator, $k$ for larges values of $\lambda$. The trace of the smoothing matrix is a useful measure of effective model dimension, so understanding its limiting behavior is important. 
 
+
+
+\begin{figure}[H]
+\begin{subfigure}{.5\textwidth}
+  \centering
+   \graphicspath{{img/}}
+  \includegraphics[scale=0.5]{PS_penalty_section_figure_6_order_0.png}
+  %\label{fig:pspline_small_lambda}
+\caption{$d=0$ }
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+   \graphicspath{{img/}}
+  \includegraphics[scale=0.5]{PS_penalty_section_figure_6_order_1.png}
+ % \label{fig:pspline_small_lambda}
+\caption{$d=1$}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+   \graphicspath{{img/}}
+  \includegraphics[scale=0.5]{PS_penalty_section_figure_6_order_2.png}
+  %\label{fig:pspline_small_lambda}
+\caption{$d=2$}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+   \graphicspath{{img/}}
+  \includegraphics[scale=0.5]{PS_penalty_section_figure_6_order_3.png}
+  %\label{fig:pspline_small_lambda}
+\caption{$d=3$}
+\end{subfigure}
+\caption{\textit{Illustration of the impact of the order of the difference penalty. The number of B-splines used is the same in each plot, with the penalty parameter varying from across the same grid of values. The fitted curves in the upper left plot correspond to the difference penalty of order $0$, where $\vert D_0 \alpha \vert^2 = \sum_{i=1}^n \alpha_i^2$, analogous to ridge regression using the B-spline basis as regression covariates. The fitted curves approach polynomials of degree $d-1$ as $\lambda \rightarrow \infty$.}}
+\label{fig:PS_penalty_section_figure_6}
+\end{figure}
+
+
 \subsection{Multidimensional smoothing with B-splines}
 
-P-splines can be extended naturally to higher dimensions by constructing a regression basis from the Tensor product of the one-dimensional B-splines bases for each dimension. If we equip $l$ and $m$ each with a B-spline basis, we can write the varying coefficient function $\phi$ in terms of the tensor product of these bases. To regularize the fitted function, the only other modification necessary for the extension into two dimensions is the addition of a difference penalty for each variable $l$ and $m$. Let $B_{1}\left(l\right),\dots, B_{K}\left(l\right)  \mbox{ and } B_{1}\left(m\right),\dots, B_{L}\left(m\right)$  denote the B-spline bases for $l$ and $m$, each having a set of equally spaced knots along their respective domain. It is worth noting that while we have chosen not to distinguish between $\left\{ B_k \right\}$ and $\left\{ {B}_l \right\}$ for the sake of brevity, one is free to specify a different basis for each dimension either by using different order B-spline or, of course, using different numbers of knots, and hence entirely different knot sequences since P-splines rely on bases with equally spaced knots. The tensor product basis $\left\{T_{ij}\right)$ carves the $l$-$m$ into rectangles, where 
+P-splines can be extended naturally to higher dimensions by constructing a regression basis from the tensor product of the one-dimensional B-splines bases for each dimension. Figure~\ref{fig:bicubic_BS} displays the building block of the foundation on which multidimensional P-splines is built: a B-spline tensor product basis $\big\{ T_{kl}\big\}$ function.  If we equip $l$ and $m$ each with a B-spline basis, we can a basis for the varying coefficient function $\phi$ in \ref{eq:phi-star} by taking the tensor product of the two marginal bases. To regularize the fitted function, the only other modification necessary for the extension into two dimensions is the addition of a difference penalty for each variable $l$ and $m$. Let $B_{1}\left(l\right),\dots, B_{K}\left(l\right)  \mbox{ and } B_{1}\left(m\right),\dots, B_{L}\left(m\right)$  denote the B-spline bases for $l$ and $m$, each having a set of equally spaced knots along their respective domain. It is worth noting that while we have chosen not to distinguish between $\left\{ B_k \right\}$ and $\left\{ {B}_l \right\}$ for the sake of brevity, one is free to specify a different basis for each dimension either by using different order B-spline or, of course, using different numbers of knots, and hence entirely different knot sequences since P-splines rely on bases with equally spaced knots. The tensor product basis functions
 \begin{equation*}
 T_{jk}\left(l,m\right) = B_j\left(l\right){B}_k\left(m\right)
 \end{equation*}
+\noindent
+ carve the $l$-$m$ domain into rectangles.  Figure~\ref{fig:sparse_bicubic_BS_basis} shows a thinned tensor product basis $\left\{ T_{kl} \right\}$l; a portion of the basis was omitted to eliminate overlapping of the basis functions so that the reader can identify individual tensor products. Each ``hill'' in Figure~\ref{fig:sparse_bicubic_BS_basis} is associated with an unknown coefficient $\alpha_{ij}$ which determines the height of the hill. For a given knot grid, we can approximate a surface by
 
 
-Figure~\ref{fig:bicubic_BS} displays the building block of the foundation on which multidimensional P-splines is built: B-spline tensor product basis $\big\{ T_{kl}\big\}$.
+\begin{equation} \label{eq:varying-coefficient-tensor-product-expansion}
+\phi^*\left(l,m\right) = \sum_{i=1}^K \sum_{j=1}^L \alpha_{ij} B_{i}\left(l\right) B_{j}\left(m\right).
+\end{equation}
 
- 
+Let $p$ denote the total number of unique within-subject pairs of design points, and index the transformed coordinate pairs $\left( l,m \right)_i$, $i=1, \dots,p$. Let $B_l$ and $B_m$ denote the B-spline bases along the $l$ and $m$ coordinates of dimension $p \times K$ and $p \times L$, respectively, and let $A$ be the unknown matrix of basis coefficients with elements $\left[ \alpha_{ij} \right]$. To control the flexibility of the fitted function as with univariate P-splines discussed in Section~\ref{subsection:univariate-psplines}, we can apply difference penalties to the rows and columns of $A$ to smooth in the $l$ and $m$ directions respectively, using the penalty 
+
+\begin{equation}\label{eq:unfolded-row-column-difference-penalty}
+\sum_{k} \vert D_d \alpha_{k \cdot} \vert^2 + \bar{\lambda} \sum_{l} \vert D_{\bar{d}} \alpha_{\cdot l} \vert^2 .
+\end{equation}
+\noindent
+where $\alpha_{k \cdot}$ and $\alpha_{\cdot l}$ denote the $k^{th}$ row and $l^{th}$ column of $A$, respectively. Thus, the first term in the penalty imposes a difference penalty of order $d_l$ on the rows of the coefficient matrix while the second term places a difference penalty (of possible different order $d_m$) on the columns. We give each direction its own smoothing parameter to permit anisotropic smoothing; however, one could opt to use a single smoothing parameter for both directions and dodge the added work of optimizing the amount of smoothing with two separate parameters. Figure ~\ref{fig:2d_PS_penalty_demo} shows a potential result of heavy column penalization (left) and heavy row penalization (right) under a second order difference penalty on each row and each column for large values of $\lambda$ and $\bar{\lambda}$. The figure demonstrates that the limiting behaviour of each row and column is linear, but the resulting surface may exhibit slope reversals from one row (column) to the next. 
+
+
+\begin{figure}[H] \label{fig:2d_PS_penalty_demo}
+ \begin{subfigure}{.48\textwidth}
+  \centering
+   \graphicspath{{img/}}
+ \includegraphics[scale=0.5]{"model selection/effective dimension/2d_PS_section_figure1_big_col_lambda"}
+ \caption{\textit{heavy column penalty}}
+ \label{fig:2D_PS_big_col_penalty}
+ \end{subfigure}
+ \begin{subfigure}{.48\textwidth}
+  \centering
+   \graphicspath{{img/}}
+  \includegraphics[scale=0.5]{"model selection/effective dimension/2d_PS_section_figure1_big_row_lambda"}
+ \caption{\textit{heavy row penalty}}
+\label{fig:2D_PS_big_row_penalty}
+ \end{subfigure}
+ \caption{\textit{Nine cubic B-spline tensor products with heavy linear column penalty and heavy linear row penalty}}
+\end{figure}
+
+
+It is computationally advantageous to express the coefficient matrix in ``unfolded'' notation, which allows us to express the varying coefficient function at the observed coordinate grid as in the usual multiple regression form:
+
+\begin{equation*}
+\mbox{vec}\left\{\phi^*\left(l,m\right)\right\} = B \alpha
+\end{equation*}
+\noindent
+where the vectorized coefficient matrix $\alpha = \mbox{vec}\left( A \right)$ is obtained by stacking the columns of $A$. The tensor product basis $B$ is constructed from the tensor product of the marginal B-spline bases defined in \citet{eilers2006fast} as the \textit{row-wise} Kronecker product of the individual bases:
+
+\begin{equation} \label{eq:rowwise-kronecker-product}
+B = B_l \square B_m = \left( B_m \otimes 1^T_{K} \right) \odot \left(1^T_{L} \otimes  B_l  \right),
+\end{equation}
+\noindent
+which has dimension $p \times KL$. The operator $odot$ denotes the element-wise matrix product; $1_K$ ($1_L$) denotes the column vector of ones having length $K$ ($L$.) The operations in \ref{eq:rowwise-kronecker-product} construct $B$ such that the $i^{th}$ row of $B_m\square B_l$ 
+
+Writing Cholesky-based regression model \ref{eq:MyModel} in 
 
 \begin{figure}[H]
 \centering
