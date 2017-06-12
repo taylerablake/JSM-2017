@@ -212,7 +212,7 @@ The form of the likelihood of $y_1,\dots,y_N$ indicates that we allow both the n
 In the case that subjects share a common set of observation times $t_1 < \dots < t_m$,  it is well known that the MLE for $\Sigma$, $S = \sum_{i=1}^N y_i y_i^T$ is highly unstable in high dimensions, a condition that is potentially worsened when one or more subjects has at least one observation time that is unique from the set of observation times common across subjects. To mitigate instability due to high dimensionality and simultaneously permit the estimation of $\phi\left(\cdot,\cdot\right)$ as a smooth bivariate function, we obtain a covariance estimator by applying bivariate smoothing of the elements of the Cholesky factor. 
 
 
-\section{Representation of $\phi$ as a smooth function}
+\section{Smoothing spline representation of $\phi$}
 
 To impose structure on the estimated varying coefficient function, we augment the negative log-likelihood \ref{eq:loglikelihood} with penalty functional, which discourages the flexibility of the fitted function. We take the estimator of $\phi$ to minimize
 
@@ -240,7 +240,6 @@ We define our estimator $\hat{\phi^*}$ as the minimizer of
 -2 L + \lambda^* J_{\phi^*}\left(\phi^*\right) \label{eq:phi-star-objective-fnc}.
 \end{equation}
 
-\subsection{Smoothing spline ANOVA models}
 
 We consider models that capture the marginal effects of $l$ and $m$, as well as interaction between the two directions. We first consider the smoothing spline ANOVA decomposition of \citet{gu2002smoothing},  modeling 
 
@@ -400,8 +399,9 @@ The proof is left to the appendix.
 
 \subsection{Demonstration of the smoothing spline fitting procedure: Examples}
 
+\section{B-spline representation of $\phi$}
 
-\section{Banding the inverse covariance}
+\subsection{Banding the inverse covariance}
 %The parameters of the functional autoregressive model given by \ref{eq:MyModel} define the elements of the precision matrix $\Omega$, rather than the elements of $\Sigma$ itself. It is well known that if we let $Y = \left(Y_1, \dots, Y_m\right)^T$ denote the random vector having joint distribution with mean zero and covariance matrix $\Sigma$, then the elements of $\Sigma^{-1}=\Omega$, $\left\{ \omega_{ij} \right\}$ may be interpreted as partial covariances between the elements of $Y$. This suggests shrinking $\phi^*$ to zero for large values of $l$. One can show that if $T$ has $k$ non-zero diagonals, then the middle $k$ diagonals of $\Sigma^{-1}$ are non-zero.  
 
 Estimating the varying coefficient function $\phi^*$ is quite different from the usual problem of estimating an arbitrary bivariate function via smoothing. In the case of the latter, we most typically treat both arguments equally in terms of regularization, but in the case of covariance estimation and the generalized coefficient function equal treatment of $l$ and $m$ in terms of penalization perhaps is not the most appropriate approach. The lag component, $l$, has particularly significant meaning in terms of the covariance function and thus also in terms of $\phi^*$ and is of considerable more interest than the orthogonal component, $m$. As discussed in Section 2, we can define an entire class of functional autoregressive models using only the $l$ direction, and additionally, as discussed in Section 3, there is a natural expectation about the functional form of the autoregressive coefficient function (and hence covariance) as a function of $l$. The use of smoothing splines to estimate $\phi$ outlined in Section~\ref{} yields smooth null models, but smoothness of the elements of the Cholesky factor alone may not lead to desirable structure in the inverse covariance matrix.  
@@ -437,7 +437,7 @@ supp\left( \phi^* \right) = \left(0,l_0\right].
 
 \subsection{An alternative basis for $\mathcal{H}$}
 
-Functions having compact support arise from penalties differing significantly from the penalty discussed in Section 2.1 and the derivative-based penalties typically encountered in the smoothing spline ANOVA setting: the decomposition of $\mathcal{H}$ into \ref{eq"banded-penalty-nullspace} and its orthogonal complement requires basis functions having compact support. Consider a sequence of knots partitioning the unit interval $0 < \ell_1 < \ell_2 < \dots < \ell_n < 1$; the truncated power functions (TPFs) of degree $k$, $\lbrace T_{i,k} \rbrace_{i=1}^n$, are given by
+The penalties having nullspace \ref{eq:banded-penalty-nullspace} differ significantly from the penalty discussed in Section 2.1 and the derivative-based penalties typically encountered in the smoothing spline ANOVA setting. For $\mathcal{H}_B$ to be non-empty, functions in $\mathcal{H}$ must be constructed from a basis having at least one or more elements with compact support. Consider a sequence of knots partitioning the unit interval $0 < \ell_1 < \ell_2 < \dots < \ell_n < 1$; the truncated power functions (TPFs) of degree $k$, $\lbrace T_{i,k} \rbrace_{i=1}^n$, are given by
 \begin{equation*}
 T^+_{i,k}\left(l\right) = \left(l - \ell_i\right)^{k}_+ = \left\{\begin{array}{lr} \left(l-\ell_i\right)^{k-1}, & l-\ell_i \ge0\\ 0 & l-\ell_i < 0\end{array}\right.
 \end{equation*}
@@ -454,7 +454,7 @@ A univariate function can be represented as a linear combination of these basis 
 \]
 \noindent
 
-The truncated power basis, as in their use in defining polynomial regression splines, enjoy a particular ease of interpretation. The coefficient $\beta_{i+k}$ corresponds to the size of the jump at $\ell_i$ in the $k^{th}$ derivative of $f$. This fact is especially useful when tracking change points or in general, any abrupt changes in the regression curve, as the decomposition according to \ref{eq:banded-penalty-nullspace} demands. Rather than constructing a basis for $\mathcal{H}$, we instead consider representing the set of piecewise polynomial functions using B-splines, which exhibit numerical properties which are preferable to those of the TPFs. Let $\ell= \left\{ \ell_i \right\}$ denote a non-decreasing sequence. The $i^{th}$ B-spline of order $k$ which corresponds to the knot sequence $t$ is defined by 
+The truncated power basis, as in their use in defining polynomial regression splines, enjoy a particular ease of interpretation. The coefficient $\beta_{i+k}$ corresponds to the size of the jump at $\ell_i$ in the $k^{th}$ derivative of $\phi_1$. This fact is especially useful when tracking change points or in general, any abrupt changes in the regression curve, as the decomposition according to \ref{eq:banded-penalty-nullspace} demands. Rather than constructing a basis for $\mathcal{H}$, we instead consider representing the set of piecewise polynomial functions using B-splines, which exhibit numerical properties which are preferable to those of the TPFs. Let $\ell= \left\{ \ell_i \right\}$ denote a non-decreasing sequence. The $i^{th}$ B-spline of order $k$ which corresponds to the knot sequence $t$ is defined by 
 
 \begin{equation} \label{eq:bspline_definition}
 B_{i,k,t}\left(l\right) = \left(\ell_{i+k}-\ell_i\right)\left[\ell_i,\dots,\ell_{i+k}\right]\left(\cdot -l \right)_+^{k-1},
@@ -472,7 +472,7 @@ As a result, for a set of B-splines of order $k$ corresponding to the knot seque
 \phi_1\left(l\right) =  \sum_{i=1}^n \beta_{k+i} B_{i}\left(l\right)
 \end{equation}
 \noindent
-permits the intuitive expression of a penalty to be used for banding the Cholesky factor. The B-spline basis functions are non-negative on their support; therefore, if a B-spline (as in \ref{eq:b-spline-representation}) is zero for $\mathscr{l} > l_0$, then the coefficients of the B-splines contributing to that region of the domain are also zero. For functions represented using order $k$ B-spline basis functions $\lbrace B_i \rbrace$, $i=1,\dots,n$, one may truncate the function to zero at some truncation point $l_0 \in \left(0,1\right)$ by penalizing the size of the coefficients corresponding to any basis functions having support on $l > l_0$. This naturally leads to penalties of the form
+permits the intuitive expression of a penalty to be used for banding the Cholesky factor. The B-spline basis functions are non-negative on their support; therefore, if a B-spline (as in \ref{eq:b-spline-representation}) is zero for $l > l_0$, then the coefficients of the B-splines contributing to that region of the domain are also zero. For functions represented using order $k$ B-spline basis functions $\lbrace B_i \rbrace$, $i=1,\dots,n$, one may truncate the function to zero at some truncation point $l_0 \in \left(0,1\right)$ by penalizing the size of the coefficients corresponding to any basis functions having support on $l > l_0$. This naturally leads to penalties of the form
 
 \begin{equation} \label{eq:banded-pspline-penalty}
 J_{B} = \sum_{ i=i^* -k }^n \vert \beta_i \vert^p
@@ -482,45 +482,189 @@ where
 \[
 i^* = \max\limits_{i} \left\{ \ell_i: \ell_i \le l_0 \right\}
 \]
-is the index of the largest knot which is smaller than the truncation point $l_0$. Setting $p=1$ in \ref{eq:banded-pspline-penalty} corresponds to putting a LASSO penalty (see \citet{tibshirani1996regression}) on the coefficients contributing to the function value on $l > l_0$, while setting $p=2$ corresponds to the usual ridge regression setting. So far, we have discussed regularization of  
+is the index of the largest knot which is smaller than the truncation point $l_0$. Setting $p=1$ in \ref{eq:banded-pspline-penalty} corresponds to putting a LASSO penalty (see \citet{tibshirani1996regression}) on the coefficients contributing to the function value on $l > l_0$, while setting $p=2$ corresponds to the usual ridge regression setting. 
 
+\subsection{Additional smoothing with P-splines}
 
-%This may be viewed as a design-driven way of enforcing the regularization imposed by the penalty functionals of the form
+Representing the varying coefficient function as a B-spline lays the foundation of a flexible framework for seamlessly instituting multiple types of regularization on the fitted function at once. As in Section~\ref{}, one may wish for fitted functions to exhibit smoothness on their support. By using a rich B-spline basis along with a discrete difference penalty on the spline coefficients, we can achieve as much smoothness in the fitted function as desired. \cite{o1986statistical} was the first to propose using a rich B-spline basis and using a penalty to restrict the flexibility of the fitted curve. Like \citet{wahba1990spline} in the smoothing spline literature, he applied a penalty to the second derivative of the fitted curve: $J = \int_0^1 \left[ \phi_1^{\prime \prime}\left(l\right)\right]^2\;dl$.  Using the properties of B-splines, if $\phi_1\left(l\right) = \sum\limits_{j=1}^n \beta_j B_j\left(l\right)$, one can derive a banded matrix $P$ such that 
+ \[
+ J = \beta^\prime P \beta
+ \] 
+ \noindent
+ where $\beta = \left(\beta_1,\dots, \beta_n\right)$, and the $i$-$j^{th}$ element of $P$ is given by
+ \[
+ p_{ij} = \int_0^1 B_i^{\prime \prime} \left( l \right)B_j^{\prime \prime} \left( l \right)\;dl.
+ \]
 
+In some applications, the use of the third and fourth derivative in the penalty may be appropriate, but with the use of higher order derivatives, the computation of $P$ is nontrivial and becomes very tedious. \citet{eilers1996flexible} were the first to propose P-splines, or penalized B-splines, as an approach to nonparametric regression which circumvents complexity associated with constructing such penalty matrices by omitting derivatives and integrals altogether. Instead, flexibility of the fitted function is controlled by using a discrete penalty matrix based on finite difference formulas. Smoothness of the fitted function is achieved by first using a rich B-spline basis with equally spaced knots to purposefully overfit the smooth coefficient vectors. This liberates us from the difficulty of choosing the optimal set of knots. Then by attaching a difference penalty to the goodness of fit measure, one may prevent overfitting and make a potentially ill-conditioned fitting procedure a well-conditioned one. 
+
+In some applications, it is useful to work with third and fourth order differences, since for large values of $\lambda$, the fitted curve approaches a parametric polynomial model. This is of particular interest within the context of estimating the The finite difference penalty is simple to compute and can be handled mechanically for any order of the differences. Since it is easily introduced into regression equations, it is feasible to evaluate the impact of different orders of the differences on the fitted model.  Using the properties of B-splines, it is straightforward to show that the difference penalty is a good discrete approximation to the integrated square of the $k^{th}$ derivative, so little is lost by replacing the derivative-based penalty with the following difference penalty:
+
+\begin{equation} \label{eq:bspline-difference-penalty}
+J_d\left( \phi_1 \right) = \sum_{j=d}^n \left(\Delta^d \beta_j\right)^2
+\end{equation} 
+\noindent
+where $\beta = \left( \beta_1,\dots,\beta_n \right)$. Let $D_d$ denote the matrix difference operator: $D_d\beta = \Delta^d \beta$, where
+
+ \begin{align*}
+ \Delta \beta_j &= \beta_j - \beta_{j-1}, \quad  \Delta^2 \beta_j = \Delta\left(\Delta \beta_j\right) = \beta_j - 2\beta_{j-1} + \beta_{j-2}
+ \end{align*}
+\noindent 
+In general,
+\begin{equation*}
+\Delta^d \beta_j = \Delta\left(\Delta^{d-1} \beta_j \right).
+\end{equation*} 
+\noindent
+Then, \ref{eq:bspline-difference-penalty} can be written in terms of the squared norm of the difference operator applied to the vector of B-spline coefficients:
+\begin{align} 
+\begin{split} \label{eq:bspline-difference-penalty-vector-form}
+J_d\left( \phi_1 \right) &= \vert \vert D_d\beta \vert \vert^2 \\
+&= \beta^T P_d \beta
+\end{split}
+\end{align}
+\noindent
+where $P_d = D_d^T D_d$.
+
+By expressing the traditional penalty on the second derivative in terms of the B-spline coefficients, we can examine its connection to a penalty on second-order differences of the third-order B-spline coefficients:
+\begin{equation} \label{eq:second-derivative-bspline-penalty}
+\beta^T P \beta = \int_{0}^{1} \left\{ \sum\limits_{j=1}^n  \beta_j B_{j,3}^{\prime \prime} \left(l\right) \right\}^2\; dl.
+\end{equation}
+\noindent
+Using the derivative properties of B-splines, this can be written as 
+\begin{equation} \label{eq:second-derivative-bspline-penalty}
+\beta^T P \beta =  \int_{0}^{1}  \bigg[ \sum\limits_{j=1}^n \sum\limits_{k=1}^n \Delta^2 \beta_j \Delta^2 \beta_k B_{j,1}\left(l\right)B_{k,1}\left(l\right)\bigg]\; dl  . 
+\end{equation}
+\noindent
+Most of the cross products of $B_{j,1}\left(l\right)$ and $B_{k,1}\left( l \right)$ vanish since B-splines of degree 1 only overlap when $j$ is $k-1$, $k$, or $k+1$. Thus, we have that
+\begin{align}
+\begin{split}
+\beta^T P \beta = {} &  \int_0^1 \bigg[ \left\{ \sum\limits_{j=1}^n   \Delta^2 \beta_j  B_j\left(l,1\right)  \right\}^2  + 2 \sum_{j}\Delta^2 \beta_j\Delta^2 \beta_{j-1}B_j\left(l,1\right)B_{j-1}\left(l,1\right) \bigg]\; dl \\ 
+= {} & \sum \limits_{j=1}^n  \left( \Delta^2\beta_j \right)^2 \int_0^1 B_j^2\left(l,1\right)\;dl \\
+   &{} \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\; + 2 \sum\limits_{j=1}^n \Delta^2 \beta_j\Delta^2 \beta_{j-1} \int_0^1 B_j\left(l,1\right)B_{j-1}\left(l,1\right)\;dl 
+\end{split}
+\end{align}
+\noindent
+which can be written as
+\begin{equation} \label{eq:derivative-penalty-difference-penalty-connection}
+\beta^T P \beta = c_1 \sum\limits_{j=2}^n \left( \Delta^2 \beta_j\right)^2 + c_2 \sum\limits_{j=3}^n \Delta^2 \beta_j\Delta^2 \beta_{j-1}
+\end{equation}
+\noindent
+Given a set of equidistant knots, the constants $c_1$ and $c_2$ are given by
+\begin{equation}
+\begin{split}
+c_1 & =   \int_0^1 B_{j,1}^2\left(l\right) dl\\
+c_2 & = \int_0^1 B_{j,1}\left(l\right)B_{j-1,1}\left(l\right) dl.
+\end{split}
+\end{equation}
+
+This gives us that the traditional smoothness penalty on the squared second derivative can be written as a linear combination of a penalty on the second-order differences of the B-spline coefficients \ref{eq:bspline-difference-penalty} and the sum of the cross products of neighboring second differences. The second term in \ref{eq:derivative-penalty-difference-penalty-connection} leads to a complex objective function when minimizing the penalized likelihood, where seven adjacent spline coefficients occur, as opposed to five if only the first term in \ref{eq:derivative-penalty-difference-penalty-connection} is used in the penalty. The added complexity is a consequence of overlapping B-splines, which quickly increases when using higher order differences and higher order B-splines. We can seamlessly augment the likelihood with the difference penalty to achieve smooth fitted functions without the complexity posed by the derivative-based penalty.
 %citet{chen2011efficient}, citet{pourahmadi1999joint}, and citet{pourahmadi2002dynamic} have elicited parametric models for the generalized autoregressive coefficients, letting the GARPs depend only on the distance between two time points.
 
-%\begin{equation} \label{eq:banded-penalty-functional}
-%J_{\mathcal{B}} = \int_{ l_0}^1 \vert \phi^*\left(l,m\right) \vert^p dl.  
+The following figures display the impact of the squared distance on adjacent basis coefficients on the function itself. When examining the relationship between P-spline curves and their coefficients, it is helpful to consider the coefficients as the skeleton of the function, then draping the B-splines over them to ``put the flesh on the bones.'' A smoother sequence of coefficients leads to a smoother curve, which is clearly illustrated in Figure~\ref{fig:second_ord_PS_pen_SML_lambda}. As long as the coefficient sequence is smooth, the number of basis functions (and coefficients) is unimportant since the penalty ensures the smoothness of the skeleton.
+
+\begin{figure}[H]
+\begin{subfigure}{.5\textwidth}
+  \centering
+   \graphicspath{{img/}}
+  \includegraphics[scale=0.5]{pspline_pord2_xsmall_lambda.png}
+  \label{fig:pspline_small_lambda}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+   \graphicspath{{img/}}
+  \includegraphics[scale=0.5]{pspline_pord2_small_lambda.png}
+  \label{fig:pspline_small_lambda}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+   \graphicspath{{img/}}
+  \includegraphics[scale=0.5]{pspline_pord2_medium_lambda.png}
+  \label{fig:pspline_small_lambda}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+   \graphicspath{{img/}}
+  \includegraphics[scale=0.5]{pspline_pord2_large_lambda.png}
+  \label{fig:pspline_small_lambda}
+\end{subfigure}
+\caption{\textit{Illustration of the impact of the second order difference penalty. The number of B-splines used is the same in each plot, with the value of the penalty parameter increasing from left to right and top to bottom across each plot. The fitted curve in the upper left plot is the most ``wiggly'' of any of the fits, as the penalty plays the weakest roll in the fitted coefficients there. The red circles are the values of each of the B-spline coefficients; as the penalty increases, they form as smoother sequence as we move across the four plots, which results in a smoother fitted function. As the penalty parameter approaches infinity, the fit approaches a linear function as shown in the bottom right plot.}}
+\label{fig:second_ord_PS_pen_SML_lambda}
+\end{figure}
+
+
+The number of B-splines can be much larger than the number of observations because penalty ensures that the fitting procedure is well-conditioned. Figure~\ref{fig:overcomplete_basis_pspline} illustrates this utility of the penalty for simulated data; there are $m=10$ observations and $40 + 3$ cubic B-splines. This property of P-splines cannot be overly appreciated because it frees us from the concern of choosing the optimal set of knots. Unless computational constraints are of concern, which is possible with large models, it is prudent to use even more B-splines. Figure~\ref{fig:PS_penalty_section_figure_3} shows how the fitted function changes as the tuning parameter $\lambda$ is varied in the presence of sparsely sampled data. 
+
+\begin{figure}[H]   \label{fig:overcomplete_basis_pspline}
+  \centering
+   \graphicspath{{img/}}
+  \includegraphics[scale=0.75]{pspline_10obs_60_basis_functions.png}
+  \caption{P-spline smoothing of 10 observations using 60 B-spline basis functions.}
+\end{figure}
+
+\begin{figure}[H] \label{fig:PS_penalty_section_figure_3}
+\centering
+ \graphicspath{{img/}}
+  \includegraphics[width=4in, height=4in]{PS_penalty_section_figure_3.png}
+
+  \includegraphics[width=4in, height=4in]{PS_penalty_section_figure_4.png}
+ \caption{Fitted mean curves using a second (top) and third (bottom) order difference penalty for simulated data, sparsely sampled along the indexing variable: $y\left(t\right) = 1.2 + \sin\left(5t\right) + 0.2\epsilon_t$, where $\epsilon_t \stackrel{i.i.d.}{\sim}\textup{N}\left(0,1\right)$. A total of 10 data points were fit using a basis of 60 B-splines of degree $k=3$.}
+\end{figure}
+
+P-splines enjoy many advantageous properties, many of which are inherited from the attractive properties of B-splines. First, unlike many types of kernel smoothers, P-splines show no boundary effects i.e. the spreading of the fitted curve outside of the physical domain of the data, usually while also bending toward zero. See \citet{eilers1996flexible} Section 8 for a detailed discussion.
+
+P-splines can fit polynomial data exactly. Given data $\left(l_i,y_i\right)$, if the $y_i$ are a polynomial in $l$ of degree $k$, then B-splines of degree $k$ or higher will fit the data exactly.  The same is true for P-splines if the order of the penalty is $k+1$ or higher, irrespective of the value of $\lambda$. An informal proof is left to the appendix.
+
+Under a difference penalty of order $k$, the fitted function will approach a polynomial of degree $k-1$ for large values of $\lambda$ as long as the degree of the B-splines is greater than or equal to $k$. This can be shown by once again considering the relationship between the derivatives of a B-spline fit and the differences in neighboring coefficients; detailed discussion is left to the appendix.
+
+We will leverage several properties of the smoothing matrix, $H$, for model evaluation and selection, so focus on the linearized smoothing problem solved at each value of the penalty parameter, $\lambda$, is prudent. The trace of $H$ approaches the order of the differencing operator, $k$ for larges values of $\lambda$. The trace of the smoothing matrix is a useful measure of effective model dimension, so understanding its limiting behavior is important. 
+
+\subsection{Multidimensional smoothing with B-splines}
+
+P-splines can be extended naturally to higher dimensions by constructing a regression basis from the Tensor product of the one-dimensional B-splines bases for each dimension. If we equip $l$ and $m$ each with a B-spline basis, we can write the varying coefficient function $\phi$ in terms of the tensor product of these bases. To regularize the fitted function, the only other modification necessary for the extension into two dimensions is the addition of a difference penalty for each variable $l$ and $m$. Let $B_{1}\left(l\right),\dots, B_{K}\left(l\right)  \mbox{ and } B_{1}\left(m\right),\dots, B_{L}\left(m\right)$  denote the B-spline bases for $l$ and $m$, each having a set of equally spaced knots along their respective domain. It is worth noting that while we have chosen not to distinguish between $\left\{ B_k \right\}$ and $\left\{ {B}_l \right\}$ for the sake of brevity, one is free to specify a different basis for each dimension either by using different order B-spline or, of course, using different numbers of knots, and hence entirely different knot sequences since P-splines rely on bases with equally spaced knots. The tensor product basis $\left\{T_{ij}\right)$ carves the $l$-$m$ into rectangles, where 
+\begin{equation*}
+T_{jk}\left(l,m\right) = B_j\left(l\right){B}_k\left(m\right)
+\end{equation*}
+
+
+Figure~\ref{fig:bicubic_BS} displays the building block of the foundation on which multidimensional P-splines is built: B-spline tensor product basis $\big\{ T_{kl}\big\}$.
+
+ 
+
+\begin{figure}[H]
+\centering
+ \graphicspath{{img/}}
+  \includegraphics[width=4in, height=4in]{bicubic_basis_function.png}
+ 
+\includegraphics[width=4in, height=4in]{bicubic_bspline_contour.png}
+\caption{Tensor product of two cubic B-splines}
+\label{fig:bicubic_BS}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \graphicspath{{img/}}
+  \includegraphics[width=5in,height=5in]{sparse_bicubic_basis.png}
+  \caption{A subset of a full bivariate basis of cubic B-splines}\label{fig:sparse_bicubic_BS_basis}
+\end{figure}
+
+
+
+
+%
+%To further impose simplicity in the structure of the inverse covariance, we consider ``banding'' the functional components of these of these null models; specifically, if we consider any $\phi^*$ corresponding to a Toeplitz precision matrix, that is any $\phi^*$ of the form
+%
+%\begin{equation}
+%\phi^*\left(l,m\right) = \mu^* + \phi^*_1\left(l\right)
 %\end{equation}
 %\noindent
 
-
-
-
-
-To further impose simplicity in the structure of the inverse covariance, we consider ``banding'' the functional components of these of these null models; specifically, if we consider any $\phi^*$ corresponding to a Toeplitz precision matrix, that is any $\phi^*$ of the form
-
-\begin{equation}
-\phi^*\left(l,m\right) = \mu^* + \phi^*_1\left(l\right)
-\end{equation}
-\noindent
-we propose truncating the functional lag components:  the overall mean and the main effect of $l$ to zero for any $l > l_0$ for some truncation point $l_0 \in \left(0,1\right)$. We consider the class of penalty functions that can be written in terms of an $L_p$ norm of the sum of the overall mean and the functional main effect of $l$. We follow in the work of cite{huang2006covariance} and consider penalties which may be written
-
-
+\section{extra junk}
 
 \citet{bickel2008regularized} discuss 
 2004; 2008a; Wu and Pourahmadi, 2009) and generally those based on the Cholesky decomposition
 of the covariance matrix or its inverse (Pourahmadi, 1999, 2000; Rothman et al.
 2010) do impose an order among the components of Y and are not permutation-invariant.
 
-
-
-where $\mathcal{L}$ denotes the observed values of $l$, so that any $\phi^*$ to which $J_2$ assigns zero penalty is one that inherits nonzero contribution from stationary functional components only for lags $l \le l_0$. We focus our attention to two important members of this family of penalties: the $L_2$ penalty and the $L_1$ penalty, given by
-\begin{eqnarray} \nonumber
- J_{2,\left(2\right)} = \sum_{ l_i \in \mathcal{L}: l_i > l_0} \left( \mu^* + \phi^*_1\left(l_i\right) \right)^2 \label{L2penalty} \;\;\mbox{and}\\
- J_{2,\left(1\right)} = \sum_{ l_i \in \mathcal{L}: l_i > l_0} \vert \mu^* + \phi^*_1\left(l_i\right) \vert \label{L1penalty}
- \end{eqnarray}\noindent
-respectively. These penalties will induce shrinkage in the autoregressive coefficient function $\phi^*$ (and hence in the overall inverse covariance function) as in ridge regression and LASSO, respectively. Considering both types of regularization introduced in this section and in the previous, any $\phi^*$ belonging to the set of models incurring zero penalty from both $J_1$ and $J_2$ may be written
 
 \[
 \phi^*\left(l,m\right) = \left\{ \begin{array}{lr} d_0 + d_1 k_1\left(l\right), & l \le l_0 \\ 0, & l > l_0 \end{array} \right.
@@ -531,14 +675,9 @@ respectively. These penalties will induce shrinkage in the autoregressive coeffi
 %\int_{L}^1 \vert \mu^* + \phi_1^*\left(l\right) \vert dl
 %\]
 
-\subsection{The truncated power basis and an alternative decomposition of $\mathcal{H}$}
-
 
 \section{P-splines}
 
-\subsection{Truncated Power Basis}
-
-\subsection{B-spline Basis}
 \subsection{Difference penalties}
 
 
