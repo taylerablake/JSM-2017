@@ -399,9 +399,8 @@ The proof is left to the appendix.
 
 \subsection{Demonstration of the smoothing spline fitting procedure: Examples}
 
-\section{B-spline representation of $\phi$}
+\section{Penalized B-splines for flexible smoothing}
 
-\subsection{Banding the inverse covariance}
 %The parameters of the functional autoregressive model given by \ref{eq:MyModel} define the elements of the precision matrix $\Omega$, rather than the elements of $\Sigma$ itself. It is well known that if we let $Y = \left(Y_1, \dots, Y_m\right)^T$ denote the random vector having joint distribution with mean zero and covariance matrix $\Sigma$, then the elements of $\Sigma^{-1}=\Omega$, $\left\{ \omega_{ij} \right\}$ may be interpreted as partial covariances between the elements of $Y$. This suggests shrinking $\phi^*$ to zero for large values of $l$. One can show that if $T$ has $k$ non-zero diagonals, then the middle $k$ diagonals of $\Sigma^{-1}$ are non-zero.  
 
 Estimating the varying coefficient function $\phi^*$ is quite different from the usual problem of estimating an arbitrary bivariate function via smoothing. In the case of the latter, we most typically treat both arguments equally in terms of regularization, but in the case of covariance estimation and the generalized coefficient function equal treatment of $l$ and $m$ in terms of penalization perhaps is not the most appropriate approach. The lag component, $l$, has particularly significant meaning in terms of the covariance function and thus also in terms of $\phi^*$ and is of considerable more interest than the orthogonal component, $m$. As discussed in Section 2, we can define an entire class of functional autoregressive models using only the $l$ direction, and additionally, as discussed in Section 3, there is a natural expectation about the functional form of the autoregressive coefficient function (and hence covariance) as a function of $l$. The use of smoothing splines to estimate $\phi$ outlined in Section~\ref{} yields smooth null models, but smoothness of the elements of the Cholesky factor alone may not lead to desirable structure in the inverse covariance matrix.  
@@ -435,7 +434,6 @@ which is equivalent to the set of functions having compact support:
 supp\left( \phi^* \right) = \left(0,l_0\right].
 \]
 
-\subsection{An alternative basis for $\mathcal{H}$}
 
 The penalties having nullspace \ref{eq:banded-penalty-nullspace} differ significantly from the penalty discussed in Section 2.1 and the derivative-based penalties typically encountered in the smoothing spline ANOVA setting. For $\mathcal{H}_B$ to be non-empty, functions in $\mathcal{H}$ must be constructed from a basis having at least one or more elements with compact support. Consider a sequence of knots partitioning the unit interval $0 < \ell_1 < \ell_2 < \dots < \ell_n < 1$; the truncated power functions (TPFs) of degree $k$, $\lbrace T_{i,k} \rbrace_{i=1}^n$, are given by
 \begin{equation*}
@@ -484,21 +482,30 @@ i^* = \max\limits_{i} \left\{ \ell_i: \ell_i \le l_0 \right\}
 \]
 is the index of the largest knot which is smaller than the truncation point $l_0$. Setting $p=1$ in \ref{eq:banded-pspline-penalty} corresponds to putting a LASSO penalty (see \citet{tibshirani1996regression}) on the coefficients contributing to the function value on $l > l_0$, while setting $p=2$ corresponds to the usual ridge regression setting. 
 
-\subsection{Additional smoothing with P-splines} \label{subsection:univariate-psplines}
+\subsection{Regularization with difference penalties} \label{subsection:univariate-psplines}
 
-Representing the varying coefficient function as a B-spline lays the foundation of a flexible framework for seamlessly instituting multiple types of regularization on the fitted function at once. As in Section~\ref{}, one may wish for fitted functions to exhibit smoothness on their support. By using a rich B-spline basis along with a discrete difference penalty on the spline coefficients, we can achieve as much smoothness in the fitted function as desired. \cite{o1986statistical} was the first to propose using a rich B-spline basis and using a penalty to restrict the flexibility of the fitted curve. Like \citet{wahba1990spline} in the smoothing spline literature, he applied a penalty to the second derivative of the fitted curve: $J = \int_0^1 \left[ \phi_1^{\prime \prime}\left(l\right)\right]^2\;dl$.  Using the properties of B-splines, if $\phi_1\left(l\right) = \sum\limits_{j=1}^n \beta_j B_j\left(l\right)$, one can derive a banded matrix $P$ such that 
+Representing the varying coefficient function as a B-spline lays the foundation of a flexible framework for seamlessly instituting multiple types of regularization on the fitted function, and perhaps encouraging more than one notion of structure at once. As in Section~\ref{}, one may wish for fitted functions to exhibit smoothness on their support. By using a rich B-spline basis along with a discrete difference penalty on the spline coefficients, we can achieve as much smoothness in the fitted function as desired. \cite{o1986statistical} was the first to propose using a rich B-spline basis and using a penalty to restrict the flexibility of the fitted curve. Like \citet{wahba1990spline} in the smoothing spline literature, he applied a penalty to the second derivative of the fitted curve:
+\[
+J = \int_0^1 \left[ \phi_1^{\prime \prime}\left(l\right)\right]^2\;dl.
+\]
+
+Using the properties of B-splines, for 
+\[
+\phi_1\left(l\right) = \sum\limits_{j=1}^n \beta_j B_j\left(l\right),
+\]
+one can derive a banded matrix $P$ such that 
  \[
  J = \beta^\prime P \beta
  \] 
  \noindent
- where $\beta = \left(\beta_1,\dots, \beta_n\right)$, and the $i$-$j^{th}$ element of $P$ is given by
+ where $\beta = \left(\beta_1,\dots, \beta_n\right)$. The $i$-$j^{th}$ element of $P$ is given by
  \[
  p_{ij} = \int_0^1 B_i^{\prime \prime} \left( l \right)B_j^{\prime \prime} \left( l \right)\;dl.
  \]
 
-In some applications, the use of the third and fourth derivative in the penalty may be appropriate, but with the use of higher order derivatives, the computation of $P$ is nontrivial and becomes very tedious. \citet{eilers1996flexible} were the first to propose P-splines, or penalized B-splines, as an approach to nonparametric regression which circumvents complexity associated with constructing such penalty matrices by omitting derivatives and integrals altogether. Instead, flexibility of the fitted function is controlled by using a discrete penalty matrix based on finite difference formulas. Smoothness of the fitted function is achieved by first using a rich B-spline basis with equally spaced knots to purposefully overfit the smooth coefficient vectors. This liberates us from the difficulty of choosing the optimal set of knots. Then by attaching a difference penalty to the goodness of fit measure, one may prevent overfitting and make a potentially ill-conditioned fitting procedure a well-conditioned one. 
+In some applications, it is useful to work with third and fourth order differences, since for large values of $\lambda$, the fitted curve approaches a parametric polynomial model. This may be of particular interest in the context of estimating the elements of the Cholesky factor: many have proposed simple parametric functions of lag only for $\phi^*$, such as low order polynomials. See \citet{pourahmadi1999joint}. However, with the use of higher order derivatives, the computation of $P$ is nontrivial and becomes very tedious. \citet{eilers1996flexible} were the first to propose P-splines, or penalized B-splines, as an approach to nonparametric regression which circumvents complexity associated with constructing such penalty matrices by omitting derivatives and integrals altogether, replacing them with finite differences and sums. Instead, flexibility of the fitted function is controlled by using a discrete penalty matrix based on finite difference formulas. Smoothness of the fitted function is achieved by first using a rich B-spline basis with equally spaced knots to purposefully overfit the smooth coefficient vectors. This liberates us from the difficulty of choosing the optimal set of knots. Then by attaching a difference penalty to the goodness of fit measure, one may prevent overfitting and make a potentially ill-conditioned fitting procedure a well-conditioned one. 
 
-In some applications, it is useful to work with third and fourth order differences, since for large values of $\lambda$, the fitted curve approaches a parametric polynomial model. This is of particular interest within the context of estimating the The finite difference penalty is simple to compute and can be handled mechanically for any order of the differences. Since it is easily introduced into regression equations, it is feasible to evaluate the impact of different orders of the differences on the fitted model.  Using the properties of B-splines, it is straightforward to show that the difference penalty is a good discrete approximation to the integrated square of the $k^{th}$ derivative, so little is lost by replacing the derivative-based penalty with the following difference penalty:
+This is of particular interest within the context of estimating the The finite difference penalty is simple to compute and can be handled mechanically for any order of the differences. Since it is easily introduced into regression equations, it is feasible to evaluate the impact of different orders of the differences on the fitted model.  Using the properties of B-splines, it is straightforward to show that the difference penalty is a good discrete approximation to the integrated square of the $k^{th}$ derivative, so little is lost by replacing the derivative-based penalty with the following difference penalty:
 
 \begin{equation} \label{eq:bspline-difference-penalty}
 J_d\left( \phi_1 \right) = \sum_{j=d}^n \left(\Delta^d \beta_j\right)^2
@@ -654,7 +661,7 @@ We will leverage several properties of the smoothing matrix, $H$, for model eval
 \end{figure}
 
 
-\subsection{Multidimensional smoothing with B-splines}
+\subsection{Multidimensional smoothing with B-splines} \label{subsection:tensor-product-pspline-models}
 
 P-splines can be extended naturally to higher dimensions by constructing a regression basis from the tensor product of the one-dimensional B-splines bases for each dimension. Figure~\ref{fig:bicubic_BS} displays the building block of the foundation on which multidimensional P-splines is built: a B-spline tensor product basis $\big\{ T_{kl}\big\}$ function.  If we equip $l$ and $m$ each with a B-spline basis, we can a basis for the varying coefficient function $\phi$ in \ref{eq:phi-star} by taking the tensor product of the two marginal bases. To regularize the fitted function, the only other modification necessary for the extension into two dimensions is the addition of a difference penalty for each variable $l$ and $m$. Let $B_{1}\left(l\right),\dots, B_{K}\left(l\right)  \mbox{ and } B_{1}\left(m\right),\dots, B_{L}\left(m\right)$  denote the B-spline bases for $l$ and $m$, each having a set of equally spaced knots along their respective domain. It is worth noting that while we have chosen not to distinguish between $\left\{ B_k \right\}$ and $\left\{ {B}_l \right\}$ for the sake of brevity, one is free to specify a different basis for each dimension either by using different order B-spline or, of course, using different numbers of knots, and hence entirely different knot sequences since P-splines rely on bases with equally spaced knots. The tensor product basis functions
 \begin{equation*}
@@ -668,49 +675,6 @@ T_{jk}\left(l,m\right) = B_j\left(l\right){B}_k\left(m\right)
 \phi^*\left(l,m\right) = \sum_{i=1}^K \sum_{j=1}^L \alpha_{ij} B_{i}\left(l\right) B_{j}\left(m\right).
 \end{equation}
 
-Let $p$ denote the total number of unique within-subject pairs of design points, and index the transformed coordinate pairs $\left( l,m \right)_i$, $i=1, \dots,p$. Let $B_l$ and $B_m$ denote the B-spline bases along the $l$ and $m$ coordinates of dimension $p \times K$ and $p \times L$, respectively, and let $A$ be the unknown matrix of basis coefficients with elements $\left[ \alpha_{ij} \right]$. To control the flexibility of the fitted function as with univariate P-splines discussed in Section~\ref{subsection:univariate-psplines}, we can apply difference penalties to the rows and columns of $A$ to smooth in the $l$ and $m$ directions respectively, using the penalty 
-
-\begin{equation}\label{eq:unfolded-row-column-difference-penalty}
-\sum_{k} \vert D_d \alpha_{k \cdot} \vert^2 + \bar{\lambda} \sum_{l} \vert D_{\bar{d}} \alpha_{\cdot l} \vert^2 .
-\end{equation}
-\noindent
-where $\alpha_{k \cdot}$ and $\alpha_{\cdot l}$ denote the $k^{th}$ row and $l^{th}$ column of $A$, respectively. Thus, the first term in the penalty imposes a difference penalty of order $d_l$ on the rows of the coefficient matrix while the second term places a difference penalty (of possible different order $d_m$) on the columns. We give each direction its own smoothing parameter to permit anisotropic smoothing; however, one could opt to use a single smoothing parameter for both directions and dodge the added work of optimizing the amount of smoothing with two separate parameters. Figure ~\ref{fig:2d_PS_penalty_demo} shows a potential result of heavy column penalization (left) and heavy row penalization (right) under a second order difference penalty on each row and each column for large values of $\lambda$ and $\bar{\lambda}$. The figure demonstrates that the limiting behaviour of each row and column is linear, but the resulting surface may exhibit slope reversals from one row (column) to the next. 
-
-
-\begin{figure}[H] \label{fig:2d_PS_penalty_demo}
- \begin{subfigure}{.48\textwidth}
-  \centering
-   \graphicspath{{img/}}
- \includegraphics[scale=0.5]{"model selection/effective dimension/2d_PS_section_figure1_big_col_lambda"}
- \caption{\textit{heavy column penalty}}
- \label{fig:2D_PS_big_col_penalty}
- \end{subfigure}
- \begin{subfigure}{.48\textwidth}
-  \centering
-   \graphicspath{{img/}}
-  \includegraphics[scale=0.5]{"model selection/effective dimension/2d_PS_section_figure1_big_row_lambda"}
- \caption{\textit{heavy row penalty}}
-\label{fig:2D_PS_big_row_penalty}
- \end{subfigure}
- \caption{\textit{Nine cubic B-spline tensor products with heavy linear column penalty and heavy linear row penalty}}
-\end{figure}
-
-
-It is computationally advantageous to express the coefficient matrix in ``unfolded'' notation, which allows us to express the varying coefficient function at the observed coordinate grid as in the usual multiple regression form:
-
-\begin{equation*}
-\mbox{vec}\left\{\phi^*\left(l,m\right)\right\} = B \alpha
-\end{equation*}
-\noindent
-where the vectorized coefficient matrix $\alpha = \mbox{vec}\left( A \right)$ is obtained by stacking the columns of $A$. The tensor product basis $B$ is constructed from the tensor product of the marginal B-spline bases defined in \citet{eilers2006fast} as the \textit{row-wise} Kronecker product of the individual bases:
-
-\begin{equation} \label{eq:rowwise-kronecker-product}
-B = B_l \square B_m = \left( B_m \otimes 1^T_{K} \right) \odot \left(1^T_{L} \otimes  B_l  \right),
-\end{equation}
-\noindent
-which has dimension $p \times KL$. The operator $odot$ denotes the element-wise matrix product; $1_K$ ($1_L$) denotes the column vector of ones having length $K$ ($L$.) The operations in \ref{eq:rowwise-kronecker-product} construct $B$ such that the $i^{th}$ row of $B_m\square B_l$ 
-
-Writing Cholesky-based regression model \ref{eq:MyModel} in 
 
 \begin{figure}[H]
 \centering
@@ -731,36 +695,124 @@ Writing Cholesky-based regression model \ref{eq:MyModel} in
 
 
 
+Let $p$ denote the total number of unique within-subject pairs of design points, and index the transformed coordinate pairs $\left( l,m \right)_i$, $i=1, \dots,p$. Let $B_l$ and $B_m$ denote the B-spline bases along the $l$ and $m$ coordinates of dimension $p \times K$ and $p \times L$, respectively, and let $A$ be the unknown matrix of basis coefficients with elements $\left[ \alpha_{ij} \right]$. To control the flexibility of the fitted function as with univariate P-splines discussed in Section~\ref{subsection:univariate-psplines}, we can apply difference penalties to the rows and columns of $A$ to smooth in the $l$ and $m$ directions respectively, using the penalty 
 
-%
-%To further impose simplicity in the structure of the inverse covariance, we consider ``banding'' the functional components of these of these null models; specifically, if we consider any $\phi^*$ corresponding to a Toeplitz precision matrix, that is any $\phi^*$ of the form
-%
-%\begin{equation}
-%\phi^*\left(l,m\right) = \mu^* + \phi^*_1\left(l\right)
-%\end{equation}
-%\noindent
+\begin{equation}\label{eq:unfolded-row-column-difference-penalty}
+\lambda_l \sum_{k} \vert D_d \alpha_{k \cdot} \vert^2 + \lambda_m \sum_{l} \vert D_{\bar{d}} \alpha_{\cdot l} \vert^2 .
+\end{equation}
+\noindent
+where $\alpha_{k \cdot}$ and $\alpha_{\cdot l}$ denote the $k^{th}$ row and $l^{th}$ column of $A$, respectively. The first term in\ref{eq:unfolded-row-column-difference-penalty} imposes a difference penalty of order $d_l$ on the rows of the coefficient matrix while the second term places a difference penalty (of possible different order $d_m$) on the columns. We give each direction its own smoothing parameter to permit anisotropic smoothing; however, one could opt to use a single smoothing parameter for both directions and dodge the added work of optimizing the amount of smoothing with two separate parameters. Figure ~\ref{fig:2d_PS_penalty_demo} shows a potential result of heavy column penalization (left) and heavy row penalization (right) under a second order difference penalty on each row and each column for large values of $\lambda_l$ and $\lambda_m$. The figure demonstrates that the limiting behaviour of each row and column is linear, but the resulting surface may exhibit slope reversals from one row (column) to the next. 
 
-\section{extra junk}
 
-\citet{bickel2008regularized} discuss 
-2004; 2008a; Wu and Pourahmadi, 2009) and generally those based on the Cholesky decomposition
-of the covariance matrix or its inverse (Pourahmadi, 1999, 2000; Rothman et al.
-2010) do impose an order among the components of Y and are not permutation-invariant.
+\begin{figure}[H] \label{fig:2d_PS_penalty_demo}
+ \begin{subfigure}{.48\textwidth}
+  \centering
+   \graphicspath{{img/}}
+ \includegraphics[scale=0.5]{"model selection/effective dimension/2d_PS_section_figure1_big_col_lambda"}
+ \caption{\textit{heavy column penalty}}
+ \label{fig:2D_PS_big_col_penalty}
+ \end{subfigure}
+ \begin{subfigure}{.48\textwidth}
+  \centering
+   \graphicspath{{img/}}
+  \includegraphics[scale=0.5]{"model selection/effective dimension/2d_PS_section_figure1_big_row_lambda"}
+ \caption{\textit{heavy row penalty}}
+\label{fig:2D_PS_big_row_penalty}
+ \end{subfigure}
+ \caption{\textit{Nine cubic B-spline tensor products with heavy linear column penalty and heavy linear row penalty}}
+\end{figure}
+\noindent
+We take the estimator of $\phi^*$ to be the minimizer of 
 
+\begin{align} 
+\begin{split}\label{eq:unfolded-difference-penalty-log-likelihood}
+Q\left( \alpha \right) = \sum_{i=1}^N \sum_{j=2}^{m_i} \sigma\left({t_j}\right)^{-2} \left\{y_{ij} - \sum_{k=1}^{j-1} \left( \sum_{r=1}^L \sum_{s=1}^K \alpha_{rs} B_r\left(l_{ijk}\right)B_s\left(m_{ijk}\right)\right)y_{ik} \right\}^2 \\ 
++ \lambda_l \sum_{r^\prime=1}^K \vert D_l \alpha_{r^\prime \cdot} \vert^2 + \lambda_m \sum_{s^\prime=1}^L \vert D_m \alpha_{\cdot s^\prime} \vert^2.
+\end{split}
+\end{align}
+
+It is computationally advantageous to express the coefficient matrix in ``unfolded'' notation, which allows us to express the varying coefficient function at the observed coordinate grid as in the usual multiple regression form:
+
+\begin{equation*}
+\mbox{vec}\left\{\phi^*\left(l,m\right)\right\} = B \alpha
+\end{equation*}
+\noindent
+Stacking the columns of $A$ gives the vectorized coefficient matrix $\alpha = \mbox{vec}\left( A \right)$. The $p \times KL$ tensor product basis $B$ is constructed from the tensor product of the marginal B-spline bases defined in \citet{eilers2006fast} as the \textit{row-wise Kronecker product} of the individual bases:
+
+\begin{equation} \label{eq:rowwise-kronecker-product}
+B = B_l \square B_m = \left( B_m \otimes 1^T_{K} \right) \odot \left(1^T_{L} \otimes  B_l  \right).
+\end{equation}
+\noindent
+The operator $\odot$ denotes the element-wise matrix product; $1_K$ ($1_L$) denotes the column vector of ones having length $K$ ($L$.) The operations in \ref{eq:rowwise-kronecker-product} construct $B$ such that the $i^{th}$ row of $B_m\square B_l$ is the Kronecker product of the corresponding rows of $B_m$ and $B_l$. The penalty in \ref{eq:unfolded-row-column-difference-penalty} can also be compactly expressed:
 
 \[
-\phi^*\left(l,m\right) = \left\{ \begin{array}{lr} d_0 + d_1 k_1\left(l\right), & l \le l_0 \\ 0, & l > l_0 \end{array} \right.
+\lambda_l \vert P_l \alpha \vert^2 + \lambda_m \vert P_m \alpha \vert^2
 \]
 
-%The truncation penalty given by \eqref{bandedpenalty} sums over observed values of $l$ so as to approximate the integral 
-%\[
-%\int_{L}^1 \vert \mu^* + \phi_1^*\left(l\right) \vert dl
-%\]
+where $P_l = D_l^T D_l \otimes I_ L$ and $P_m = I_K \otimes D_m^T D_m$. We define the matrix $X$ of historical regressors so that \ref{eq:unfolded-difference-penalty-log-likelihood} can be written in matrix form as
+
+\begin{equation} \label{eq:tensor-pspline-objective-function}
+Q\left(\alpha\right) = \vert Y - XB\alpha \vert^2 + \lambda_l \vert P_l \alpha \vert^2 + \lambda_m \vert P_m \alpha \vert^2,
+\end{equation}
+\noindent
+with $\hat{\alpha}$ solving the system of equations 
+\begin{equation} \label{eq:tensor-pspline-normal-equations}
+\left[ \left(XB\right)^T XB +  \lambda_l P_l+ \lambda_m P_m\right]\alpha = X B Y
+\end{equation}
+\noindent
+From \ref{eq:tensor-pspline-normal-equations}, we note that the system of equations depends on basis coefficients remains fixed at $KL$, even as the number of observations increases.   The grid of regression coefficients can be recovered by arranging the elements of $\hat{\alpha}$ into a matrix of $L$ columns having length $K$. The effective hat matrix is given by 
+\[
+H_\lambda = X B\left(X B^T X B +  \lambda_l P_l + \lambda_m P_m \right)^{-1} X B^T,
+\]
+from which we can easy calculate deletion residuals and obtain a measure of effective model dimension. We will discuss diagnostics and approaches to model selection in detail in Section~\ref{}.
+
+\section{P-spline ANOVA models for $\phi^*$}
+
+An extension of the tensor product models in \ref{subsection:tensor-product-pspline-models} for the varying coefficient function corresponding to the Cholesky factor $T$ is the class of multidimensional models like in Section~\ref{} based on the decomposition of multidimensional smooth functions as additive terms and interactions. Smoothing spline analysis-of-variance models have been previously proposed by \citet{gu1993semiparametric}, \citet{wahba1995smoothing}, and \citet{gu2002smoothing}, which gives main effects and interaction terms that can be interpreted as in the classical ANOVA setting. More recently, \citet{lee2011p} proposed the use of P-splines within a mixed modeling framework to estimate multidimensional functions as a decomposition into smooth main effects and interactions. They show that identifiability of functional components is ensured by imposing the same constraints as in a factorial design. 
+
+As in the smoothing spline formulation, we may decompose
+\[
+\phi^*\left(l,m\right) = \mu + \phi_1\left(l\right) + \phi_2\left(m\right) + \phi_{12}\left(l,m\right),
+\] 
+
+where $\mu$ is a constant, $\phi_1$ and $\phi_2$ are the additive univariate functions of $l$ and $m$, and $\phi_{12}$ is the two-dimensional interaction smooth function of $\left(l,m\right)$. The smooth-ANOVA model is given by
+
+\begin{equation} \label{eq:pspline-SSANOVA}
+E\left[ Y \right] = X  B \alpha
+\end{equation}
+\noindent
+where $X$ is defined as in \ref{eq:tensor-pspline-objective-function}. The B-spline regression basis $B$ is defined 
+
+\begin{equation} \label{eq:pspline-ANOVA-basis-matrix}
+B = \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{lm} \; \right]
+\end{equation}
+\noindent
+where the basis for the interaction term, $B$ is defined as in \ref{eq:rowwise-kronecker-product}.
 
 
-\section{P-splines}
 
-\subsection{Difference penalties}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
