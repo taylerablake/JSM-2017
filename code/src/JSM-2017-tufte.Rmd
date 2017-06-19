@@ -1,0 +1,115 @@
+---
+title: "Nonparametric covariance estimation for longitudinal data via multidimensional P-Splines"
+author: "Tayler Blake"
+date: "June 19, 2017"
+output: 
+  tufte::tufte_html: default
+---
+
+<!--DataViz SIG: How Visualization Drives Predictive Modeling
+Presenter: Chris Holloman
+Date/Time: May 31st, 12:00 pm – 1:00 pm-->
+ 
+<!--Knowing a basic level of probability and statistics is critical for visualization, and visualization is critical for advanced statistics. When most people think about advanced analytics and predictive modeling, they think of complicated mathematical formulas driving sophisticated algorithms.  While formulas and algorithms are the tools of predictive modeling, they aren’t the important thing to focus on.  The important thing is how we’re representing the problem being solved, and that requires something more interpretable – visualizations.  Chris will talk about how visualizations form the foundation for the formulas and algorithms we use and how visualizations help us interpret the output of our models.-->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+library(plotly)
+library(plyr)
+library(dplyr)
+library(lubridate)
+library(scales)
+library(stringr)
+library(alabama)
+library(nnet)
+library(caret)
+library(e1071)
+library(splines)
+library(magrittr)
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(tufte)
+```
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br>
+
+
+## An estimate of a covariance matrix is a necessary (evil) prerequisite of almost any statistical analysis that includes a model. 
+`r newthought("But covariance estimation is hard!")`
+
+<p style="page-break-after:always;"></p>
+
+Data: $Y_i = \left( Y_{i1}, Y_{i2}, \dots, Y_{im} \right)^\prime, \qquad i=1,\dots, N$ with measurement times
+
+$$t_{i1} < t_{i2} < \dots< t_{i,m_i}$$
+
+<p style="page-break-after:always;"></p>
+
+`r newthought("The sample covariance matrix is unstable in high dimensions.")`
+
+$\Rightarrow$ `r newthought("Need to regularize estimates in some reasonable way.")`
+
+
+<p style="page-break-after:always;"></p>
+
+`r newthought("The")` $\left\{t_{ij} \right\}$ `r newthought("may not be common for all subjects, nor be observed on a a regular grid.")`
+    
+$\Rightarrow$ `r newthought("many of the existing approaches fail to accomodate this.")`
+
+<p style="page-break-after:always;"></p>
+
+`r newthought("Covariance matrices should be positive definite.")`
+
+$\Rightarrow$ `r newthought("constrained optimization = potential computational nightmare.")`
+
+
+<p style="page-break-after:always;"></p>
+
+```{r simple-line}
+simple_line <- data.frame(x = 1:10, y = 2 + .5 * 1:10)
+
+plot_ly(simple_line, x = ~x, y = ~y, type = "scatter", mode = "lines")
+
+```
+
+<p style="page-break-after:always;"></p>
+
+<!--Even if you don't understand the mathematical representation, the meaning of a line is pretty straightforward.  Even when talking about relationships that exist in data, we're all familiar with what a line means.  It connects responses for different levels of a separate variable to show a simple relationship.
+
+Now, let's get a little more complex.  We can write an equation that shows the relationship between two inputs and a single output.-->
+
+
+
+<!--The graphical representation for this is a plane.-->
+<!--
+```{r simple-surface}
+simple_surface <- expand.grid(x1 = 1:10, x2 = 1:10)
+simple_surface$y <- 2 + .5 * simple_surface$x1 - 1 * simple_surface$x2
+
+plot_ly(x = 1:10, y = 1:10, z = matrix(simple_surface$y, 10, 10, byrow = TRUE)) %>% 
+  add_surface() %>%
+  layout(scene = list(xaxis = list(title = "x1"),
+                      yaxis = list(title = "x2"),
+                      zaxis = list(title = "y",
+                                   range = c(-10, 10))))
+
+```
+-->
+
+<!--
+```{r simple-regression-example}
+set.seed(1977)
+reg_frame <- data.frame(x = runif(100))
+reg_frame$y <- -3 + 6 * reg_frame$x + rnorm(100, 0, .5)
+reg_frame$fit <- predict(lm(y ~ x, data = reg_frame))
+
+plot_ly(reg_frame, x = ~x, y = ~y, type = "scatter", mode = "markers",
+        name = "observed values",
+        marker = list(size = 10,
+                       color = 'rgba(255, 182, 193, .9)',
+                       line = list(color = 'rgba(152, 0, 0, .8)',
+                                   width = 2)))
+
+```
+-->
