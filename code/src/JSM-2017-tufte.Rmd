@@ -6,11 +6,6 @@ output:
   tufte::tufte_html: default
 ---
 
-<!--DataViz SIG: How Visualization Drives Predictive Modeling
-Presenter: Chris Holloman
-Date/Time: May 31st, 12:00 pm – 1:00 pm-->
- 
-<!--Knowing a basic level of probability and statistics is critical for visualization, and visualization is critical for advanced statistics. When most people think about advanced analytics and predictive modeling, they think of complicated mathematical formulas driving sophisticated algorithms.  While formulas and algorithms are the tools of predictive modeling, they aren’t the important thing to focus on.  The important thing is how we’re representing the problem being solved, and that requires something more interpretable – visualizations.  Chris will talk about how visualizations form the foundation for the formulas and algorithms we use and how visualizations help us interpret the output of our models.-->
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
@@ -38,51 +33,73 @@ library(tufte)
 ## An estimate of a covariance matrix is a necessary (evil) prerequisite of almost any statistical analysis that includes a model. 
 `r newthought("But covariance estimation is hard!")`
 
-<p style="page-break-after:always;"></p>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
+
 
 Data: $Y_i = \left( Y_{i1}, Y_{i2}, \dots, Y_{im} \right)^\prime, \qquad i=1,\dots, N$ with measurement times
 
 $$t_{i1} < t_{i2} < \dots< t_{i,m_i}$$
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
 
-<p style="page-break-after:always;"></p>
+
+`r newthought("Covariance matrices should be positive definite.")`
+
+$\Rightarrow$ `r newthought("constrained optimization = potential computational nightmare.")`
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
+
+
+`r newthought("The")` $\left\{t_{ij} \right\}$ `r newthought("may not be common for all subjects, nor be observed on a a regular grid.")`
+    
+$\Rightarrow$ `r newthought("many of the existing approaches fail to accomodate this.")`
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
 
 `r newthought("The sample covariance matrix is unstable in high dimensions.")`
 
 $\Rightarrow$ `r newthought("Need to regularize estimates in some reasonable way.")`
 
 
-<p style="page-break-after:always;"></p>
-
-`r newthought("The")` $\left\{t_{ij} \right\}$ `r newthought("may not be common for all subjects, nor be observed on a a regular grid.")`
-    
-$\Rightarrow$ `r newthought("many of the existing approaches fail to accomodate this.")`
-
-<p style="page-break-after:always;"></p>
-
-`r newthought("Covariance matrices should be positive definite.")`
-
-$\Rightarrow$ `r newthought("constrained optimization = potential computational nightmare.")`
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
 
 
-<p style="page-break-after:always;"></p>
+# Covariance matrices should be positive definite.
+`r newthought("We can use a cute little reparameterization of the observed covariance matrix.")` 
 
-```{r simple-line}
-simple_line <- data.frame(x = 1:10, y = 2 + .5 * 1:10)
+## The modified Cholesky decomposition:
 
-plot_ly(simple_line, x = ~x, y = ~y, type = "scatter", mode = "lines")
+For now, let $Y = \left(Y_1, \dots, Y_M \right)^\prime \sim \mathcal{N}\left(0,\Sigma\right)$. For any positive definite matrix $\Sigma$, we can find a unique unit lower triangular matrix $T$
 
-```
+$$ T = \begin{bmatrix} 1 & 0 & \dots & & \\ -\phi_{21} & 1 & & & \\ -\phi_{31}& -\phi_{32} &  1 & & \\ \vdots & & & \ddots & \\ -\phi_{M1} &-\phi_{M2} & \dots & -\phi_{M,M-1}& 1  \end{bmatrix} $$
 
-<p style="page-break-after:always;"></p>
+which diagonalizes $\Sigma$:
 
-<!--Even if you don't understand the mathematical representation, the meaning of a line is pretty straightforward.  Even when talking about relationships that exist in data, we're all familiar with what a line means.  It connects responses for different levels of a separate variable to show a simple relationship.
+\begin{equation}
+\nonumber T \Sigma T^\prime = D
+\end{equation}
+`r margin_note("")`
 
-Now, let's get a little more complex.  We can write an equation that shows the relationship between two inputs and a single output.-->
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
+
+## I know, the cuteness isn't obvious yet. But think about this:
 
 
-
-<!--The graphical representation for this is a plane.-->
-<!--
+`r newthought("many of the existing approaches fail to accomodate this.")`
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br> <br><br><br><br><br><br>
 ```{r simple-surface}
 simple_surface <- expand.grid(x1 = 1:10, x2 = 1:10)
 simple_surface$y <- 2 + .5 * simple_surface$x1 - 1 * simple_surface$x2

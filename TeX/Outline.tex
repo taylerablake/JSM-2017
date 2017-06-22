@@ -821,16 +821,62 @@ Model \ref{eq:SANOVA} must be modified to remove this redundancy and ensure iden
 
 \subsection{Mixed model representation of  P-splines}
 
+\subsubsection {Mixed effects models}
 
 Linear mixed effects models are an extension of the linear regression model to include random effects; the connection between mixed models and smoothing splines has been thoroughly explored. See \citet{},\citet{}, and \citet{}, for example. The interest in this particular representation is because it allows for smoothing to be included in a large class of models. Additionally estimation and inference for mixed models is already well established, and the use of mixed model methodology and software well already well developed and widely adopted.
 
 Applying the appropriate transformation to the regression basis $B$ and the penalty $P$ can ensure that the functional components of the smooth-ANOVA model \ref{eq:SANOVA} are identifiable. \citet{lee2011p} proposed such a transformation described by \citet{currie2002flexible} which reparameterizes the model basis so that the PS-ANOVA model and its corresponding penalty can be represented as a mixed model:
 
 \begin{equation}  \label{eq:vc-mixed-effects-model}
-Y = W\left(X \beta + Z \alpha\right) + \epsilon, \quad \alpha \sim \mathcal{N}\left(0,G \right),\;\;e\sim\mathcal{N}\left(0,\sigma^2_\epsilon I \right),
+Y = W\left(X \beta + Z \alpha\right) + e, \quad \alpha \sim \mathcal{N}\left(0,G \right),\;\; e\sim\mathcal{N}\left(0, D \right),
 \end{equation} 
 \noindent
-where $X$ and $Z$ are the model matrices for the fixed and random effects. $G = \sigma_\alpha^2 \Lambda$ holds the variance components of the random effects, $\alpha$, where $\Lambda$ is some positive definite matrix. The mixed model representation decomposes the varying coefficient function into an unpenalized part $X \beta$ and penalized smooth term $Z \alpha.$ Under the assumption of normality and $i.i.d.$ errors, one can carry out estimation of $\beta$, $\alpha$ and the variance components by restricted maximum likelihood. See \citet{schall1991estimation} or  \citet{patterson1971recovery} for detailed discussion of estimation of random effects models.  We will show that there is a one-to-one mapping between the variance components of the mixed model and the smoothing parameters of the original penalty \ref{eq:PSANOVA-penalty}. 
+where $X$ and $Z$ are the model matrices for the fixed and random effects. $G = \sigma_\alpha^2 \Lambda$ holds the variance components of the random effects, $\alpha$, where $\Lambda$ is some positive definite matrix. The mixed model representation decomposes the varying coefficient function into an unpenalized part $X \beta$ and penalized smooth term $Z \alpha.$ Under the assumption of normality and $i.i.d.$ errors, one can carry out estimation of $\beta$, $\alpha$ and the variance components by restricted maximum likelihood. See \citet{schall1991estimation} or  \citet{patterson1971recovery} for detailed discussion of estimation of random effects models.  We will show that there is a one-to-one mapping between the variance components of the mixed model and the smoothing parameters of the original penalty \ref{eq:PSANOVA-penalty}, so smoothing parameter selection is accomplished through the usual estimation procedure for the mixed model.
+
+\subsubsection{Estimation of mixed effects models}
+
+Under the assumption of normality, from model \ref{eq:vc-mixed-effects-model}, the marginal distribution of $Y$ is normal with mean $X\beta$ and covariance 
+
+\begin{equation} \label{eq:mm-marginal-covariance}
+D + WZ G Z^\prime W^\prime,
+\end{equation}
+\noindent
+and the log-likelihood is given by
+\begin{equation} \label{eq:mm-log-likelihood}
+\mathcal{L} \left( \beta, \alpha, D , \sigma_\alpha^2 \right) = -\frac{1}{2} \log\vert V \vert - \frac{1}{2} \left( Y - WX\beta \right)^\prime V^{-1}\left( Y - WX\beta \right). 
+\end{equation}
+\noindent
+Fixing $D$ and $\sigma_\alpha^2$, taking derivatives with respect to $\alpha$ and $\beta$ and setting equal to zero gives
+
+\begin{align} \label{eq:mm-coefficient-mles}
+\begin{split}
+\hat{\beta} &= \left( X^\prime W^\prime V^{-1}WX \right)^{-1}X^\prime W^\prime V^{-1} Y \\
+\hat{\alpha} &= G\left( W Z \right)^\prime V^{-1} \left( Y-WX\hat{\beta} \right).
+\end{split}
+\end{align}
+
+The maximum likelihood estimates, however, are biased because they do not account for the degrees of freedom lost in the estimation of the fixed effects. To account for this bias, one may employ restricted maximum likelihood estimation for estimation of mixed effects models. See \citet{schall1991estimation} for a detailed overview. The restricted maximum likelihood estimates for the variance components can be obtained by maximizing the residual profile log-likelihood:
+
+\begin{align}
+\begin{split} \label{eq:mm-restricted-log-likelihood}
+\mathcal{L}_r \left( D , \sigma_\alpha^2 \right) =  -\frac{1}{2} \log\vert V \vert  &-\frac{1}{2} \log\vert X^\prime W^\prime V WX \vert \\
+ &- \frac{1}{2} Y^\prime \left( V^{-1} - V^{-1}WX \left(X^\prime W^\prime V^{-1}WX \right)X^\prime W^\prime V^{-1} \right) Y
+\end{split}
+\end{align}
+\noindent
+Computational efficiency can be improved by avoiding the direct calculation of the determinant and inverse of $V$, which is a Schur complement. Using the properties of the Schur complement, one can show that 
+
+\begin{align}
+\begin{split}
+\vert V \vert &=  \prod_{j=1}^m \sigma_j^2 \vert G \vert  \vert G^{-1} + Z^\prime W^\prime D^{-1}WZ \vert \\
+V^{-1} &= D^{-1} \left( I - WZ\left( G + Z^\prime W^\prime D^{-1} W Z \right)^{-1} Z^\prime W^\prime D  \right) 
+\end{split}
+\end{align}
+\noindent 
+which involves inverting matrices having dimension which relies on the number of random effect coefficients rather than the number of observations. 
+
+
+\subsubsection{Mixed model representation of P-splines}
 
 To reparameterize \ref{eq:SANOVA-basis-matrix}, one can find an orthogonal transformation, $M$, such that
 
