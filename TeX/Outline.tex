@@ -701,7 +701,7 @@ T_{jk}\left(l,m\right) = B_j\left(l\right){B}_k\left(m\right)
 Let $p$ denote the total number of unique within-subject pairs of design points, and index the transformed coordinate pairs $\left( l,m \right)_i$, $i=1, \dots,p$. Let $B_l$ and $B_m$ denote the B-spline bases along the $l$ and $m$ coordinates of dimension $p \times K$ and $p \times L$, respectively, and let $A$ be the unknown matrix of basis coefficients with elements $\left[ \alpha_{ij} \right]$. To control the flexibility of the fitted function as with univariate P-splines discussed in Section~\ref{subsection:univariate-psplines}, we can apply difference penalties to the rows and columns of $A$ to smooth in the $l$ and $m$ directions respectively, using the penalty 
 
 \begin{equation}\label{eq:unfolded-row-column-difference-penalty}
-\lambda_l \sum_{k} \vert D_d \alpha_{k \cdot} \vert^2 + \lambda_m \sum_{l} \vert D_{\bar{d}} \alpha_{\cdot l} \vert^2 .
+\lambda_l \sum_{k} \vert D_d \alpha_{k \cdot} \vert^2 + \lambda_m \sum_{l} \vert D_{\ms d_{\ms m}} \alpha_{\cdot l} \vert^2 .
 \end{equation}
 \noindent
 where $\alpha_{k \cdot}$ and $\alpha_{\cdot l}$ denote the $k^{th}$ row and $l^{th}$ column of $A$, respectively. The first term in\ref{eq:unfolded-row-column-difference-penalty} imposes a difference penalty of order $d_{\ms l}$ on the rows of the coefficient matrix while the second term places a difference penalty (of possible different order $d_{\ms m}$) on the columns. We give each direction its own smoothing parameter to permit anisotropic smoothing; however, one could opt to use a single smoothing parameter for both directions and dodge the added work of optimizing the amount of smoothing with two separate parameters. Figure ~\ref{fig:2d_PS_penalty_demo} shows a potential result of heavy column penalization (left) and heavy row penalization (right) under a second order difference penalty on each row and each column for large values of $\lambda_l$ and $\lambda_m$. The figure demonstrates that the limiting behaviour of each row and column is linear, but the resulting surface may exhibit slope reversals from one row (column) to the next. 
@@ -774,9 +774,9 @@ from which we can easy calculate deletion residuals and obtain a measure of effe
 An extension of the tensor product models in \ref{subsection:tensor-product-pspline-models} for the varying coefficient function corresponding to the Cholesky factor $T$ is the class of multidimensional models like in Section~\ref{} based on the decomposition of multidimensional smooth functions as additive terms and interactions. Smoothing spline analysis-of-variance models have been previously proposed by \citet{gu1993semiparametric}, \citet{wahba1995smoothing}, and \citet{gu2002smoothing}, which gives main effects and interaction terms that can be interpreted as in the classical ANOVA setting. More recently, \citet{lee2011p} proposed the use of P-splines within a mixed modeling framework to estimate multidimensional functions as a decomposition into smooth main effects and interactions. They show that identifiability of functional components is ensured by imposing the same constraints as in a factorial design. 
 
 As in the smoothing spline formulation, we may decompose
-\[
+\begin{equation} \label{eq:SANOVA-model}
 \phi^*\left(l,m\right) = \mu + \phi_1\left(l\right) + \phi_2\left(m\right) + \phi_{12}\left(l,m\right),
-\] 
+\end{equation} 
 
 where $\mu$ is a constant, $\phi_1$ and $\phi_2$ are the additive univariate functions of $l$ and $m$, and $\phi_{12}$ is the two-dimensional interaction smooth function of $\left(l,m\right)$. The smooth-ANOVA model is given by
 
@@ -790,17 +790,20 @@ where $W$ is defined as in \ref{eq:tensor-pspline-objective-function}. The B-spl
 B = \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{lm} \; \right]
 \end{equation}
 \noindent
-where $B_{lm}$, the basis for the $l$-$m$ interaction term, is defined as in \ref{eq:rowwise-kronecker-product}. The full regression basis has dimension $p \times \left( 1 + K + L + KL \right)$; the vector of regression coefficients is given by $\theta = \left(\mu, \theta_l, \theta_m, \theta_{lm}\right)^T$, where $\theta_l$ and $\theta_m$ are the $K \times 1$ and $L \times 1$ vectors of coefficients for the main effects and $\theta_{lm}$ is the $KL \times 1$ vector of coefficients for the smooth $l$-$m$ interaction. The $\left(1 + K + L + KL\right) \times \left(1 + K + L + KL\right)$ penalty matrix is $blockdiag\left\{0, P_l, P_m, P_{lm}\right\}$
+where $B_{lm}$, the basis for the $l$-$m$ interaction term, is defined as in \ref{eq:rowwise-kronecker-product}. The full regression basis has dimension $p \times \left( 1 + K + L + KL \right)$; the vector of regression coefficients is given by $\theta = \left(\mu, \theta_l, \theta_m, \theta_{lm}\right)^T$, where $\theta_l$ and $\theta_m$ are the $K \times 1$ and $L \times 1$ vectors of coefficients for the main effects and $\theta_{lm}$ is the $KL \times 1$ vector of coefficients for the smooth $l$-$m$ interaction. The $\left(1 + K + L + KL\right) \times \left(1 + K + L + KL\right)$ penalty matrix is given by 
 
-\begin{equation} \label{eq:PSANOVA-penalty}
-P = \begin{bmatrix}
+\begin{align}
+\begin{split} \label{eq:PSANOVA-penalty}
+P &= \mbox{blockdiag}\left\{0, P_l, P_m, P_{lm}\right\}\\ 
+&= \begin{bmatrix}
 0 	 & \dots 		      &    			 	& \\
 \vdots &  \lambda_l D_{d_{\ms l}}^T D_{d_{\ms l}} &				 	& \\
 &   	 			      &  \lambda_m D_{d_{\ms m}}^T D_{d_{\ms m}} 	& \\
 &	 &			      &					&  \tau_l \left(I_L \otimes D_{d_{\ms l}}^T D_{d_{\ms l}}\right) + \tau_m \left(D_{d_{\ms m}}^T D_{d_{\ms m}} \otimes I_K \right)			
 \end{bmatrix},
-\end{equation}
-
+\end{split}
+\end{align}
+\noindent
 with the one-dimensional penalties for each of the additive terms (with corresponding smoothing parameters $\lambda_l$ and $\lambda_m$) and the two-dimensional penalty (with two additional smoothing parameters $\tau_l$ and $\tau_m$) for the interaction term making up the blocks. $D_{d_{\ms l}}$ and $D_{d_{\ms m}}$ are the difference matrices of order $d_{\ms l}$ and $d_{\ms m}$ respectively. With the new basis and penalty, the penalized likelihood \ref{eq:tensor-pspline-objective-function} becomes
 
 \begin{equation} \label{eq:PSANOVA-objective-function}
@@ -808,7 +811,7 @@ Q\left(\alpha\right) = \left( Y - WB\theta \right)^T\left( Y - WB\theta \right) 
 \end{equation}
 
 
-The basis $B$, however, is not of full rank; some of the elements of $B_l$ and $B_m$ are also included in the interaction basis $B_{lm}$, so $1 + K+ L$ columns of $B$ are linearly dependent. This identifiability problem is also reflected in the rank deficiency of the penalty matrix; for penalty matrices $D_l^TD_l$ and $D_m^TD_m$ of order $d_{\ms l}$ and $d_{\ms m}$ respectively, 
+The basis $B$, however, is not of full rank; some of the elements of $B_l$ and $B_m$ are also included in the interaction basis $B_{lm}$, so $1 + K+ L$ columns of $B$ are linearly dependent. This identifiability problem is also reflected in the rank deficiency of the penalty matrix; for penalty matrices $D_l^\prime D_l$ and $D_m^\prime D_m$ of order $d_{\ms l}$ and $d_{\ms m}$ respectively, 
 \begin{align*}
 \mbox{rank}\left(P\right) &=  \mbox{rank}\left(P_l\right) + \mbox{rank}\left(P_m\right) + \mbox{rank}\left(P_{lm}\right) \\
 &= \left(K - d_{\ms l}\right) + \left( L - d_{\ms m}\right) +  \left(K - d_{\ms l}\right)\left( L - d_{\ms m}\right)
@@ -823,18 +826,21 @@ Linear mixed effects models are an extension of the linear regression model to i
 
 Applying the appropriate transformation to the regression basis $B$ and the penalty $P$ can ensure that the functional components of the smooth-ANOVA model \ref{eq:SANOVA} are identifiable. \citet{lee2011p} proposed such a transformation described by \citet{currie2002flexible} which reparameterizes the model basis so that the PS-ANOVA model and its corresponding penalty can be represented as a mixed model:
 
-\begin{equation} 
+\begin{equation}  \label{eq:vc-mixed-effects-model}
 Y = W\left(X \beta + Z \alpha\right) + \epsilon, \quad \alpha \sim \mathcal{N}\left(0,G \right),\;\;e\sim\mathcal{N}\left(0,\sigma^2_\epsilon I \right),
 \end{equation} 
 \noindent
-where $X$ and $Z$ are the model matrices for the fixed and random effects. $G = \sigma_\alpha^2 \Delta$ holds the variance components of the random effects, $\alpha$, where $\Delta$ is some positive definite matrix. The mixed model representation decomposes the varying coefficient function into an unpenalized part $X \beta$ and penalized smooth term $Z \alpha.$ Under the assumption of normality and $i.i.d.$ errors, one can carry out estimation of $\beta$ and $\alpha$ by restricted maximum likelihood. See \citet{schall1991estimation} or  \citet{patterson1971recovery} for detailed discussion of estimation of random effects models. To reparameterize \ref{eq:SANOVA-basis-matrix}, one can find an orthogonal transformation, $M$, such that
+where $X$ and $Z$ are the model matrices for the fixed and random effects. $G = \sigma_\alpha^2 \Lambda$ holds the variance components of the random effects, $\alpha$, where $\Lambda$ is some positive definite matrix. The mixed model representation decomposes the varying coefficient function into an unpenalized part $X \beta$ and penalized smooth term $Z \alpha.$ Under the assumption of normality and $i.i.d.$ errors, one can carry out estimation of $\beta$, $\alpha$ and the variance components by restricted maximum likelihood. See \citet{schall1991estimation} or  \citet{patterson1971recovery} for detailed discussion of estimation of random effects models.  We will show that there is a one-to-one mapping between the variance components of the mixed model and the smoothing parameters of the original penalty \ref{eq:PSANOVA-penalty}. 
 
-\[
-BM = \left[\; X \; \vert \; Z \; \right], \mbox{ and}
-\]
-\[
-M \theta = X \beta + Z \alpha,
-\]
+To reparameterize \ref{eq:SANOVA-basis-matrix}, one can find an orthogonal transformation, $M$, such that
+
+\begin{align}
+\begin{split} \label{eq:PSANOVA-to-mm-mapping}
+BM &= \left[\; X \; \vert \; Z \; \right], \mbox{ and}\\
+M \theta &= X \beta + Z \alpha,
+\end{split}
+\end{align}
+\noindent
 and $\left[\; X \; \vert \; Z \; \right]$ has full rank; i.e.
 \begin{align*}
 B M M^T \theta &= \left[\; X \; \vert \; Z \; \right]M^T \theta \\
@@ -847,70 +853,18 @@ where $\mu = \left(\beta^T,\alpha^T\right)^T$. This transformation converts the 
 \theta^T M^T P M \theta = \alpha^T F \alpha,
 \end{equation*}
 \noindent
-for some block diagonal matrix $F$. To demonstrate the construction of $M$, consider the two-dimensional tensor product model with basis  given in \ref{eq:rowwise-kronecker-product}. The transformation matrix is derived from the SVD of the penalty matrix \ref{eq:tensor-product-penalty} by simultaneously diagonalizing $D_l^T D_l$ and $D_m^T D_m$. Let
-\[
-U_l \Delta_l U_l^T
-\]
-denote the singular value decomposition of $D_l^T D_l$, where $U_l$ is the $K \times K$ matrix of eigenvectors and $\Delta_l$ is the diagonal matrix with diagonal entries equal to the corresponding eigenvalues. Exactly $d_{\ms l}$ of of the eigenvalues are identically zero, so if we let $\tilde{\Delta}_l$ denote the submatrix containing only the positive eigenvalues, then we can write
+for some block diagonal matrix $F$.  The transformation matrix $M$ is derived from the SVD of the penalty matrix \ref{eq:PSANOVA-penalty} by simultaneously diagonalizing $D_l^T D_l$ and $D_m^T D_m$; details are left to the appendix. After applying the transformation $M$ to the PSANOVA basis \ref{eq:PSANOVA-basis-matrix} according to \ref{eq:PSANOVA-to-mm-mapping}, the fixed effect and random effect model matrices for the main effects are given by 
 
-\[
-\Delta_l = \mbox{diag}\left( 0_{d_{\ms l}},\tilde{\Delta}_l \right).
-\] 
 
-Let 
-\[
-U_{l0} = \begin{bmatrix} 1_l^* & u_{l1}^* ... & u_{l,d_{\ms l}}^* \end{bmatrix}
-\]
-denote the matrix of eigenvectors corresponding to the zero eigenvalues, where $1_l^* = \left(1, 1, \dots,1 \right)^T/\sqrt{K}$ and $u_{l1i}^*$  is the vector having elements $\left( 1^i, 2^i,\dots,K^i \right)^T$, centered and scaled to have mean $0$ and unit length. Let $U_{l1}$ denote the submatrix of eigenvectors corresponding to the nonzero eigenvalues, $\tilde{\Delta}_l$. Define $U_{m0}$, $U_{m1}$, and $\tilde{\Delta}_{m}$ in the same fashion. 
-
-The orthogonal transformation matrix $M$ is defined $M = \left[\begin{array}{c|c} M_0 & M_1 \end{array}\right]$, where
-
-\begin{align*}
-M_0 &= \left[ \begin{array}{c} U_{m0} \otimes U_{l0} \end{array} \right], \mbox{ and} \\
-M_1 &= \left[ \begin{array}{c|c|c}  U_{m0} \otimes U_{l1}  &  U_{m1} \otimes U_{l0}  &  U_{m1} \otimes U_{l1} \end{array} \right].
-\end{align*}
-
-The transformed coefficients are given by 
-\begin{equation*}
-\beta = M_0^T\theta, \qquad \alpha = M_1^T\theta
-\end{equation*}
-
-Using properties of the kronecker product (see \citet{liu1999matrix}), one can show that the mixed model design matrices $X$ and $Z$ can be written as the tensor product of the marginal bases:
-
-\begin{align}
-\begin{split} \label{eq:mixed-model-tensor-matrices}
-X &= \left[ \begin{array}{c} X_m \square X_l \end{array} \right], \mbox{ and} \\
-Z &= \left[ \begin{array}{c|c|c} X_m \square Z_l & Z_m \square X_l & Z_m \square Z_l \end{array} \right].
+\begin{align} 
+\begin{split} \label{eq:PSANOVA-fixed-random-effect-matrices}
+X &= \left[ \begin{array}{c|c|c|c|c|c|c|c|c} 1 & l  & \dots & l^{\ms d_{\ms l}-1}& m \dots & m^{\ms d_{\ms m}-1} & \dots &  l^{\ms d_{\ms l}-1} \square m^{\ms d_{\ms m}-1} \end{array} \right] \\
+Z &= \left[ \begin{array}{c|c|c|c|c|c|c} m \square Z_l & \dots &  m^{\ms d_{\ms m}-1} \square Z_l & Z_m \square l & \dots & Z_m \square  l^{\ms d_{\ms l}-1} & Z_m \square Z_l \end{array} \right]
 \end{split}
 \end{align}
-\noindent
-where 
-\begin{align*}
-X_l &= B_l U_{l0}, & &Z_l = B_l U_{l1}, \\ 
-X_m &= B_m U_{m0}, & &Z_m = B_m U_{m1}.
-\end{align*}
-\noindent
-This is convenient because the calculation of $M$ can be avoided in practice. Since $\beta$ is not penalized, we can replace $X_l$ and $X_m$ with 
-\begin{equation*}
-\left[\begin{array}{c|c|c|c} 1_p & l & \dots & l^{d_{\ms l} -1}  \end{array} \right] \mbox{ and } \left[\begin{array}{c|c|c|c} 1_p & m & \dots & m^{d_{\ms m} -1}  \end{array} \right]
-\end{equation*}
-Making this replacement, the expressions for $X$ and $Z$ can be expanded:
-\begin{align}
-X &= \left[ \begin{array}{c|c|c|c|c|c} 1_p & l & m & l \square m & \dots  & l^{\ms d_{\ms l} -1 } \square  m^{\ms d_{\ms m} -1 } \end{array} \right], \\
-Z &= \left[ \begin{array}{c|c|c|c|c|c|c}  Z_l & Z_m & Z_m \square l & m \square Z_1 & \dots & Z_m \square l^{\ms d_{\ms l} \ms -1} & m^{d_{\ms m} -1} \square Z_1   \end{array} \right],
-\end{align}
-Construction of the fixed effects and mixed effects in this way allows us to express the fitted varying coefficient function $\phi^*$ as a sum of the main effects and an $l$-$m$ interaction. After applying the transformation, the penalty becomes
+\noindent 
+where the random effects $Z_l$ and $Z_m$ are constructed by projecting the marginal bases for $l$ and $m$ onto the non-null eigenvectors of the SVD of the marginal penalties $D_{\ms d_{\ms l}}^\prime D_{\ms d_{\ms l}}$ and $D_{\ms d_{\ms m}}^\prime D_{\ms d_{\ms m}}$. See the appendix for further discussion. 
 
-\begin{equation}
-F = \begin{bmatrix}
-0 	&	&	 & \\
-	&  \lambda_l I_L \otimes \tilde{\Delta}_l  &	& \\
-	&						& \lambda_m  \tilde{\Delta}_m\otimes & \\ 
-&&&  \lambda_m  \tilde{\Delta}_m\otimes + \lambda_l I_L \otimes \tilde{\Delta}_l 
-\end{bmatrix},
-\end{equation} 
-\noindent
-where the $0$ element of the block diagonal is a matrix of zeros corresponding to the unpenalized fixed effects. The variance components of the mixed model are given by $G = \sigma_\epsilon^2 F^{-1}$. Applying these results to the smooth-ANOVA model \ref{eq:SANOVA} with regression basis \ref{eq:SANOVA-basis-matrix}, the mixed model matrices are given by 
 
 \begin{align}
 \begin{split} \label{eq:PSANOVA-mm-marginal-matrices}
@@ -944,7 +898,124 @@ Z &= \left[ \begin{array}{c|c|c|c|c|c|c} m \square Z_l & \dots &  m^{\ms d_{\ms 
 \end{split}
 \end{align}
 
-We obtain the variance-covariance matrix of the mixed model by using the fact that $F = T^\prime P T$.
+To obtain the variance-covariance matrix of the mixed model $G = \sigma_\epsilon^2 F^{-1}$, one may use the fact that $F = M^\prime P M$. The transformation matrix $M$ must take into account the reduced dimension of the mixed model matrices $X$ and $Z$. The resulting matrix is block diagonal, with a block for each of the functional components. 
+
+\subsubsection{PSANOVA transformation matrix, $M$}
+
+Removing the $1_p$ vector from the mixed model matrices is equivalent to removing the first column from the eigenvectors spanning the null space of each of the marginal penalties, $U_{l0}$ and $U_{m0}$, i.e. excluding $1_l^*$ and  $1_m^*$ from $M$. The $\left( 1 + K + L + KL \right) \times KL$ transformation matrix for the PS-ANOVA model is given by 
+
+\begin{align}
+\begin{split}
+M &= \left[ \begin{array}{c|c}  M_0 & M_1  \end{array} \right] \\
+&= \left[ \begin{array}{c|c}  M_0 & \begin{array}{c} 0 \\ M_1^* \end{array}  \end{array} \right] 
+\end{split}
+\end{align}
+\noindent
+where
+
+\begin{align}
+\begin{split} \label{eq:PSANOVA-transformation-matrix}
+%M_0 &= \mbox{blkdiag}\left(1,  u_{\ms l1}^*, \dots,u_{\ms l,\ms d_{\ms l} \ms -1}^*,  u_{\ms m1}^*, \dots,u_{\ms m,\ms d_{\ms m} \ms -1}^*,  u_{\ms l1}^*  \otimes u_{\ms m1}^*, \dots,u_{\ms m,\ms d_{\ms m } \ms -1}^* \otimes u_{\ms l,\ms d_{\ms l } \ms -1}^*  \right), \\
+M_0 &= \mbox{blkdiag}\left(1,  U^*_{ l0},  U^*_{ m0}, U^*_{ m0} \otimes  U^*_{ l0} \right), \\
+M_1^* &= \mbox{blkdiag}\left( U_{l1}, U_{m1}, \bigg[ \begin{array}{c|c|c} U^*_{ m0} \otimes U_{l1}  & U_{m1} \otimes  U^*_{\ms l0}  &  U_{m1} \otimes  U_{ l1} \end{array} \bigg] \right) 
+\end{split}
+\end{align} 
+\noindent 
+where
+\begin{align} 
+\begin{split}\label{eq:marginal-difference-penalty-null-basis}
+U_{l0} &= [\begin{array}{c|c} 1_K^* & U_{l0}^*  \end{array}] \\
+&= [\begin{array}{c|c|c|c} 1_K^* & u_{\ms l1}^* & \dots & u_{\ms l,d_{\ms l}-1}^* \end{array}]
+\end{split}
+\end{align}
+\noindent
+is the $K \times d_l$ matrix corresponding to the null space of the $d_l^{th}$ order difference penalty, $D_{\ms d_{\ms l}}^\prime D_{\ms d_{\ms l}}$. Here,
+\[
+1_K^*= 1_K/\sqrt{K}
+\]
+denotes the $K$-vector of 1s scaled to have length 1, and the columns of $U_{l0}^*$ comprise a subset of orthogonal polynomials of degree $1,\dots, d_l-1$ centered around 0 so that 
+\[
+{u_{\ms li}^*}^\prime u_{\ms lj}^*  = \delta_{ij}.
+\]
+The submatrices $U_{l1}$ and $U_{m1}$ in \ref{eq:PSANOVA-transformation-matrix} are derived from the non-null eigenvectors of the $d_l^{th}$ and $d_m^{th}$ order difference penalties, as in the definition of \ref{eq:tensor-product-transformation-matrix}. Applying the transformation to $P$, the penalty becomes
+
+\begin{equation} \label{eq:PSANOVA-mm-penalty}
+F = \mbox{blkdiag}\left( 0, F_l, F_m, F_{lm}  \right) 
+\end{equation}
+\noindent
+where
+\begin{align*}
+\begin{split} 
+F_l &= \lambda_l \tilde{\Delta}_l,\\
+F_{\ms m} &= \lambda_m \tilde{\Delta}_m, \mbox{ and}\\
+F_{\ms l \ms m} &= \mbox{blkdiag}\left( \tau_l \tilde{\Delta}_l, \tau_l \tilde{\Delta}_l, [ \tau_l I_{L-d_{\ms m}} \otimes \tilde{\Delta}_l ]+ [ \tau_m \tilde{\Delta}_m \otimes I_{K-d_{\ms l}}] \right).
+\end{split}
+\end{align*}
+
+\citet{lee2011p} showed that removing the column of $1$s from the fixed effect matrices for each of the marginal components \ref{eq:PSANOVA-mm-marginal-matrices} is equivalent to  imposing the same constraints on model coefficients as in the usual factorial design model. To see this, consider the recovered penalty of the original parameterization:
+
+\begin{equation}\label{eq:recovered-penalty-matrix}
+\tilde{P} = MFM^\prime = MM^\prime P M M^\prime
+\end{equation}
+where $P$ and $F$ are defined as in \ref{eq:PSANOVA-penalty} and \ref{eq:PSANOVA-mm-penalty}, respectively. However, $M$ is not orthogonal for the PSANOVA model with basis \ref{eq:SANOVA-basis-matrix}. One can show that $\mathscr{K} = M M^\prime$ is a centering operator:
+
+\begin{equation} \label{eq:PSANOVA-centering-matrix}
+\mathscr{K} = \begin{bmatrix}
+1 	&    \dots	&	& 0 \\
+ \vdots	&    \mathscr{K}_l	&	&\\
+	& 	& \mathscr{K}_m	& \\
+0 & & & \mathscr{K}_m \otimes \mathscr{K}_l
+\end{bmatrix}
+\end{equation}
+\noindent 
+where $\mathscr{K}_l = I_K - 11^\prime/K$ and $\mathscr{K}_m = I_L - 11^\prime/L$. See Appendix~\ref{subsection:transformation-centering-matrix-equivalence} for a detailed proof. The recovered penalty can be rewritten from \ref{eq:recovered-penalty-matrix} as
+
+\begin{equation} \label{eq:recovered-PSANOVA-penalty}
+\tilde{P} = \mathscr{K} P \mathscr{K},
+\end{equation}
+\noindent
+with rank [DOUBLE CHECK THIS GENERALIZATION] $KL -  d_{\ms l} d_{\ms m}$. Applying the transformation to the coefficient vector $\theta$ in terms of $\mathscr{K}$ gives
+
+\[
+\theta^\prime \tilde{P} \theta = \tilde{\theta}^\prime P \tilde{\theta},
+\]
+where
+
+\begin{equation} \label{eq:mm-parameter-constraints}
+\tilde{\theta} \equiv \mathrm{K} \theta = \begin{bmatrix}\mu & \dots &  & \\
+\vdots & \mathscr{K}_l  & &  \\
+&&\mathscr{K}_m & \\
+&&& \mathscr{K}_{m} \otimes \mathscr{K}_l 
+\end{bmatrix} 
+\begin{bmatrix} \mu \\ \theta_l \\ \theta_m \\ \theta_{lm} 
+\end{bmatrix} \equiv \begin{bmatrix} \mu, \tilde{\theta}_l, \tilde{\theta}_m, \tilde{\theta}_{lm}  \end{bmatrix}^\prime
+\end{equation}
+\noindent
+with
+\begin{align}
+\begin{split} \label{eq:main-effect-coefficient-constraints}
+\tilde{\theta}_l = \mathscr{K}_l \theta_l, \\
+\tilde{\theta}_m = \mathscr{K}_m \theta_m, \mbox{ and} \end{split} \\
+\tilde{\theta}_{lm} = \mathscr{K}_{m} \otimes \mathscr{K}_l \theta_{lm} \label{eq:interaction-coefficient-constraint}
+\end{align}
+\noindent
+The transformations in \ref{eq:main-effect-coefficient-constraints} center the coefficients corresponding to the main effects of $l$ and $m$, $\phi_1$ and $\phi_2$. If we write the right hand side of \ref{eq:interaction-coefficient-constraint} in array form, we have 
+\[
+\tilde{\Theta}_{lm} = \mathscr{K}_{l} \Theta_{lm}\mathscr{K}_{m},  
+\]
+which is equivalent to centering the coefficient matrix $\Theta_{lm}$ by rows and by columns. The transformation to the mixed model formulation enforces the same constraints on coefficients as those applied in a factorial design with two main effects and a 2-way interaction:
+
+\begin{align}
+\begin{split}
+\sum_{i=1}^K \tilde{\theta}_{li} = \sum_{j=1}^L \tilde{\theta}_{mj} = 0, \mbox{ and}\\
+\sum_{i=1}^K \tilde{\Theta}_{ij} = \sum_{j=1}^L \tilde{\Theta}_{ij} = 0.
+\end{split}
+\end{align}
+
+
+\subsection{Restricted maximum likelihood estimation}
+
+The previous section establishes the relationship between the variance components of the random effects in the mixed effects model \ref{eq:vc-mixed-effects-model}
 
 
 
@@ -958,7 +1029,10 @@ We obtain the variance-covariance matrix of the mixed model by using the fact th
 
 
 
-\section{Appendix}
+
+
+
+\section{Appendix} \label{appendix:appendix}
 
 
 Proof of Theorem~\ref{phi_representer_thm}
@@ -1026,7 +1100,93 @@ t_{ij} = \frac{1}{d_{ii}}\left(\sigma^{ij} - \sum_{k=1}^{i-1} t_{ki}t_{kj} \righ
 
 We proceed by induction. For the first row of $T^T$, 
 
+\subsection{Construction of the mixed model transformation matrix, $M$}
 
+Let
+\[
+U_l \Delta_l U_l^T
+\]
+denote the singular value decomposition of $D_l^T D_l$, where $U_l$ is the $K \times K$ matrix of eigenvectors and $\Delta_l$ is the diagonal matrix with diagonal entries equal to the corresponding eigenvalues. Exactly $d_{\ms l}$ of of the eigenvalues are identically zero, so if we let $\tilde{\Delta}_l$ denote the submatrix containing only the positive eigenvalues, then we can write
+
+\[
+\Delta_l = \mbox{diag}\left( 0_{d_{\ms l}},\tilde{\Delta}_l \right).
+\] 
+
+Let 
+\[
+U_{l0} = \begin{bmatrix} 1_l^* & u_{l1}^* ... & u_{l,d_{\ms l} \ms - 1}^* \end{bmatrix}
+\]
+denote the matrix of eigenvectors corresponding to the zero eigenvalues, where $1_l^* = \left(1, 1, \dots,1 \right)^T/\sqrt{K}$ and $u_{li}^*$  is the vector having elements $\left( 1^i, 2^i,\dots,K^i \right)^T$, centered and scaled to have mean $0$ and unit length. Let $U_{l1}$ denote the submatrix of eigenvectors corresponding to the nonzero eigenvalues, $\tilde{\Delta}_l$. Define $U_{m0}$, $U_{m1}$, and $\tilde{\Delta}_{m}$ in the same fashion. 
+
+The orthogonal transformation matrix $M$ is defined $M = \left[\begin{array}{c|c} M_0 & M_1 \end{array}\right]$, where
+
+\begin{align} 
+\begin{split} \label{eq:tensor-product-transformation-matrix}
+M_0 &= \left[ \begin{array}{c} U_{m0} \otimes U_{l0} \end{array} \right], \mbox{ and} \\
+M_1 &= \left[ \begin{array}{c|c|c}  U_{m0} \otimes U_{l1}  &  U_{m1} \otimes U_{l0}  &  U_{m1} \otimes U_{l1} \end{array} \right].
+\end{split}
+\end{align}
+
+The transformed coefficients are given by 
+\begin{equation*}
+\beta = M_0^T\theta, \qquad \alpha = M_1^T\theta
+\end{equation*}
+
+Using properties of the kronecker product (see \citet{liu1999matrix}), one can show that the mixed model design matrices $X$ and $Z$ can be written as the tensor product of the marginal bases:
+
+\begin{align}
+\begin{split} \label{eq:mixed-model-tensor-matrices}
+X &= \left[ \begin{array}{c} X_m \square X_l \end{array} \right], \mbox{ and} \\
+Z &= \left[ \begin{array}{c|c|c} X_m \square Z_l & Z_m \square X_l & Z_m \square Z_l \end{array} \right].
+\end{split}
+\end{align}
+\noindent
+where 
+\begin{align*}
+X_l &= B_l U_{l0}, & &Z_l = B_l U_{l1}, \\ 
+X_m &= B_m U_{m0}, & &Z_m = B_m U_{m1}.
+\end{align*}
+\noindent
+This is convenient because the calculation of $M$ can be avoided in practice. Since $\beta$ is not penalized, we can replace $X_l$ and $X_m$ with 
+\begin{equation*}
+\left[\begin{array}{c|c|c|c} 1_p & l & \dots & l^{d_{\ms l} -1}  \end{array} \right] \mbox{ and } \left[\begin{array}{c|c|c|c} 1_p & m & \dots & m^{d_{\ms m} -1}  \end{array} \right]
+\end{equation*}
+Making this replacement, the expressions for $X$ and $Z$ can be expanded:
+\begin{align}
+X &= \left[ \begin{array}{c|c|c|c|c|c} 1_p & l & m & l \square m & \dots  & l^{\ms d_{\ms l} -1 } \square  m^{\ms d_{\ms m} -1 } \end{array} \right], \\
+Z &= \left[ \begin{array}{c|c|c|c|c|c|c}  Z_l & Z_m & Z_m \square l & m \square Z_1 & \dots & Z_m \square l^{\ms d_{\ms l} \ms -1} & m^{d_{\ms m} -1} \square Z_1   \end{array} \right],
+\end{align}
+Construction of the fixed effects and mixed effects in this way allows us to express the fitted varying coefficient function $\phi^*$ as a sum of the main effects and an $l$-$m$ interaction. After applying the transformation, the penalty becomes
+
+\begin{equation}
+F = \begin{bmatrix}
+0 	&	&	 & \\
+	&  \lambda_l I_L \otimes \tilde{\Delta}_l  &	& \\
+	&						& \lambda_m  \tilde{\Delta}_m\otimes & \\ 
+&&&  \lambda_m  \tilde{\Delta}_m\otimes + \lambda_l I_L \otimes \tilde{\Delta}_l 
+\end{bmatrix},
+\end{equation} 
+\noindent
+where the $0$ element of the block diagonal is a matrix of zeros corresponding to the unpenalized fixed effects. The variance components of the mixed model are given by $G = \sigma_\epsilon^2 F^{-1}$. Applying these results to the smooth-ANOVA model \ref{eq:SANOVA} with regression basis \ref{eq:SANOVA-basis-matrix}, the mixed model matrices are given by 
+
+
+\subsection{Transformation matrix $M$ imposes identifiability constraints} \label{subsection:transformation-centering-matrix-equivalence}
+
+We can decompose the identity matrix according to 
+\[
+I = U_{l0}U_{l0}^\prime + U_{l1}U_{l1}^\prime
+\]
+where $U_{l0}U_{l0}^\prime = 1_K^* 1_K^{*\prime} + U_{l0}^*{U_{l0}^*}^\prime$. Then 
+
+\begin{equation*} 
+U_{l1}U_{l1}^\prime = I - 1_K^* 1_K^{*\prime} -  U_{l0}^*{U_{l0}^*}^\prime,
+\end{equation*}
+\noindent
+where $1_K^* 1_K^{*\prime} = 1_K 1_K^{\prime}/K$. This gives
+\begin{equation} \label{eq:appendix-transformation-proof-1} 
+U_{l1}U_{l1}^\prime +  U_{l0}^*{U_{l0}^*}^\prime= I_K - 1_K^* 1_K^{*\prime}.
+\end{equation}
+After substituting \ref{eq:appendix-transformation-proof-1} into the definition of $M$ \ref{eq:PSANOVA-transformation-matrix}, it follows immediately that $MM^\prime = \mathscr{K}$ as it is defined in \ref{eq:PSANOVA-centering-matrix}.
 
 \bibliography{Master}
 \end{document}
