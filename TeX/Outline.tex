@@ -129,12 +129,14 @@ If we assume that the data having covariance matrix $\Sigma$ follow an autoregre
 t_{1} < t_{2} < \dots< t_{m}.
 \]
 
-Consider regressing $Y_{j}$  on its predecessors:
+
+Let $\hat{y}_t$ denote the linear least-squares predictor of $y_t$ based on its predecessors $y_1,\dots, y_{t-1}$, and let $e_t$ denote its prediction error with variance $Var\left(e_t\right)=\sigma_t^2$, $Cov\left(e_i,e_j\right)=0$ for $i \ne j$. Standard regression theory gives us that we can find coefficients $\phi_{tj}$ such that
 
 \begin{equation}
-{Y}_{j}  = \sum_{k=1}^{j-1} \phi_{jk} Y_{k} + \sigma_{j}e_{j}, \qquad j=2,\dots,m, \label{eq:ARmodel}
+{y}_{j}  = \sum_{k=1}^{j-1} \phi_{jk} y_{k} + \sigma_{j}e_{j}, \qquad j=2,\dots,m, \label{eq:ARmodel}.
 \end{equation}
-\noindent where we define $y_{1}=e_{1}$. Standard regression theory gives us that if $\lbrace \phi_{jk} \rbrace$ are the coefficients of the linear least squares predictor of $y_{j}$ based on its predecessors, then the residuals $e =\left( e_{1}, e_{2},\dots, e_{m} \right)^T$ have diagonal covariance. Let $T$ denote the $m \times m$  matrix with elements 
+
+ Let $T$ denote the $m \times m$  matrix with elements 
 
 \[
 T_{jk} = \left\{
