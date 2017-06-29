@@ -83,7 +83,12 @@
 \newcommand{\doccls}[1]{\texttt{#1}}% document class name
 \newcommand{\docclsopt}[1]{\texttt{#1}}% document class option name
 
-
+\newcommand\myfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
 
 
 
@@ -194,14 +199,38 @@ Y = \left(Y_1, \dots, Y_M \right)^\prime \sim \mathcal{N}\left(0,\Sigma\right).
 \begin{equation}
 D = T \Sigma T^\prime, \quad T = \begin{bmatrix} 1 & 0 & \dots & & \\ -\phi_{21} & 1 & & & \\ -\phi_{31}& -\phi_{32} &  1 & & \\ \vdots & & & \ddots & \\ -\phi_{M1} &-\phi_{M2} & \dots & -\phi_{M,M-1}& 1  \end{bmatrix}
 \end{equation}
-\note{The matrix $T$ is the \emph{Cholesy factor}  of the precision matrix.}
+\myfootnote{The matrix $T$ is the \emph{Cholesy factor}  of the precision matrix.}
 \end{frame}
 
 
 
+
+\begin{frame}
+\frametitle{}
+
+\vfill
+  \begin{beamercolorbox}[center]{title}
+\Large Now, for the cutest part:
+  \end{beamercolorbox}
+  \vfill
+
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{}
+\begin{figure}
+\graphicspath{{img/}}
+  \includegraphics[height=9cm]{cutest-kitten-ever}
+\end{figure}
+
+\end{frame}
+
 %6
 \begin{frame}
-\frametitle{\emph{Here's the cute part: }}
+\frametitle{\emph{Okay, really:}}
 
 \newthought{Imagine regressing} $\color{hilight}{Y_j}$ \newthought{on its predecessors:}
 
@@ -265,10 +294,11 @@ Swap the standard regression model \ref{eq:ARmodel} for a varying coefficient mo
 \end{equation*}
 
 \begin{equation}   
-\newmaththought{y\left(t_j \right)  = \sum_{k=1}^{j-1} \phi\left(t_j ,t_k\right) y\left(t_k\right) + \sigma\left(t_j\right)\epsilon\left({t_j}\right)}
+\newmaththought{y\left(t_j \right)  = \sum_{k=1}^{j-1} \phi\left(t_j ,t_k\right) y\left(t_k\right) + \sigma\left(t_j\right)e\left({t_j}\right)}
 \label{eq:MyModel} 
 \end{equation}
-\note{The regression coefficients $\phi_{jk}$ are the \emph{generalized autoregressive parameters}, and the prediction error variances $\sigma^2_{j}$ are the \emph{innovation variances}.}
+\myfootnote{The $\left\{ \phi_{jk} \right\}$ are called \emph{generalized autoregressive parameters}.}
+\myfootnote{The $\left\{ \sigma^2_{j} \right\}$ are called the \emph{innovation variances}.}
 \end{frame}
 
 
@@ -329,10 +359,12 @@ Decompose
 \end{equation} 
 so Model~\ref{eq:MyModel} becomes
 
-\begin{align*}  
+\begin{align}  
+\begin{split} \label{eq:expanded-ps-anova-vc-model}
 \newmaththought{ y\left(t_j \right)  = \sum_{k=1}^{j-1}}\carrotorangemath{ \bigg[\mu + \phi_1\left(l_{jk}\right) + } &\carrotorangemath{\phi_2\left(m_{jk}\right)} \bigg.\\[-2ex]
 \bigg. &\carrotorangemath{+ \phi_{12}\left(l_{jk},m_{jk}\right) \bigg]}\newmaththought{y\left(t_k\right)+ \sigma\left(t_j\right)\epsilon\left({t_j}\right)}
-\end{align*}
+\end{split}
+\end{align}
 \end{frame}
 
 
@@ -340,16 +372,94 @@ so Model~\ref{eq:MyModel} becomes
 \frametitle{\emph{We can use B-splines to construct the model basis.}}
 Represent the main effects as
 
-\begin{align*}  
-\newmaththought{\phi_1\left(l\right) } &= \newmaththought{\sum_{c=1}^{c_l} B_{c}\left(l;q_l\right) \theta_{lc }},\\
-\newmaththought{\phi_2\left(m\right) } &= \newmaththought{\sum_{{c^\prime}=1}^{c_m} B_{c^\prime}\left(m;q_m\right)\theta_{mc^\prime } },
-\end{align*}
-and the interaction term by
+\begin{align}  
+\newmaththought{\phi_1\left(l\right) } &= \newmaththought{\sum_{c=1}^{c_l} B_{c}\left(l;q_l\right) \theta_{lc }}, \label{eq:l-marginal-basis}\\
+\newmaththought{\phi_2\left(m\right) } &= \newmaththought{\sum_{{c^\prime}=1}^{c_m} B_{c^\prime}\left(m;q_m\right)\theta_{mc^\prime } },\label{eq:m-marginal-basis}
+\end{align}
+and the interaction term by the tensor product of the marginal bases \ref{eq:l-marginal-basis} and \ref{eq:m-marginal-basis}:
 \begin{equation*} 
 \newmaththought{ \phi_{12}\left(l,m\right)  = \sum_{c=1}^{c_l} \sum_{{c^\prime}=1}^{c_m} B_{c}\left(l;q_l\right) B_{c^\prime  }\left(m;q_m\right)\theta_{c c^\prime } }
-\end{equation^*} 
-
+\end{equation*} 
 \end{frame}
+
+
+\begin{frame}
+\frametitle{\emph{PS-ANOVA model basis}}
+
+In matrix notation, Model \ref{eq:expanded-ps-anova-vc-model} becomes
+
+\begin{equation*}  
+E \left[ Y | W \right] = WB \theta,
+\end{equation*}
+\noindent
+where $W$ is the matrix of covariates holding the past values of $Y$, and $B$ is the $B$-spline regression basis:
+\begin{equation} \label{eq:SANOVA-basis-matrix}
+B = \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{lm} \; \right]
+\end{equation}
+\noindent
+where 
+\begin{equation*} \label{eq:rowwise-kronecker-product}
+B_{lm} \left( B_m \otimes 1^\prime_{c_l} \right) \odot \left(1^\prime_{c_m} \otimes  B_l  \right).
+\end{equation*}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+\frametitle{\emph{Difference penalties to regulate}}
+
+\newthought{For} $\newmaththought{f\left(x\right)=\sum_{i=1}^{p} B_{i}\left(x\right) \theta_{i }}$,
+
+=  \int_{0}^{1}  \bigg[ \sum\limits_{j=1}^n \sum\limits_{k=1}^n \Delta^2 \beta_j \Delta^2 \beta_k B_{j,1}\left(l\right)B_{k,1}\left(l\right)\bigg]\; dl  . 
+\end{equation}
+\noindent
+Most of the cross products of $B_{j,1}\left(l\right)$ and $B_{k,1}\left( l \right)$ vanish since B-splines of degree 1 only overlap when $j$ is $k-1$, $k$, or $k+1$. Thus, we have that
+\begin{align}
+\begin{split}
+\beta^T P \beta = {} &  \int_0^1 \bigg[ \left\{ \sum\limits_{j=1}^n   \Delta^2 \beta_j  B_j\left(l,1\right)  \right\}^2  + 2 \sum_{j}\Delta^2 \beta_j\Delta^2 \beta_{j-1}B_j\left(l,1\right)B_{j-1}\left(l,1\right) \bigg]\; dl \\ 
+= {} & \sum \limits_{j=1}^n  \left( \Delta^2\beta_j \right)^2 \int_0^1 B_j^2\left(l,1\right)\;dl \\
+   &{} \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\; + 2 \sum\limits_{j=1}^n \Delta^2 \beta_j\Delta^2 \beta_{j-1} \int_0^1 B_j\left(l,1\right)B_{j-1}\left(l,1\right)\;dl 
+\end{split}
+\end{align}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
