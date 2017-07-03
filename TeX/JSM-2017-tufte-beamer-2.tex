@@ -28,7 +28,7 @@
 \fontfamily{sans}
 \setbeamerfont{note page}{family*=pplx,size=\footnotesize} % Palatin
 
-
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
 \definecolor{foreground}{RGB}{255,255,255}
 \definecolor{background}{RGB}{24,24,24}
 \definecolor{title}{RGB}{107,174,214}
@@ -65,6 +65,7 @@
     \raisebox{5pt}{\makebox[\paperwidth]{\hfill\makebox[20pt]{\color{gray}
           \scriptsize\insertframenumber}}}\hspace*{5pt}}
 
+\newcommand{\ms}{\scriptscriptstyle}
 % These commands are used to pretty-print LaTeX commands
 \newcommand{\bi}{\begin{itemize}}
 \newcommand{\ei}{\end{itemize}}
@@ -174,11 +175,11 @@ t_{1} < t_{2} < \dots< t_{m}.
 	\newthought{A cute little reparameterization } $\color{hilight} \Longrightarrow$ \newthought{unconstrained estimation, meaningful interpretation} 
 \item<5> The $\left\{t_{ij} \right\}$ may be messy. \\
 	\newthought{Frame covariance estimation as function estimation.} 
-\item<6> More dimensions, more problems (maybe.) \\
+\item<6>  More dimensions, more problems (maybe.) \\
 \begin{figure}
 \graphicspath{{img/}}
-  \includegraphics[height=3cm]{ripnatedogg}
-  \caption{\color{hilight}\small Regulate like Nate Dogg.}
+  \includegraphics<6>[height=3cm]{ripnatedogg}
+  \only<6>{\caption{\color{hilight}\small Regulate like Nate Dogg.}}
 \end{figure}
 \ei
 \end{frame}
@@ -250,7 +251,7 @@ e = TY,
 \noindent
  and taking covariances on both sides:
 \begin{equation}
- D = diag\left( \sigma_1^2,\dots, \sigma_M^2 \right) = T \Sigma T^\prime.
+ D = diag\left( \sigma_1^{\ms 2},\dots, \sigma_M^{\ms 2} \right) = T \Sigma T^\prime.
 \end{equation}
 \end{frame}
 
@@ -268,7 +269,7 @@ e = TY,
 \begin{center}
 \begin{figure}
 \graphicspath{{img/}}
-  \includegraphics[height=8cm]{drake-on-cake-crop}
+  \includegraphics[height=8cm]{nude-beach}
 \end{figure}
 \end{center}
   \end{adjustwidth}
@@ -298,7 +299,7 @@ Swap the standard regression model \ref{eq:ARmodel} for a varying coefficient mo
 \label{eq:MyModel} 
 \end{equation}
 \myfootnote{The $\left\{ \phi_{jk} \right\}$ are called \emph{generalized autoregressive parameters}.}
-\myfootnote{The $\left\{ \sigma^2_{j} \right\}$ are called the \emph{innovation variances}.}
+\myfootnote{The $\left\{ \sigma^{\ms 2}_{j} \right\}$ are called the \emph{innovation variances}.}
 \end{frame}
 
 
@@ -307,15 +308,15 @@ Swap the standard regression model \ref{eq:ARmodel} for a varying coefficient mo
 \frametitle{\emph{(Iterated) penalized maximum likelihood estimation}}
 
 \begin{enumerate}
-\item Fix $\sigma_{ij}^2 = \sigma_{ij0}^2$, $i=1,\dots,N$ ,$j=1,\dots,M$.
+\item Fix $\sigma_{ij}^{\ms 2} = \sigma_{ij0}^{\ms 2}$, $i=1,\dots,N$ ,$j=1,\dots,M$.
 \item Find $\phi_0 = \underset{\phi}{arg \; min} -2L_\phi\left(\phi, y_1,\dots, y_N \right) + \lambda J\left( \phi \right)$
 \item Fix $\phi = \phi_{0}$.
-\item Find  $\sigma_{0}^2 = \underset{\sigma^2}{arg\; min} -2L_\sigma^2\left(\sigma^2, y_1,\dots, y_N \right) + \lambda J\left( \sigma^2 \right)$
+\item Find  $\sigma_{0}^{\ms 2} = \underset{\sigma^{\ms 2}}{arg\; min} -2L_\sigma^{\ms 2}\left(\sigma^{\ms 2}, y_1,\dots, y_N \right) + \lambda J\left( \sigma^{\ms 2} \right)$
 \end{enumerate}
 
 \begin{adjustwidth}{-2cm}{-2cm}
 \begin{equation}
--2 L_\phi\left(\phi, y_1, \dots,y_N \right) = \sum_{i=1}^N \sum_{j=2}^{m_i} \sigma_{ij0}^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y_{ik} \right)^2 \label{loglikelihood}
+-2 L_\phi\left(\phi, y_1, \dots,y_N \right) = \sum_{i=1}^N \sum_{j=2}^{m_i} \sigma_{ij0}^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y_{ik} \right)^{\ms 2} \label{loglikelihood}
 \end{equation}
 \end{adjustwidth}
 \end{frame}
@@ -397,9 +398,13 @@ where $W$ is the matrix of covariates holding the past values of $Y$, and $B$ is
 B = \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{lm} \; \right]
 \end{equation}
 \noindent
-where 
 \begin{equation*} \label{eq:rowwise-kronecker-product}
-B_{lm} \left( B_m \otimes 1^\prime_{c_l} \right) \odot \left(1^\prime_{c_m} \otimes  B_l  \right).
+B_{lm} \left( B_m \otimes 1^\prime_{c_l} \right) \odot \left(1^\prime_{c_m} \otimes  B_l  \right),
+\end{equation*}
+\noindent
+and
+\begin{equation*} 
+\theta = \left(\mu, \;\theta_{\ms l}, \;\theta_{\ms l}, \;\theta_{\ms{lm}} \right)^\prime
 \end{equation*}
 \end{frame}
 
@@ -408,27 +413,107 @@ B_{lm} \left( B_m \otimes 1^\prime_{c_l} \right) \odot \left(1^\prime_{c_m} \oti
 
 
 \begin{frame}
-\frametitle{\emph{Difference penalties to regulate}}
+\frametitle{\emph{Difference penalty had to regulate.}}
 
-\newthought{For} $\newmaththought{f\left(x\right)=\sum_{i=1}^{p} B_{i}\left(x\right) \theta_{i }}$,
+For $f\left(x\right)=\sum \limits_{i=1}^{p} B_{i}\left(x\right) \theta_{i}$, approximate
 
-=  \int_{0}^{1}  \bigg[ \sum\limits_{j=1}^n \sum\limits_{k=1}^n \Delta^2 \beta_j \Delta^2 \beta_k B_{j,1}\left(l\right)B_{k,1}\left(l\right)\bigg]\; dl  . 
-\end{equation}
-\noindent
-Most of the cross products of $B_{j,1}\left(l\right)$ and $B_{k,1}\left( l \right)$ vanish since B-splines of degree 1 only overlap when $j$ is $k-1$, $k$, or $k+1$. Thus, we have that
 \begin{align}
 \begin{split}
-\beta^T P \beta = {} &  \int_0^1 \bigg[ \left\{ \sum\limits_{j=1}^n   \Delta^2 \beta_j  B_j\left(l,1\right)  \right\}^2  + 2 \sum_{j}\Delta^2 \beta_j\Delta^2 \beta_{j-1}B_j\left(l,1\right)B_{j-1}\left(l,1\right) \bigg]\; dl \\ 
-= {} & \sum \limits_{j=1}^n  \left( \Delta^2\beta_j \right)^2 \int_0^1 B_j^2\left(l,1\right)\;dl \\
-   &{} \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\; + 2 \sum\limits_{j=1}^n \Delta^2 \beta_j\Delta^2 \beta_{j-1} \int_0^1 B_j\left(l,1\right)B_{j-1}\left(l,1\right)\;dl 
+\int_0^1 \left(f^{\prime \prime}\left(x\right)\right)^{\ms 2} \;dx &= \int_0^1 \bigg\{ \sum \limits_{i=1}^{p} B^{\prime \prime}_{i}\left(x\right) \theta_{i} \bigg\}^{\ms 2} \;dx \\ 
+&= k_1 \newmaththought{\sum_i \left( \Delta^{\ms 2} \theta_i \right)^{\ms 2}} + k_2, 
 \end{split}
 \end{align}
+\noindent
+by
+\[
+\newmaththought{\vert \vert D_{\ms 2} \theta \vert \vert^{\ms 2}, \qquad  D_{\ms 2} \theta= \left( \Delta^{\ms 2}\theta_{\ms 1},\dots,\Delta^{\ms 2}\theta_{\ms{p-2}} \right)^\prime }
+\]
+In general, 
+\framebox{\newthought{approximate} $\newmaththought{\int \limits_{\ms 0}^{\ms 1} \big(f^{\ms{\left(d\right)}}\big)^{\ms 2}\;dx}$ \newthought{with} $\newmaththought{\vert \vert D_{\ms d} \theta \vert \vert^{\ms 2} }$ }
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\emph{PS-ANOVA Penalty}}
+
+Estimate $B$-spline coefficients by minimizing 
+\begin{equation*}
+\left(Y-WB\theta\right)^\prime \left(Y-WB\theta\right) + \theta^\prime P \theta
+\end{equation*}
+\noindent
+where
+\begin{equation} \label{eq:PSANOVA-penalty}
+P = \mbox{blockdiag}\left(0,\; P_1, \; P_2, \; P_{12}\right),
+\end{equation}
+\begin{align*}
+P_{\ms i} &= \lambda_i D_{\ms{d_i}}^\prime D_{\ms{d_i}}\\
+P_{\ms{12}} &= \lambda_3 D_{\ms{d_1}}^\prime D_{\ms{d_1}} \otimes I_{\ms{c_m}} + \lambda_4 I_{\ms{c_l}} \otimes D_{\ms{d_2}}^\prime D_{\ms{d_2}} 
+\end{align*}
+
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{\emph{Mixed model representation}}
+
+
+In matrix notation, Model \ref{eq:expanded-ps-anova-vc-model} is given by
+
+\begin{equation*}  
+E \left[ Y | W \right] = WB \theta,
+\end{equation*}
+\noindent
+where $W$ is the matrix of covariates holding the past values of $Y$, and $B$ is the $B$-spline regression basis:
+\begin{equation} \label{eq:SANOVA-basis-matrix}
+B = \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{lm} \; \right]
+\end{equation}
+\noindent
+\begin{equation*} \label{eq:rowwise-kronecker-product}
+B_{lm} \left( B_m \otimes 1^\prime_{c_l} \right) \odot \left(1^\prime_{c_m} \otimes  B_l  \right),
+\end{equation*}
+\noindent
+and
+\begin{equation*} 
+\theta = \left(\mu, \;\theta_{\ms l}, \;\theta_{\ms l}, \;\theta_{\ms{lm}} \right)^\prime
+\end{equation*}
 \end{frame}
 
 
 
 
+%% NEEDS CORRECTED TO ACCOUNT FOR REPLACING \sigma^2 I with D
 
+\begin{frame}
+\frametitle{\emph{Mixed model representation}}
+
+Find transformation $M$ to map
+\begin{equation*}
+\newmaththought{B \rightarrow \big[ \begin{array}{c|c} X & Z \end{array}  \big], \qquad \theta \rightarrow \left( \beta, \alpha \right)^\prime}
+\end{equation*}
+\noindent
+such that 
+\begin{equation*}
+\newmaththought{BM = \big[ \begin{array}{c|c} X & Z \end{array}  \big], \qquad B \theta = X \beta + Z \alpha}
+\end{equation*}
+
+
+Applying $M$ to basis \ref{eq:SANOVA-basis-matrix} and penalty \ref{eq:PSANOVA-penalty}, Model \ref{eq:expanded-ps-anova-vc-model} becomes
+\begin{align} 
+\begin{split} \label{eq:vc-mixed-effects-model}
+\newmaththought{Y = W\left(X \beta + Z \alpha\right) + e, }\\
+\newmaththought{ \alpha \sim \mathcal{N}\left(0,G \right), \quad e\sim\mathcal{N}\left(0, D \right)}
+\end{split}
+\end{align} 
+
+\noindent
+The $\left\{ \lambda_j \right \}$ become
+\[
+\newmaththought{\lambda_j  = \frac{\sigma^{\ms 2} }{\tau_{\ms j}^{\ms 2}}}
+\]
+where $\mbox{diag}\left(G\right) = \left\{ \tau_{\ms j}^{\ms 2} \right\}$. 
+\end{frame}
 
 
 
