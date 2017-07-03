@@ -411,6 +411,114 @@ B_{lm} &= B_m \; \square \; B_l \\
 
 
 
+
+\begin{frame}
+\frametitle{\emph{Difference penalty had to regulate.}}
+
+For $f\left(x\right)=\sum \limits_{i=1}^{p} B_{i}\left(x\right) \theta_{i}$, approximate
+
+\begin{align}
+\begin{split}
+\int_0^1 \left(f^{\prime \prime}\left(x\right)\right)^{\ms 2} \;dx &= \int_0^1 \bigg\{ \sum \limits_{i=1}^{p} B^{\prime \prime}_{i}\left(x\right) \theta_{i} \bigg\}^{\ms 2} \;dx \\ 
+&= k_1 \newmaththought{\sum_i \left( \Delta^{\ms 2} \theta_i \right)^{\ms 2}} + k_2, 
+\end{split}
+\end{align}
+\noindent
+by
+\[
+\newmaththought{\vert \vert D_{\ms 2} \theta \vert \vert^{\ms 2}, \qquad  D_{\ms 2} \theta= \left( \Delta^{\ms 2}\theta_{\ms 1},\dots,\Delta^{\ms 2}\theta_{\ms{p-2}} \right)^\prime }
+\]
+In general, 
+\framebox{\newthought{approximate} $\newmaththought{\int \limits_{\ms 0}^{\ms 1} \big(f^{\ms{\left(d\right)}}\big)^{\ms 2}\;dx}$ \newthought{with} $\newmaththought{\vert \vert D_{\ms d} \theta \vert \vert^{\ms 2} }$ }
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\emph{PS-ANOVA Penalty}}
+
+Estimate $B$-spline coefficients by minimizing 
+\begin{equation*}
+\left(Y-WB\theta\right)^\prime \left(Y-WB\theta\right) + \theta^\prime P \theta
+\end{equation*}
+\noindent
+where
+\begin{equation} \label{eq:PSANOVA-penalty}
+P = \mbox{blockdiag}\left(0,\; P_1, \; P_2, \; P_{12}\right),
+\end{equation}
+\begin{align*}
+P_{\ms i} &= \lambda_i D_{\ms{d_i}}^\prime D_{\ms{d_i}}\\
+P_{\ms{12}} &= \lambda_3 D_{\ms{d_1}}^\prime D_{\ms{d_1}} \otimes I_{\ms{c_m}} + \lambda_4 I_{\ms{c_l}} \otimes D_{\ms{d_2}}^\prime D_{\ms{d_2}} 
+\end{align*}
+
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{\emph{Mixed model representation}}
+
+
+In matrix notation, Model \ref{eq:expanded-ps-anova-vc-model} is given by
+
+\begin{equation*}  
+E \left[ Y | W \right] = WB \theta,
+\end{equation*}
+\noindent
+where $W$ is the matrix of covariates holding the past values of $Y$, and $B$ is the $B$-spline regression basis:
+\begin{equation} \label{eq:SANOVA-basis-matrix}
+B = \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{lm} \; \right]
+\end{equation}
+\noindent
+\begin{equation*} \label{eq:rowwise-kronecker-product}
+B_{lm} \left( B_m \otimes 1^\prime_{c_l} \right) \odot \left(1^\prime_{c_m} \otimes  B_l  \right),
+\end{equation*}
+\noindent
+and
+\begin{equation*} 
+\theta = \left(\mu, \;\theta_{\ms l}, \;\theta_{\ms l}, \;\theta_{\ms{lm}} \right)^\prime
+\end{equation*}
+\end{frame}
+
+
+
+
+%% NEEDS CORRECTED TO ACCOUNT FOR REPLACING \sigma^2 I with D
+
+\begin{frame}
+\frametitle{\emph{Mixed model representation}}
+
+Find transformation $M$ to map
+\begin{equation*}
+\newmaththought{B \rightarrow \big[ \begin{array}{c|c} X & Z \end{array}  \big], \qquad \theta \rightarrow \left( \beta, \alpha \right)^\prime}
+\end{equation*}
+\noindent
+such that 
+\begin{equation*}
+\newmaththought{BM = \big[ \begin{array}{c|c} X & Z \end{array}  \big], \qquad B \theta = X \beta + Z \alpha}
+\end{equation*}
+
+
+Applying $M$ to basis \ref{eq:SANOVA-basis-matrix} and penalty \ref{eq:PSANOVA-penalty}, Model \ref{eq:expanded-ps-anova-vc-model} becomes
+\begin{align} 
+\begin{split} \label{eq:vc-mixed-effects-model}
+\newmaththought{Y = W\left(X \beta + Z \alpha\right) + e, }\\
+\newmaththought{ \alpha \sim \mathcal{N}\left(0,G \right), \quad e\sim\mathcal{N}\left(0, D \right)}
+\end{split}
+\end{align} 
+
+\noindent
+The $\left\{ \lambda_j \right \}$ become
+\[
+\newmaththought{\lambda_j  = \frac{\sigma^{\ms 2} }{\tau_{\ms j}^{\ms 2}}}
+\]
+where $\mbox{diag}\left(G\right) = \left\{ \tau_{\ms j}^{\ms 2} \right\}$. 
+\end{frame}
+
+
+
+
+
 \begin{frame}
 \frametitle{\emph{Decomposition of} $\phi^*$ \emph{for} $d_l = d_m = 2$}
 
