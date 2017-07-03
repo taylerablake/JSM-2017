@@ -840,7 +840,7 @@ where $X$ and $Z$ are the model matrices for the fixed and random effects. $G = 
 Under the assumption of normality, from model \ref{eq:vc-mixed-effects-model}, the marginal distribution of $Y$ is normal with mean $X\beta$ and covariance 
 
 \begin{equation} \label{eq:mm-marginal-covariance}
-D + WZ G Z^\prime W^\prime,
+Cov\left(Y\right) = V = D + WZ G Z^\prime W^\prime,
 \end{equation}
 \noindent
 and the log-likelihood is given by
@@ -867,6 +867,8 @@ The maximum likelihood estimates, however, are biased because they do not accoun
 \end{align}
 \noindent
 Computational efficiency can be improved by avoiding the direct calculation of the determinant and inverse of $V$, which is a Schur complement. Using the properties of the Schur complement, one can show that 
+
+[THIS NEEDS CORRECTED]
 
 \begin{align}
 \begin{split}
