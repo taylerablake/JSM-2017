@@ -731,7 +731,7 @@ We take the estimator of $\phi^*$ to be the minimizer of
 
 \begin{align} 
 \begin{split}\label{eq:unfolded-difference-penalty-log-likelihood}
-Q\left( \alpha \right) = \sum_{i=1}^N \sum_{j=2}^{m_i} \sigma\left({t_j}\right)^{-2} \left\{y_{ij} - \sum_{k=1}^{j-1} \left( \sum_{r=1}^L \sum_{s=1}^K \alpha_{rs} B_r\left(l_{ijk}\right)B_s\left(m_{ijk}\right)\right)y_{ik} \right\}^2 \\ 
+-2L + J\left(\phi^*\right) = \sum_{i=1}^N \sum_{j=2}^{m_i} \sigma\left({t_j}\right)^{-2} \left\{y_{ij} - \sum_{k=1}^{j-1} \left( \sum_{r=1}^L \sum_{s=1}^K \alpha_{rs} B_r\left(l_{ijk}\right)B_s\left(m_{ijk}\right)\right)y_{ik} \right\}^2 \\ 
 + \lambda_l \sum_{r^\prime=1}^K \vert D_{d_{\ms l}} \alpha_{r^\prime \cdot} \vert^2 + \lambda_m \sum_{s^\prime=1}^L \vert D_{d_{\ms m}} \alpha_{\cdot s^\prime} \vert^2.
 \end{split}
 \end{align}
@@ -757,7 +757,7 @@ The operator $\odot$ denotes the element-wise matrix product; $1_K$ ($1_L$) deno
 where $P_l = I_L \otimes D_{d_{\ms l}}^T D_{d_{\ms l}} $ and $P_m =  D_{d_{\ms m}}^T D_{d_{\ms m}} \otimes I_K$. We define the matrix $W$ of historical regressors so that \ref{eq:unfolded-difference-penalty-log-likelihood} can be written in matrix form as
 
 \begin{equation} \label{eq:tensor-pspline-objective-function}
-Q\left(\alpha\right) = \vert Y - WB\alpha \vert^2 + \lambda_l \vert P_l \alpha \vert^2 + \lambda_m \vert P_m \alpha \vert^2,
+-2L + J\left(\phi^*\right) = \vert Y - WB\alpha \vert^2 + \lambda_l \vert P_l \alpha \vert^2 + \lambda_m \vert P_m \alpha \vert^2,
 \end{equation}
 \noindent
 with $\hat{\alpha}$ solving the system of equations 
@@ -809,7 +809,7 @@ P &= \mbox{blockdiag}\left\{0, P_l, P_m, P_{lm}\right\}\\
 with the one-dimensional penalties for each of the additive terms (with corresponding smoothing parameters $\lambda_l$ and $\lambda_m$) and the two-dimensional penalty (with two additional smoothing parameters $\tau_l$ and $\tau_m$) for the interaction term making up the blocks. $D_{d_{\ms l}}$ and $D_{d_{\ms m}}$ are the difference matrices of order $d_{\ms l}$ and $d_{\ms m}$ respectively. With the new basis and penalty, the penalized likelihood \ref{eq:tensor-pspline-objective-function} becomes
 
 \begin{equation} \label{eq:PSANOVA-objective-function}
-Q\left(\alpha\right) = \left( Y - WB\theta \right)^T\left( Y - WB\theta \right) +  \theta^T P \theta.
+-2L + J\left(\phi^*\right) = \left( Y - WB\theta \right)^T\left( Y - WB\theta \right) +  \theta^T P \theta.
 \end{equation}
 
 
