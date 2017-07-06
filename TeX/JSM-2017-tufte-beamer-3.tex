@@ -36,8 +36,8 @@
 \definecolor{subtitle}{RGB}{102,255,204}
 \definecolor{hilight}{RGB}{102,255,204}
 \definecolor{vhilight}{RGB}{255,111,207}
-\definecolor{carrotorange}{rgb}{0.93, 0.57, 0.13}
-
+\definecolor{carrotorange}{rgb}{240,145,50}
+\definecolor{yuppiered}{RGB}{230,79,43}
 \setbeamercovered{transparent}
 
 \setbeamercolor{titlelike}{fg=title}
@@ -73,6 +73,7 @@
 \newcommand{\newthought}[1]{{\small \color{hilight} {#1}}}
 \newcommand{\newmaththought}[1]{{ \color{hilight} {#1}}}
 \newcommand{\carrotorangemath}[1]{{ \color{carrotorange} {#1}}}
+\newcommand{\mixedmodelmath}[1]{{ \color{yuppiered} {#1}}}
 \newcommand{\ms}{\scriptscriptstyle}
 
 \newcommand{\doccmd}[1]{\texttt{\textbackslash#1}}% command name -- adds backslash automatically
@@ -175,15 +176,14 @@ t_{1} < t_{2} < \dots< t_{m}.
 	\newthought{A cute little reparameterization } $\color{hilight} \Longrightarrow$ \newthought{unconstrained estimation, meaningful interpretation} 
 \item<5> The $\left\{t_{ij} \right\}$ may be messy. \\
 	\newthought{Frame covariance estimation as function estimation.} 
-\item<6> More dimensions, more problems (maybe.) \\
+\item<6>  More dimensions, more problems (maybe.) \\
 \begin{figure}
 \graphicspath{{img/}}
-  \includegraphics[height=3cm]{ripnatedogg}
-  \caption{\color{hilight}\small Regulate like Nate Dogg.}
+  \includegraphics<6>[height=3cm]{ripnatedogg}
+  \only<6>{\caption{\color{hilight}\small Regulate like Nate Dogg.}}
 \end{figure}
 \ei
 \end{frame}
-
 
 
 %5
@@ -197,10 +197,10 @@ Y = \left(Y_1, \dots, Y_M \right)^\prime \sim \mathcal{N}\left(0,\Sigma\right).
 
 \newthought{For any positive definite} $\color{hilight}{\Sigma}$, \newthought{we can find $T$ which diagonalizes} $\color{hilight}{\Sigma}$:
 
-\begin{equation}
+\begin{equation*}
 D = T \Sigma T^\prime, \quad T = \begin{bmatrix} 1 & 0 & \dots & & \\ -\phi_{21} & 1 & & & \\ -\phi_{31}& -\phi_{32} &  1 & & \\ \vdots & & & \ddots & \\ -\phi_{M1} &-\phi_{M2} & \dots & -\phi_{M,M-1}& 1  \end{bmatrix}
-\end{equation}
-\myfootnote{The matrix $T$ is the \emph{Cholesy factor}  of the precision matrix.}
+\end{equation*}
+%\myfootnote{The matrix $T$ is the \emph{Cholesy factor}  of the precision matrix.}
 \end{frame}
 
 
@@ -298,14 +298,14 @@ Swap the standard regression model \ref{eq:ARmodel} for a varying coefficient mo
 \newmaththought{y\left(t_j \right)  = \sum_{k=1}^{j-1} \phi\left(t_j ,t_k\right) y\left(t_k\right) + \sigma\left(t_j\right)e\left({t_j}\right)}
 \label{eq:MyModel} 
 \end{equation}
-\myfootnote{The $\left\{ \phi_{jk} \right\}$ are called \emph{generalized autoregressive parameters}.}
-\myfootnote{The $\left\{ \sigma^2_{j} \right\}$ are called the \emph{innovation variances}.}
+%\myfootnote{The $\left\{ \phi_{jk} \right\}$ are called \emph{generalized autoregressive parameters}.}
+%\myfootnote{The $\left\{ \sigma^2_{j} \right\}$ are called the \emph{innovation variances}.}
 \end{frame}
 
 
 
 \begin{frame}
-\frametitle{\emph{(Iterated) penalized maximum likelihood estimation}}
+\frametitle{\emph{Penalized maximum likelihood estimation}}
 
 \begin{enumerate}
 \item Fix $\sigma_{ij}^2 = \sigma_{ij0}^2$, $i=1,\dots,N$ ,$j=1,\dots,M$.
@@ -371,7 +371,6 @@ so Model~\ref{eq:MyModel} becomes
 
 \begin{frame}
 \frametitle{\emph{We can use B-splines to construct the model basis.}}
-Represent the main effects as
 
 \begin{align}  
 \begin{split}\label{eq:l-m-marginal-basis}
@@ -379,7 +378,6 @@ Represent the main effects as
 \newmaththought{\phi_2\left(m\right) } &= \newmaththought{\sum_{{c^\prime}=1}^{c_m} B_{c^\prime}\left(m;q_m\right)\theta_{mc^\prime } },
 \end{split}
 \end{align}
-and the interaction term by the tensor product of the marginal bases \ref{eq:l-marginal-basis} and \ref{eq:m-marginal-basis}:
 \begin{equation} \label{eq:PSANOVA-interaction-term} 
 \newmaththought{ \phi_{12}\left(l,m\right)  = \sum_{c=1}^{c_l} \sum_{{c^\prime}=1}^{c_m} B_{c}\left(l;q_l\right) B_{c^\prime  }\left(m;q_m\right)\theta_{c c^\prime } }
 \end{equation} 
@@ -443,11 +441,12 @@ Estimate $B$-spline coefficients by minimizing
 \noindent
 where
 \begin{equation} \label{eq:PSANOVA-penalty}
-P = \mbox{blockdiag}\left(0,\; P_1, \; P_2, \; P_{12}\right),
+P = \mbox{blockdiag}\left(0,\; P_l, \; P_m, \; P_{lm}\right),
 \end{equation}
 \begin{align*}
-P_{\ms i} &= \lambda_i D_{\ms{d_i}}^\prime D_{\ms{d_i}}\\
-P_{\ms{12}} &= \lambda_3 D_{\ms{d_1}}^\prime D_{\ms{d_1}} \otimes I_{\ms{c_m}} + \lambda_4 I_{\ms{c_l}} \otimes D_{\ms{d_2}}^\prime D_{\ms{d_2}} 
+P_{\ms l} &= \lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}\\
+P_{\ms m} &= \lambda_m D_{\ms{d_m}}^\prime D_{\ms{d_m}}\\
+P_{\ms{12}} &= \tau_l D_{\ms{d_l}}^\prime D_{\ms{d_l}} \otimes I_{\ms{c_m}} + \tau_m I_{\ms{c_l}} \otimes D_{\ms{d_m}}^\prime D_{\ms{d_m}} 
 \end{align*}
 
 
@@ -471,7 +470,7 @@ B = \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{lm} \; \right]
 \end{equation}
 \noindent
 \begin{equation*} \label{eq:rowwise-kronecker-product}
-B_{lm} \left( B_m \otimes 1^\prime_{c_l} \right) \odot \left(1^\prime_{c_m} \otimes  B_l  \right),
+B_{lm}= \left( B_m \otimes 1^\prime_{c_l} \right) \odot \left(1^\prime_{c_m} \otimes  B_l  \right),
 \end{equation*}
 \noindent
 and
@@ -490,30 +489,73 @@ and
 
 Find transformation $M$ to map
 \begin{equation*}
-\newmaththought{B \rightarrow \big[ \begin{array}{c|c} X & Z \end{array}  \big], \qquad \theta \rightarrow \left( \beta, \alpha \right)^\prime}
+\newmaththought{B} \longrightarrow \mixedmodelmath{ \big[ \begin{array}{c|c} X & Z \end{array}  \big]}, \qquad \newmaththought{\theta} \longrightarrow \mixedmodelmath{\left( \beta, \alpha \right)^\prime}
 \end{equation*}
 \noindent
 such that 
 \begin{equation*}
-\newmaththought{BM = \big[ \begin{array}{c|c} X & Z \end{array}  \big], \qquad B \theta = X \beta + Z \alpha}
+\newmaththought{BM} =\mixedmodelmath{ \big[ \begin{array}{c|c} X & Z \end{array}  \big]}\newmaththought{, \qquad B \theta} = \mixedmodelmath{X \beta + Z \alpha}
 \end{equation*}
 
 
-Applying $M$ to basis \ref{eq:SANOVA-basis-matrix} and penalty \ref{eq:PSANOVA-penalty}, Model \ref{eq:expanded-ps-anova-vc-model} becomes
+Map model 
 \begin{align} 
 \begin{split} \label{eq:vc-mixed-effects-model}
-\newmaththought{Y = W\left(X \beta + Z \alpha\right) + e, }\\
-\newmaththought{ \alpha \sim \mathcal{N}\left(0,G \right), \quad e\sim\mathcal{N}\left(0, D \right)}
+\mixedmodelmath{Y = W\left(X \beta + Z \alpha\right) + e, }\\
+\mixedmodelmath{ \alpha \sim \mathcal{N}\left(0,G \right), \quad e\sim\mathcal{N}\left(0, D \right)}
 \end{split}
 \end{align} 
 
-\noindent
-The $\left\{ \lambda_j \right \}$ become
-\[
-\newmaththought{\lambda_j  = \frac{\sigma^{\ms 2} }{\tau_{\ms j}^{\ms 2}}}
-\]
-where $\mbox{diag}\left(G\right) = \left\{ \tau_{\ms j}^{\ms 2} \right\}$. 
 \end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{frame}
+\frametitle{\emph{Mixed model representation}}
+
+\begin{align*}
+\newmaththought{G }&\longrightarrow \mixedmodelmath{ F^{-1}}\\
+\\
+\newmaththought{\theta^\prime P \theta} &\longrightarrow \mixedmodelmath{\alpha^\prime F \alpha}
+\end{align*}
+\[
+\mixedmodelmath{F} = \mbox{blockdiag}\left({F_l},\;{F_m},\;{F_{lm}} \right),
+\]
+
+\[
+{F_l }= \lambda_l \tilde{\Delta}_l, \qquad{F_l} = \lambda_m \tilde{\Delta}_m,
+\]
+
+\begin{align*}
+F_{lm}= \begin{bmatrix}
+\tau_l \tilde{\Delta}_l 	&	&	 \\
+&&\\
+	& 	\tau_m \tilde{\Delta}_m	& \\
+&&\\
+	&	&	\tau_m \tilde{\Delta}_m \otimes I_{\ms{c_l-d_l}} +  I_{\ms{c_m-d_m}} \otimes \tau_l \tilde{\Delta}_l  
+\end{bmatrix}
+\end{align*}
+
+\end{frame}
+
+
+
 
 
 
@@ -577,10 +619,10 @@ where
 \begin{equation} \label{eq:PSANOVA-penalty}
 P = \mbox{blockdiag}\left(0,\; P_1, \; P_2, \; P_{3},\; P_4, \; P_{5} \right),
 \end{equation}
-\begin{align*}
-P_{\ms i} &= \lambda_i D_{\ms{d_i}}^\prime D_{\ms{d_i}}\\
-P_{\ms{12}} &= \lambda_3 D_{\ms{d_1}}^\prime D_{\ms{d_1}} \otimes I_{\ms{c_m}} + \lambda_4 I_{\ms{c_l}} \otimes D_{\ms{d_2}}^\prime D_{\ms{d_2}} 
-\end{align*}
+%\begin{align*}
+%P_{\ms i} &= \lambda_i D_{\ms{d_i}}^\prime D_{\ms{d_i}}\\
+%P_{\ms{12}} &= \lambda_3 D_{\ms{d_1}}^\prime D_{\ms{d_1}} \otimes I_{\ms{c_m}} + \lambda_4 I_{\ms{c_l}} \otimes D_{\ms{d_2}}^\prime D_{\ms{d_2}} 
+%\end{align*}
 
 
 \end{frame}
