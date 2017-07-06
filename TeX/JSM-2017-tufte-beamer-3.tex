@@ -449,8 +449,13 @@ P_{\ms m} &= \lambda_m D_{\ms{d_m}}^\prime D_{\ms{d_m}}\\
 P_{\ms{12}} &= \tau_l D_{\ms{d_l}}^\prime D_{\ms{d_l}} \otimes I_{\ms{c_m}} + \tau_m I_{\ms{c_l}} \otimes D_{\ms{d_m}}^\prime D_{\ms{d_m}} 
 \end{align*}
 
-
 \end{frame}
+
+
+
+
+
+
 
 
 
@@ -496,9 +501,8 @@ such that
 \begin{equation*}
 \newmaththought{BM} =\mixedmodelmath{ \big[ \begin{array}{c|c} X & Z \end{array}  \big]}\newmaththought{, \qquad B \theta} = \mixedmodelmath{X \beta + Z \alpha}
 \end{equation*}
-
-
-Map model 
+\noindent
+and
 \begin{align} 
 \begin{split} \label{eq:vc-mixed-effects-model}
 \mixedmodelmath{Y = W\left(X \beta + Z \alpha\right) + e, }\\
@@ -529,30 +533,38 @@ Map model
 \begin{frame}
 \frametitle{\emph{Mixed model representation}}
 
+\begin{equation*}
+\newmaththought{G }\longrightarrow \mixedmodelmath{ F^{-1}},\qquad \newmaththought{\theta^\prime P \theta} \longrightarrow \mixedmodelmath{\alpha^\prime F \alpha}
+\end{equation*}
 \begin{align*}
-\newmaththought{G }&\longrightarrow \mixedmodelmath{ F^{-1}}\\
-\\
-\newmaththought{\theta^\prime P \theta} &\longrightarrow \mixedmodelmath{\alpha^\prime F \alpha}
+\mixedmodelmath{F} = \mbox{blockdiag}\left(&\underbrace{F_l},\quad &\underbrace{F_m},\quad {F_{lm}} \right)\\
+&{\lambda_l \tilde{\Delta}_l}	&{\lambda_m \tilde{\Delta}_m}
 \end{align*}
-\[
-\mixedmodelmath{F} = \mbox{blockdiag}\left({F_l},\;{F_m},\;{F_{lm}} \right),
-\]
 
-\[
-{F_l }= \lambda_l \tilde{\Delta}_l, \qquad{F_l} = \lambda_m \tilde{\Delta}_m,
-\]
+\begin{equation*}
+\left[\begin{array}{ccc}
+&&\\
+\lambda_l \tilde{\Delta}_l &&\\
+&&\\
+&\lambda_m \tilde{\Delta}_m&\\
+&&\\
+&&\left[\begin{array}{ccc}
+\tau_l \tilde{\Delta}_l &&\\
+&\tau_m \tilde{\Delta}_m&\\
+&&\tau_m \tilde{\Delta}_m \otimes I_{\ms{c_l-d_l}} +  I_{\ms{c_m-d_m}} \otimes \tau_l \tilde{\Delta}_l \end{array}\right]\\
+&&\\
+\end{array}\right]
+\end{equation*}
 
-\begin{align*}
-F_{lm}= \begin{bmatrix}
-\tau_l \tilde{\Delta}_l 	&	&	 \\
-&&\\
-	& 	\tau_m \tilde{\Delta}_m	& \\
-&&\\
-	&	&	\tau_m \tilde{\Delta}_m \otimes I_{\ms{c_l-d_l}} +  I_{\ms{c_m-d_m}} \otimes \tau_l \tilde{\Delta}_l  
-\end{bmatrix}
-\end{align*}
 
 \end{frame}
+
+
+
+
+
+
+
 
 
 
