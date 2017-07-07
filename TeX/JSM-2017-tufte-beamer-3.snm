@@ -1,0 +1,16 @@
+\beamer@slide {eq:ARmodel}{15}
+\beamer@slide {eq:MyModel}{17}
+\beamer@slide {loglikelihood}{18}
+\beamer@slide {eq:SANOVA-model}{20}
+\beamer@slide {eq:expanded-ps-anova-vc-model}{20}
+\beamer@slide {eq:l-m-marginal-basis}{21}
+\beamer@slide {eq:PSANOVA-interaction-term}{21}
+\beamer@slide {eq:SANOVA-basis-matrix}{22}
+\beamer@slide {eq:rowwise-kronecker-product}{22}
+\beamer@slide {eq:PSANOVA-penalty}{24}
+\beamer@slide {eq:SANOVA-basis-matrix}{25}
+\beamer@slide {eq:rowwise-kronecker-product}{25}
+\beamer@slide {eq:vc-mixed-effects-model}{26}
+\beamer@slide {eq:nested-SANOVA-basis-matrix}{28}
+\beamer@slide {eq:PSANOVA-penalty}{29}
+\beamer@slide {eq:nested-SANOVA-basis-matrix}{30}
