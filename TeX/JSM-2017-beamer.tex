@@ -10,6 +10,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{helvet}
 \usepackage{multicol}
+\usepackage{mathtools}
 \usepackage{changepage}
 
 \usetheme{default}
@@ -28,11 +29,11 @@
 \fontfamily{sans}
 \setbeamerfont{note page}{family*=pplx,size=\footnotesize} % Palatin
 
-
-\definecolor{foreground}{RGB}{255,255,255}
+\definecolor{foreground}{RGB}{245,245,245}
+\definecolor{white}{RGB}{255,255,255}
 \definecolor{background}{RGB}{24,24,24}
 \definecolor{title}{RGB}{107,174,214}
-\definecolor{gray}{RGB}{155,155,155}
+\definecolor{gray}{RGB}{135,135,135}
 \definecolor{subtitle}{RGB}{102,255,204}
 \definecolor{hilight}{RGB}{102,255,204}
 \definecolor{vhilight}{RGB}{255,111,207}
@@ -58,8 +59,9 @@
 \addtobeamertemplate{note page}{\setlength{\parskip}{12pt}}
 
 \title{Nonparametric covariance estimation for longitudinal data via tensor product smoothing}
-\author[The Ohio State University]{Tayler A. Blake}
-
+\author{Tayler Blake \inst{1} \and Dr. Yoonkyung Lee \inst{2}}
+\institute{\inst{1} Information Control Company \and %
+                      \inst{2} The Ohio State University, Department of Statistics}
 
 \setbeamertemplate{footline}{%
     \raisebox{5pt}{\makebox[\paperwidth]{\hfill\makebox[20pt]{\color{gray}
@@ -71,9 +73,11 @@
 \newcommand{\ig}{\includegraphics}
 \newcommand{\subt}[1]{{\footnotesize \color{subtitle} {#1}}}
 \newcommand{\newthought}[1]{{\small \color{hilight} {#1}}}
-\newcommand{\newmaththought}[1]{{ \color{hilight} {#1}}}
+\newcommand{\newmaththought}[1]{{ \color{foreground} {#1}}}
 \newcommand{\carrotorangemath}[1]{{ \color{carrotorange} {#1}}}
 \newcommand{\mixedmodelmath}[1]{{ \color{yuppiered} {#1}}}
+\newcommand{\makegrey}[1]{{ \color{gray} {#1}}}
+\newcommand{\makewhite}[1]{{ \color{white} {#1}}}
 \newcommand{\ms}{\scriptscriptstyle}
 
 \newcommand{\doccmd}[1]{\texttt{\textbackslash#1}}% command name -- adds backslash automatically
@@ -130,13 +134,19 @@
 \frametitle{\emph{}}
 \newthought{The data:}
 \begin{equation*}
-Y_i = \left( Y_{i1}, Y_{i2}, \dots, Y_{im} \right)^\prime, \qquad i=1,\dots, N
+Y_i = \left( Y_{i1}, Y_{i2}, \dots, Y_{iM_i} \right)^\prime, \qquad i=1,\dots, N
 \end{equation*}
 \noindent
 associated with measurement times 
 \[
-t_{1} < t_{2} < \dots< t_{m}.
+t_{1} < t_{2} < \dots< t_{M_i}.
 \]
+
+\newthought{Goal:} estimate
+\[
+Cov\left(Y\right) = \Sigma
+\]
+
 \end{frame}
 
 
@@ -169,18 +179,34 @@ t_{1} < t_{2} < \dots< t_{m}.
 %4
 %4
 
+%\begin{frame}
+%\frametitle{\emph{The flaming hoops:}}
+%\bi
+%\item<4>Covariance matrices (and their estimates) should be positive definite.
+%	\newthought{A cute little reparameterization } $\color{hilight} \Longrightarrow$ \newthought{unconstrained estimation, meaningful interpretation} 
+%\item<5> The $\left\{t_{ij} \right\}$ may be messy. \\
+%	\newthought{Frame covariance estimation as function estimation.} 
+%\item<6>  More dimensions, more problems (maybe.) \\
+%\begin{figure}
+%\graphicspath{{img/}}
+%  \includegraphics<6>[height=3cm]{ripnatedogg}
+%  \only<6>{\caption{\color{hilight}\small Regulate like Nate Dogg.}}
+%\end{figure}
+%\ei
+%\end{frame}
+
 \begin{frame}
 \frametitle{\emph{The flaming hoops:}}
 \bi
-\item<4>Covariance matrices (and their estimates) should be positive definite.
+\item Covariance matrices (and their estimates) should be positive definite.
 	\newthought{A cute little reparameterization } $\color{hilight} \Longrightarrow$ \newthought{unconstrained estimation, meaningful interpretation} 
-\item<5> The $\left\{t_{ij} \right\}$ may be messy. \\
+\item The $\left\{t_{ij} \right\}$ may be messy. \\
 	\newthought{Frame covariance estimation as function estimation.} 
-\item<6>  More dimensions, more problems (maybe.) \\
+\item  More dimensions, more problems (maybe.) \\
 \begin{figure}
 \graphicspath{{img/}}
-  \includegraphics<6>[height=3cm]{ripnatedogg}
-  \only<6>{\caption{\color{hilight}\small Regulate like Nate Dogg.}}
+  \includegraphics[height=3cm]{ripnatedogg}
+  \only{\caption{\color{hilight}\small Regulate like Nate Dogg.}}
 \end{figure}
 \ei
 \end{frame}
@@ -233,7 +259,7 @@ D = T \Sigma T^\prime, \quad T = \begin{bmatrix} 1 & 0 & \dots & & \\ -\phi_{21}
 \begin{frame}
 \frametitle{\emph{Okay, really:}}
 
-Imagine regressing $Y_j$ on its predecessors:
+Regress $Y_j$ on $Y_{\ms{\left(1:j-1\right)}} = \left(Y_1, \dots, Y_{\ms{j-1}}\right)^\prime$:
 
 \begin{align} \label{eq:ARmodel}
 y_{j}  = \left\{  \begin{array}{ll} 
@@ -269,7 +295,7 @@ In matrix form:
 \begin{center}
 \begin{figure}
 \graphicspath{{img/}}
-  \includegraphics[height=8cm]{nude-beach}
+  \includegraphics[height=7.5cm]{nude-beach}
 \end{figure}
 \end{center}
   \end{adjustwidth}
@@ -280,72 +306,80 @@ In matrix form:
 
 
 \begin{frame}
-\frametitle{\emph{The regression model tool box: a deep treasure chest of luxury.}}
-Model $Y_j$, $e_j$ as
+\frametitle{\emph{The regression model tool box is a deep, luxurious toolbox.}}
+
 \begin{align*}
-\begin{split}
-\newmaththought{Y_j}  \newmaththought{= Y\left( t_j \right) },\quad \newmaththought{e_j}  \newmaththought{= e\left( t_j \right),}\\
-\newmaththought{e\left(s\right) \sim  \mathcal{WN}\left(0,1\right),}
-\end{split}
+\makegrey{Y_j}  	&\longrightarrow \makewhite{Y\left( t_j \right) }		&	 \makegrey{e_j} 		&\longrightarrow \makewhite{e\left( t_j \right)}\\
+\makegrey{\phi_{jk}} &\longrightarrow \makewhite{\phi\left(t_j,t_k\right)} 	& 	\makegrey{\sigma^2_{j}} &\longrightarrow \makewhite{\sigma^2\left(t_j\right)}
 \end{align*}
 \noindent
-Swap the standard regression model \ref{eq:ARmodel} for a varying coefficient model:
-\begin{equation*}
-\newmaththought{\phi_{jk} = \phi\left(t_j,t_k\right),}
+
+
+\begin{equation}  \label{eq:MyModel}  
+\makewhite{y\left(t_j \right)}  \makewhite{= \sum_{k=1}^{j-1} \phi\left(t_j ,t_k\right) y\left(t_k\right) + \sigma\left(t_j\right)e\left({t_j}\right)},
+\end{equation}
+\noindent
+where
+\begin{equation*} 
+\makewhite{e\left(s\right)} \makewhite{ \sim  \mathcal{WN}\left(0,1\right)}
 \end{equation*}
 
-\begin{equation}   
-\newmaththought{y\left(t_j \right)  = \sum_{k=1}^{j-1} \phi\left(t_j ,t_k\right) y\left(t_k\right) + \sigma\left(t_j\right)e\left({t_j}\right)}
-\label{eq:MyModel} 
-\end{equation}
+
 %\myfootnote{The $\left\{ \phi_{jk} \right\}$ are called \emph{generalized autoregressive parameters}.}
 %\myfootnote{The $\left\{ \sigma^2_{j} \right\}$ are called the \emph{innovation variances}.}
 \end{frame}
 
 
 
-\begin{frame}
-\frametitle{\emph{Penalized maximum likelihood estimation}}
-
-\begin{enumerate}
-\item Fix $\sigma_{ij}^2 = \sigma_{ij0}^2$, $i=1,\dots,N$ ,$j=1,\dots,M$.
-\item Find $\phi_0 = \underset{\phi}{arg \; min} -2L_\phi\left(\phi, y_1,\dots, y_N \right) + \lambda J\left( \phi \right)$
-\item Fix $\phi = \phi_{0}$.
-\item Find  $\sigma_{0}^2 = \underset{\sigma^2}{arg\; min} -2L_\sigma^2\left(\sigma^2, y_1,\dots, y_N \right) + \lambda J\left( \sigma^2 \right)$
-\end{enumerate}
-
-\begin{adjustwidth}{-2cm}{-2cm}
-\begin{equation}
--2 L_\phi\left(\phi, y_1, \dots,y_N \right) = \sum_{i=1}^N \sum_{j=2}^{m_i} \sigma_{ij0}^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y_{ik} \right)^2 \label{loglikelihood}
-\end{equation}
-\end{adjustwidth}
-\end{frame}
-
 
 
 
 \begin{frame}
 \frametitle{\emph{Regularization of $\phi\left(s,t\right)$ is more intuitive if we transform the $s$-$t$ axis. }}
-Rotate the input axes:
+
 \begin{align*}
 \newmaththought{l} &\newmaththought{= s-t} \\
-\newmaththought{m} &\newmaththought{= \frac{1}{2}\left(s+t\right).}
+\newmaththought{m} &\newmaththought{= \frac{1}{2}\left(s+t\right)}
 \end{align*}
 \noindent
-Then $\phi$ becomes
+Reparameterize $\phi$:
 \begin{align*}
-\newmaththought{\phi^*\left(l,m\right)} &\newmaththought{= \phi^*\left(s-t, \frac{1}{2}\left(s+t\right)\right)}\\
- &\newmaththought{= \phi\left(s,t\right).}
+\newmaththought{\phi\left(s,t\right) =\phi^*\left(l,m\right)= \phi^*\left(s-t, \frac{1}{2}\left(s+t\right)\right)}
 \end{align*}
 
 Take $\hat{\phi}^*$ to be the minimizer of 
-\[
--2L + \lambda J\left(\phi^*\right)
-\]
+%\[
+%\underbracket[0.2pt]{-2L}_{\text{\parbox{3cm}{\centering \mbox{ \;}\\ goodness \\[-4pt] of fit}}} + \underbracket[0.2pt]{\lambda J\left(\phi^*\right)}_{\text{\parbox{3cm}{\centering \mbox{ \;}\\ %flexibility of the \\[-4pt] fitted curve}}}
+%\]
+\begin{adjustwidth}{-2cm}{-2cm}
+\begin{equation}
+-2 L_\phi\left(\phi, y_1, \dots,y_N \right) = \sum_{i=1}^N \sum_{j=2}^{m_i} \sigma_{ij0}^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y_{ik} \right)^2 \label{loglikelihood}
+\end{equation}
+\end{adjustwidth}
 
 \end{frame}
 
 
+
+
+
+
+%\begin{frame}
+%\frametitle{\emph{Penalized maximum likelihood estimation}}
+%
+%\begin{enumerate}
+%\item Fix $\sigma_{ij}^2 = \sigma_{ij0}^2$, $i=1,\dots,N$ ,$j=1,\dots,M$.
+%\item Find $\phi_0 = \underset{\phi}{arg \; min} -2L_\phi\left(\phi, y_1,\dots, y_N \right) + \lambda J\left( \phi \right)$
+%\item Fix $\phi = \phi_{0}$.
+%\item Find  $\sigma_{0}^2 = \underset{\sigma^2}{arg\; min} -2L_\sigma^2\left(\sigma^2, y_1,\dots, y_N \right) + \lambda J\left( \sigma^2 \right)$
+%\end{enumerate}
+%
+%\begin{adjustwidth}{-2cm}{-2cm}
+%\begin{equation}
+%-2 L_\phi\left(\phi, y_1, \dots,y_N \right) = \sum_{i=1}^N \sum_{j=2}^{m_i} \sigma_{ij0}^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y_{ik} \right)^2 \label{loglikelihood}
+%\end{equation}
+%\end{adjustwidth}
+%\end{frame}
 
 
 
@@ -360,52 +394,54 @@ Decompose
 \end{equation} 
 so Model~\ref{eq:MyModel} becomes
 
-\begin{align}  
-\begin{split} \label{eq:expanded-ps-anova-vc-model}
-\newmaththought{ y\left(t_j \right)  = \sum_{k=1}^{j-1}}\carrotorangemath{ \bigg[\mu + \phi_1\left(l_{jk}\right) + } &\carrotorangemath{\phi_2\left(m_{jk}\right)} \bigg.\\[-2ex]
-\bigg. &\carrotorangemath{+ \phi_{12}\left(l_{jk},m_{jk}\right) \bigg]}\newmaththought{y\left(t_k\right)+ \sigma\left(t_j\right)e\left({t_j}\right)}
+\begin{align*}  
+\begin{split}% \label{eq:expanded-ps-anova-vc-model}
+ y\left(t_j \right)  = \sum_{k=1}^{j-1} \bigg[\mu + \phi_1\left(l_{jk}\right) +  &\phi_2\left(m_{jk}\right) \bigg.\\[-2ex]
+\bigg. &+ \phi_{12}\left(l_{jk},m_{jk}\right) \bigg]y\left(t_k\right)+ \sigma\left(t_j\right)e\left({t_j}\right)
 \end{split}
-\end{align}
-\end{frame}
-
-
-\begin{frame}
-\frametitle{\emph{We can use B-splines to construct the model basis.}}
-
-\begin{align}  
-\begin{split}\label{eq:l-m-marginal-basis}
-\newmaththought{\phi_1\left(l\right) } &= \newmaththought{\sum_{c=1}^{c_l} B_{c}\left(l;q_l\right) \theta_{lc }}, \\
-\newmaththought{\phi_2\left(m\right) } &= \newmaththought{\sum_{{c^\prime}=1}^{c_m} B_{c^\prime}\left(m;q_m\right)\theta_{mc^\prime } },
-\end{split}
-\end{align}
-\begin{equation} \label{eq:PSANOVA-interaction-term} 
-\newmaththought{ \phi_{12}\left(l,m\right)  = \sum_{c=1}^{c_l} \sum_{{c^\prime}=1}^{c_m} B_{c}\left(l;q_l\right) B_{c^\prime  }\left(m;q_m\right)\theta_{c c^\prime } }
-\end{equation} 
-\end{frame}
-
-
-\begin{frame}
-\frametitle{\emph{PS-ANOVA model basis}}
-
-In matrix notation, Model \ref{eq:expanded-ps-anova-vc-model} becomes
-
-\begin{equation*}  
-E \left[ Y | W \right] = WB \theta,
-\end{equation*}
-\noindent
-where $W$ is the matrix of covariates holding the past values of $Y$, and $B$ is the $B$-spline regression basis:
-\begin{equation} \label{eq:SANOVA-basis-matrix}
-B = \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{lm} \; \right]
-\end{equation}
-\noindent
-where 
-\begin{align*} \label{eq:rowwise-kronecker-product}
-B_{lm} &= B_m \; \square \; B_l \\
-&\equiv \left( B_m \otimes 1^\prime_{c_l} \right) \odot \left(1^\prime_{c_m} \otimes  B_l  \right).
 \end{align*}
 \end{frame}
 
 
+\begin{frame}
+\frametitle{\emph{Approximate $\phi_1$, $\phi_2$, $\phi_{12}$ with B-splines.}}
+
+\begin{align}  
+\begin{split}\label{eq:l-m-marginal-basis}
+\phi_1\left(l\right)  &=\sum_{c=1}^{c_l} B_{\ms c}\left(l;q_l\right) \theta_{lc } = B_{\ms l} \theta_l, \\
+\phi_2\left(m\right)  &= \sum_{c^\prime=1}^{c_m} B_{\ms{c^\prime}}  \left(  m;q_m  \right)  \theta_{\ms{mc^\prime }}  = B_{\ms m} \theta_{\ms m} \\
+\phi_{12}\left(l,m\right)  &= \sum_{c=1}^{c_l} \sum_{{c^\prime}=1}^{c_m} B_{\ms c}\left(l;q_l\right) B_{\ms{c^\prime } }\left(m;q_m\right)\theta_{\ms{c c^\prime} } = B_{\ms{lm}}\theta_{\ms{lm}}
+\end{split}
+\end{align}
+\begin{align*}
+B_{\ms{lm}} &= B_m \; \square \; B_l \\   
+&\equiv \left( B_m \otimes 1^\prime_{c_l} \right) \odot \left(1^\prime_{c_m} \otimes  B_l  \right)    
+\end{align*}
+\end{frame}
+
+%
+%\begin{frame}
+%\frametitle{\emph{PS-ANOVA model basis}}
+%
+%In matrix notation, Model \ref{eq:expanded-ps-anova-vc-model} becomes
+%
+%\begin{equation*}  
+%E \left[ Y | W \right] = WB \theta,
+%\end{equation*}
+%\noindent
+%where $W$ is the matrix of covariates holding the past values of $Y$, and $B$ is the $B$-spline regression basis:
+%\begin{equation} \label{eq:SANOVA-basis-matrix}
+%B = \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{lm} \; \right]
+%\end{equation}
+%\noindent
+%where 
+%\begin{align*} \label{eq:rowwise-kronecker-product}
+%B_{lm} &= B_m \; \square \; B_l \\
+%&\equiv \left( B_m \otimes 1^\prime_{c_l} \right) \odot \left(1^\prime_{c_m} \otimes  B_l  \right).
+%\end{align*}
+%\end{frame}
+%
+%
 
 
 
@@ -434,23 +470,25 @@ In general,
 \begin{frame}
 \frametitle{\emph{PS-ANOVA Penalty}}
 
-Estimate $B$-spline coefficients by minimizing 
+\[
+B \equiv \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{\ms{lm}} \; \right] ,   \qquad  \theta \equiv \left(\theta_{\ms{l}},\theta_{\ms{m}},\theta_{\ms{lm}}\right)^\prime            
+\]
+
+Find $\theta$ minimizing
 \begin{equation*}
 \left(Y-WB\theta\right)^\prime \left(Y-WB\theta\right) + \theta^\prime P \theta
 \end{equation*}
-\noindent
-where
-\begin{equation} \label{eq:PSANOVA-penalty}
-P = \mbox{blockdiag}\left(0,\; P_l, \; P_m, \; P_{lm}\right),
-\end{equation}
-\begin{align*}
-P_{\ms l} &= \lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}\\
-P_{\ms m} &= \lambda_m D_{\ms{d_m}}^\prime D_{\ms{d_m}}\\
-P_{\ms{12}} &= \tau_l D_{\ms{d_l}}^\prime D_{\ms{d_l}} \otimes I_{\ms{c_m}} + \tau_m I_{\ms{c_l}} \otimes D_{\ms{d_m}}^\prime D_{\ms{d_m}} 
-\end{align*}
+\begin{equation*}
+P  = \begin{bmatrix}
+\underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms l}$}}	& 	& \\
+&& \\
+	&	\underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms m}$}}	& 	\\
+&&\\
+&&	\underbracket[0.2pt]{\tau_l D_{\ms{d_l}}^\prime D_{\ms{d_l}} \otimes I_{\ms{c_m}} + \tau_m I_{\ms{c_l}} \otimes D_{\ms{d_m}}^\prime D_{\ms{d_m}}}_{\text{$P_{\ms lm}$}}
+\end{bmatrix}
+\end{equation*}
 
 \end{frame}
-
 
 
 
@@ -460,29 +498,28 @@ P_{\ms{12}} &= \tau_l D_{\ms{d_l}}^\prime D_{\ms{d_l}} \otimes I_{\ms{c_m}} + \t
 
 
 \begin{frame}
-\frametitle{\emph{Mixed model representation}}
+\frametitle{\emph{PS-ANOVA Penalty}}
 
+\[
+B \equiv \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{\ms{lm}} \; \right] ,   \qquad  \theta \equiv \left(\theta_{\ms{l}},\theta_{\ms{m}},\theta_{\ms{lm}}\right)^\prime            
+\]
 
-In matrix notation, Model \ref{eq:expanded-ps-anova-vc-model} is given by
-
-\begin{equation*}  
-E \left[ Y | W \right] = WB \theta,
-\end{equation*}
-\noindent
-where $W$ is the matrix of covariates holding the past values of $Y$, and $B$ is the $B$-spline regression basis:
-\begin{equation} \label{eq:SANOVA-basis-matrix}
-B = \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{lm} \; \right]
+Find $\theta$ minimizing
+\begin{equation} \label{eq:PS-ANOVA}
+\left(Y-WB\theta\right)^\prime D^{-1} \left(Y-WB\theta\right) + \theta^\prime P \theta
 \end{equation}
-\noindent
-\begin{equation*} \label{eq:rowwise-kronecker-product}
-B_{lm}= \left( B_m \otimes 1^\prime_{c_l} \right) \odot \left(1^\prime_{c_m} \otimes  B_l  \right),
+\begin{equation*}
+P  = \begin{bmatrix}
+\underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms l}$}}	& 	& \\
+&& \\
+	&	\underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms m}$}}	& 	\\
+&&\\
+&&	\underbracket[0.2pt]{\tau_l D_{\ms{d_l}}^\prime D_{\ms{d_l}} \otimes I_{\ms{c_m}} + \tau_m I_{\ms{c_l}} \otimes D_{\ms{d_m}}^\prime D_{\ms{d_m}}}_{\text{$P_{\ms lm}$}}
+\end{bmatrix}
 \end{equation*}
-\noindent
-and
-\begin{equation*} 
-\theta = \left(\mu, \;\theta_{\ms l}, \;\theta_{\ms l}, \;\theta_{\ms{lm}} \right)^\prime
-\end{equation*}
+
 \end{frame}
+
 
 
 
@@ -492,21 +529,25 @@ and
 \begin{frame}
 \frametitle{\emph{Mixed model representation}}
 
-Find transformation $M$ to map
-\begin{equation*}
-\newmaththought{B} \longrightarrow \mixedmodelmath{ \big[ \begin{array}{c|c} X & Z \end{array}  \big]}, \qquad \newmaththought{\theta} \longrightarrow \mixedmodelmath{\left( \beta, \alpha \right)^\prime}
-\end{equation*}
+Find transformation $\mathrm{Q} = \left[\begin{array}{c|c} \mathrm{Q}_n & \mathrm{Q}_s \end{array}\right]$ to map
+%\begin{equation*}
+%\newmaththought{B} \longrightarrow \mixedmodelmath{ \big[ \begin{array}{c|c} X & Z \end{array}  \big]}, \qquad \newmaththought{\theta} \longrightarrow \mixedmodelmath{\left( \beta^\prime, \alpha^\prime \right)^\prime}
+%\end{equation*}
+%\noindent
+%such that 
+
+\begin{align*}
+BQ &=\mixedmodelmath{ \big[ \begin{array}{c|c} BQ_{\ms n} &  BQ_{\ms s} \end{array}  \big]}		&	Q^\prime \theta &=\mixedmodelmath{\left( \beta^\prime, \alpha^\prime \right)^\prime} \\
+&=  \mixedmodelmath{ \big[ \begin{array}{c|c} X & Z \end{array}  \big]}		& 	&= \mixedmodelmath{\left(  \left(Q_{\ms n}^\prime \theta\right)^\prime,\;\left(Q_{\ms s}^\prime \theta\right)^\prime \right)^\prime}
+\end{align*}
+
 \noindent
-such that 
-\begin{equation*}
-\newmaththought{BM} =\mixedmodelmath{ \big[ \begin{array}{c|c} X & Z \end{array}  \big]}\newmaththought{, \qquad B \theta} = \mixedmodelmath{X \beta + Z \alpha}
-\end{equation*}
-\noindent
-and
+to reparameterize the ill-posed Model~\ref{eq:PS-ANOVA} as
 \begin{align} 
 \begin{split} \label{eq:vc-mixed-effects-model}
-\mixedmodelmath{Y = W\left(X \beta + Z \alpha\right) + e, }\\
-\mixedmodelmath{ \alpha \sim \mathcal{N}\left(0,G \right), \quad e\sim\mathcal{N}\left(0, D \right)}
+Y &= W\left(X \beta + Z \alpha\right) + e \\
+ \alpha &\sim \mathcal{N}\left(0,G \right), \\
+ e&\sim\mathcal{N}\left(0, D \right)
 \end{split}
 \end{align} 
 
