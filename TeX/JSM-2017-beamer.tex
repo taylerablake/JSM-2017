@@ -471,22 +471,24 @@ In general,
 \frametitle{\emph{PS-ANOVA Penalty}}
 
 \[
-B \equiv \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{\ms{lm}} \; \right] ,   \qquad  \theta \equiv \left(\theta_{\ms{l}},\theta_{\ms{m}},\theta_{\ms{lm}}\right)^\prime            
+B \equiv \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{\ms{lm}} \; \right] ,   \qquad  \theta \equiv \left(\mu, \theta_{\ms{l}},\theta_{\ms{m}},\theta_{\ms{lm}}\right)^\prime            
 \]
 
 Find $\theta$ minimizing
 \begin{equation*}
-\left(Y-WB\theta\right)^\prime \left(Y-WB\theta\right) + \theta^\prime P \theta
+\left(Y-WB\theta\right)^\prime D^{-1}\left(Y-WB\theta\right) + \theta^\prime P \theta
 \end{equation*}
 \begin{equation*}
 P  = \begin{bmatrix}
-\underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms l}$}}	& 	& \\
-&& \\
-	&	\underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms m}$}}	& 	\\
-&&\\
-&&	\underbracket[0.2pt]{\tau_l D_{\ms{d_l}}^\prime D_{\ms{d_l}} \otimes I_{\ms{c_m}} + \tau_m I_{\ms{c_l}} \otimes D_{\ms{d_m}}^\prime D_{\ms{d_m}}}_{\text{$P_{\ms lm}$}}
+0 &&&\\
+& \underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms l}$}}	& 	& \\
+&&& \\
+&	&	\underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms m}$}}	& 	\\
+&&&\\
+&&&	\underbracket[0.2pt]{\tau_l D_{\ms{d_l}}^\prime D_{\ms{d_l}} \otimes I_{\ms{c_m}} + \tau_m I_{\ms{c_l}} \otimes D_{\ms{d_m}}^\prime D_{\ms{d_m}}}_{\text{$P_{\ms lm}$}}
 \end{bmatrix}
 \end{equation*}
+
 
 \end{frame}
 
@@ -501,7 +503,7 @@ P  = \begin{bmatrix}
 \frametitle{\emph{PS-ANOVA Penalty}}
 
 \[
-B \equiv \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{\ms{lm}} \; \right] ,   \qquad  \theta \equiv \left(\theta_{\ms{l}},\theta_{\ms{m}},\theta_{\ms{lm}}\right)^\prime            
+B \equiv \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{\ms{lm}} \; \right] ,   \qquad  \theta \equiv \left(\mu, \theta_{\ms{l}},\theta_{\ms{m}},\theta_{\ms{lm}}\right)^\prime            
 \]
 
 Find $\theta$ minimizing
@@ -510,11 +512,12 @@ Find $\theta$ minimizing
 \end{equation}
 \begin{equation*}
 P  = \begin{bmatrix}
-\underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms l}$}}	& 	& \\
-&& \\
-	&	\underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms m}$}}	& 	\\
-&&\\
-&&	\underbracket[0.2pt]{\tau_l D_{\ms{d_l}}^\prime D_{\ms{d_l}} \otimes I_{\ms{c_m}} + \tau_m I_{\ms{c_l}} \otimes D_{\ms{d_m}}^\prime D_{\ms{d_m}}}_{\text{$P_{\ms lm}$}}
+0 &&&\\
+& \underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms l}$}}	& 	& \\
+&&& \\
+&	&	\underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms m}$}}	& 	\\
+&&&\\
+&&&	\underbracket[0.2pt]{\tau_l D_{\ms{d_l}}^\prime D_{\ms{d_l}} \otimes I_{\ms{c_m}} + \tau_m I_{\ms{c_l}} \otimes D_{\ms{d_m}}^\prime D_{\ms{d_m}}}_{\text{$P_{\ms lm}$}}
 \end{bmatrix}
 \end{equation*}
 
