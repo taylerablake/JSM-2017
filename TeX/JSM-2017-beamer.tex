@@ -6,7 +6,6 @@
 \usepackage{booktabs}
 \usepackage{units}
 \usepackage[T1]{fontenc}
-\usepackage{fontspec}
 \usepackage[utf8]{inputenc}
 \usepackage{helvet}
 \usepackage{multicol}
@@ -540,19 +539,20 @@ Find transformation $\mathrm{Q} = \left[\begin{array}{c|c} \mathrm{Q}_n & \mathr
 %such that 
 
 \begin{align*}
-BQ &=\mixedmodelmath{ \big[ \begin{array}{c|c} BQ_{\ms n} &  BQ_{\ms s} \end{array}  \big]}		&	Q^\prime \theta &=\mixedmodelmath{\left( \beta^\prime, \alpha^\prime \right)^\prime} \\
-&=  \mixedmodelmath{ \big[ \begin{array}{c|c} X & Z \end{array}  \big]}		& 	&= \mixedmodelmath{\left(  \left(Q_{\ms n}^\prime \theta\right)^\prime,\;\left(Q_{\ms s}^\prime \theta\right)^\prime \right)^\prime}
+BQ &=\mixedmodelmath{ \big[ \begin{array}{c|c} BQ_{\ms 0} &  BQ_{\ms 1} \end{array}  \big]}		&	B \theta =\mixedmodelmath{X\beta + Z \alpha} \\
+&=  \mixedmodelmath{ \big[ \begin{array}{c|c} X & Z \end{array}  \big]}		& 	
 \end{align*}
 
 \noindent
 to reparameterize the ill-posed Model~\ref{eq:PS-ANOVA} as
-\begin{align} 
-\begin{split} \label{eq:vc-mixed-effects-model}
-Y &= W\left(X \beta + Z \alpha\right) + e \\
- \alpha &\sim \mathcal{N}\left(0,G \right), \\
- e&\sim\mathcal{N}\left(0, D \right)
-\end{split}
-\end{align} 
+\begin{equation} \label{eq:vc-mixed-effects-model}
+Y = W\left(X \beta + Z \alpha\right) + e 
+\end{equation}
+\begin{equation*}
+ \alpha \sim \mathcal{N}\left(0,G \right), \quad
+ e\sim\mathcal{N}\left(0, \sigma^2 D \right)
+\end{equation*}
+
 
 \end{frame}
 
@@ -575,31 +575,34 @@ Y &= W\left(X \beta + Z \alpha\right) + e \\
 
 
 \begin{frame}
-\frametitle{\emph{Mixed model representation}}
+\frametitle{\emph{\normalsize{Smoothing parameter selection = variance component estimation}}}
 
-%\begin{equation*}
-%\newmaththought{G }\longrightarrow \mixedmodelmath{ F^{-1}},\qquad \newmaththought{\theta^\prime P \theta} \longrightarrow \mixedmodelmath{\alpha^\prime F \alpha}
-%\end{equation*}
-%\begin{align*}
-%\mixedmodelmath{F} = \mbox{blockdiag}\left(&\underbrace{F_l},\quad &\underbrace{F_m},\quad {F_{lm}} \right)\\
-%&{\lambda_l \tilde{\Delta}_l}	&{\lambda_m \tilde{\Delta}_m}
-%\end{align*}
-%
-\begin{equation*}
-\left[\begin{array}{ccc}
-&&\\
+\vspace{0.2in}
+$G = \sigma^2 F^{-1}$ where
+
+\begin{align*}
+F &= \left[\begin{array}{ccc}
+F_{\ms l} &&\\
+&F_{\ms m} &\\
+&& F_{\ms lm}\\
+\end{array}\right]\\
+ &= \left[\begin{array}{ccc}
 \lambda_l \tilde{\Delta}_l &&\\
-&&\\
-&\lambda_m \tilde{\Delta}_m&\\
-&&\\
-&&\left[\begin{array}{ccc}
-\tau_l \tilde{\Delta}_l &&\\
-&\tau_m \tilde{\Delta}_m&\\
-&&\tau_m \tilde{\Delta}_m \otimes I_{\ms{c_l-d_l}} +  I_{\ms{c_m-d_m}} \otimes \tau_l \tilde{\Delta}_l \end{array}\right]\\
-&&\\
-\end{array}\right]
-\end{equation*}
+&\lambda_m \tilde{\Delta}_m &\\
+&& F_{\ms lm}\\
+\end{array}\right],
+\end{align*}
 %
+
+\begin{equation*}
+ F_{\ms lm} = \left[\begin{array}{ccc}
+\tau_l \tilde{\Delta}_l &&\\
+&&\\
+&\tau_m \tilde{\Delta}_m&\\
+&&\\
+&&\tau_m \tilde{\Delta}_m \otimes I_{\ms{c_l-d_l}} +  I_{\ms{c_m-d_m}} \otimes \tau_l \tilde{\Delta}_l \end{array}\right]
+\end{equation*}
+
 
 \end{frame}
 
@@ -645,32 +648,35 @@ $\left\{ B_j\left(l\right) \right\} $	 	&    $\left\{ B_j\left(l\right) \right\}
 Re-express $\phi_{\ms{12}}$:
 
 \begin{align*}
-\newmaththought{ \phi_{\ms{12}}\left(l,m\right)  =} \carrotorangemath{\; g_{\ms 1}\left(l\right) \Big[ \sum_{r=1}^{\ms{d_m-1}} m^{\ms r}\Big] + \Big[ \sum_{r=1}^{\ms{d_l-1}} l^{\ms r} \Big] g_{\ms 2}\left(m\right)\;}  \newmaththought{+ h\left( l,m \right), } 
+ \phi_{\ms{12}}\left(l,m\right)  = g_{\ms 1}\left(l\right) \Big[ \sum_{r=1}^{\ms{d_m-1}} m^{\ms r}\Big] + \Big[ \sum_{r=1}^{\ms{d_l-1}} l^{\ms r} \Big] g_{\ms 2}\left(m\right)+ h\left( l,m \right),
 \end{align*}
 \noindent
 For $d_l = d_m = 2$,
 \[
-\newmaththought{ \phi_{\ms{12}}\left(l,m\right)  =} \carrotorangemath{\; g_{\ms 1}\left(l\right) \; m+ l \; g_{\ms 2}\left(m\right)\;}\newmaththought{ + \; h\left( l,m \right) } 
+ \phi_{\ms{12}}\left(l,m\right)  = g_{\ms 1}\left(l\right) \; m+ l \; g_{\ms 2}\left(m\right) + \; h\left( l,m \right) 
 \]
-with basis:
+
 \begin{equation} \label{eq:nested-SANOVA-basis-matrix}
-\color{hilight}{B = \big[ } \; 1_p \; \vert \;  B_1  \; \vert \;   B_2 \; \vert \carrotorangemath{ B_3 \; \vert B_4 }\;\newmaththought{ \vert B_5 \; \big]},
+B = \big[  \; 1_p \; \vert \;  B_1  \; \vert \;   B_2 \; \vert  B_3 \; \vert B_4 \; \vert B_5 \; \big],
 \end{equation}
 \noindent
 where
-\begin{align*}
-\carrotorangemath{B_{\ms 3}\;} &\carrotorangemath{= \;m \;} \carrotorangemath{ \square \;  B_{\ms 1}}  &  \newmaththought{B_{\ms 5}\;}\newmaththought{=\; B_{\ms 2} \;} \newmaththought{ \square \; B_{\ms 1} } \\
- \carrotorangemath{B_{\ms 4}\;}&\carrotorangemath{=\; B_{\ms 2} \;} \carrotorangemath{ \square \; l } &
-\end{align*}
-
-
+\[
+\begin{array}{ccc}
+B_{\ms 3} = m \; \square \;  B_{\ms 1}, \;\; & B_{\ms 4}  = B_{\ms 2}  \square \; l, \;\; &  B_{\ms 5}= B_{\ms 2} \;\square \; B_{\ms 1} 
+\end{array}
+\]
 \end{frame}
 
 
 
 
+
+
+
+
 \begin{frame}
-\frametitle{\emph{Nested PS-ANOVA}}
+\frametitle{\emph{Nested PS-ANOVA Penalty}}
 
 \begin{equation} \label{eq:PSANOVA-penalty}
 P = \mbox{blockdiag}\left(0,\; P_1, \; P_2, \; P_{3},\; P_4, \; P_{5} \right),
@@ -689,54 +695,6 @@ P = \mbox{blockdiag}\left(0,\; P_1, \; P_2, \; P_{3},\; P_4, \; P_{5} \right),
 
 %% this slide should be annotated in power point
 
-
-\begin{frame}
-\frametitle{\emph{Nested PS-ANOVA}}
-
-Re-express $\phi_{\ms{12}}$:
-
-\begin{align*}
-\newmaththought{ \phi_{\ms{12}}\left(l,m\right)  =} \carrotorangemath{\; g_{\ms lr}\left(l\right) \Big[ \sum_{r=1}^{\ms{d_m-1}} m^{\ms r}\Big] + \Big[ \sum_{r=1}^{\ms{d_l-1}} l^{\ms r^\prime} \Big] g_{\ms mr^\prime}\left(m\right)\;}  \newmaththought{+ h\left( l,m \right), } 
-\end{align*}
-\noindent
-For $d_l = d_m = 2$,
-\[
-\newmaththought{ \phi_{\ms{12}}\left(l,m\right)  =} \carrotorangemath{\; g_{\ms l1}\left(l\right) \; m+ l \; g_{\ms m1}\left(m\right)\;}\newmaththought{ + \; h\left( l,m \right) } 
-\]
-with basis:
-\begin{equation} \label{eq:nested-SANOVA-basis-matrix}
-\color{hilight}{B = \big[ } \; 1_p \; \vert \;  B_1  \; \vert \;   B_2 \; \vert \carrotorangemath{ B_3 \; \vert B_4 }\;\newmaththought{ \vert B_5 \; \big]},
-\end{equation}
-\noindent
-where
-\begin{align*}
-\carrotorangemath{B_{\ms 3}\;} &\carrotorangemath{= \;m \;} \carrotorangemath{ \square \;  B_{\ms 1}}  &  \newmaththought{B_{\ms 5}\;}\newmaththought{=\; B_{\ms 2} \;} \newmaththought{ \square \; B_{\ms 1} } \\
- \carrotorangemath{B_{\ms 4}\;}&\carrotorangemath{=\; B_{\ms 2} \;} \carrotorangemath{ \square \; l } &
-\end{align*}
-
-
-\end{frame}
-
-
-
-
-
-
-\begin{frame}
-\frametitle{\emph{Nested PS-ANOVA}}
-
-\begin{equation*}
-P = \mbox{blockdiag}\left(0,\;P_1,\;P_2,\;P_3,\;P_4,\;P_5\right)
-\end{equation*}
-
-
-Remove the redundant columns, and give each penalized component its own random effect:
-\begin{align*}
-B
-\end{align*}
-
-
-\end{frame}
 
 
 
