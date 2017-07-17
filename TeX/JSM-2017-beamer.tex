@@ -684,63 +684,6 @@ P = \mbox{blockdiag}\left(0,\; P_1, \; P_2, \; P_{3},\; P_4, \; P_{5} \right),
 
 
 
-%% this slide should be annotated in power point
-
-
-\begin{frame}
-\frametitle{\emph{Nested PS-ANOVA}}
-
-Re-express $\phi_{\ms{12}}$:
-
-\begin{align*}
-\newmaththought{ \phi_{\ms{12}}\left(l,m\right)  =} \carrotorangemath{\; g_{\ms lr}\left(l\right) \Big[ \sum_{r=1}^{\ms{d_m-1}} m^{\ms r}\Big] + \Big[ \sum_{r=1}^{\ms{d_l-1}} l^{\ms r^\prime} \Big] g_{\ms mr^\prime}\left(m\right)\;}  \newmaththought{+ h\left( l,m \right), } 
-\end{align*}
-\noindent
-For $d_l = d_m = 2$,
-\[
-\newmaththought{ \phi_{\ms{12}}\left(l,m\right)  =} \carrotorangemath{\; g_{\ms l1}\left(l\right) \; m+ l \; g_{\ms m1}\left(m\right)\;}\newmaththought{ + \; h\left( l,m \right) } 
-\]
-with basis:
-\begin{equation} \label{eq:nested-SANOVA-basis-matrix}
-\color{hilight}{B = \big[ } \; 1_p \; \vert \;  B_1  \; \vert \;   B_2 \; \vert \carrotorangemath{ B_3 \; \vert B_4 }\;\newmaththought{ \vert B_5 \; \big]},
-\end{equation}
-\noindent
-where
-\begin{align*}
-\carrotorangemath{B_{\ms 3}\;} &\carrotorangemath{= \;m \;} \carrotorangemath{ \square \;  B_{\ms 1}}  &  \newmaththought{B_{\ms 5}\;}\newmaththought{=\; B_{\ms 2} \;} \newmaththought{ \square \; B_{\ms 1} } \\
- \carrotorangemath{B_{\ms 4}\;}&\carrotorangemath{=\; B_{\ms 2} \;} \carrotorangemath{ \square \; l } &
-\end{align*}
-
-
-\end{frame}
-
-
-
-
-
-
-\begin{frame}
-\frametitle{\emph{Nested PS-ANOVA}}
-
-\begin{equation*}
-P = \mbox{blockdiag}\left(0,\;P_1,\;P_2,\;P_3,\;P_4,\;P_5\right)
-\end{equation*}
-
-
-Remove the redundant columns, and give each penalized component its own random effect:
-\begin{align*}
-B
-\end{align*}
-
-
-\end{frame}
-
-
-
-
-
-
-
 
 
 
