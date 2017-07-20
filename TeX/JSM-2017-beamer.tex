@@ -360,7 +360,7 @@ Take $\hat{\phi}^*$ to be the minimizer of
 %\]
 \begin{adjustwidth}{-2cm}{-2cm}
 \begin{equation}
--2 L_\phi\left(\phi, y_1, \dots,y_N \right) = \sum_{i=1}^N \sum_{j=2}^{m_i} \sigma_{ij0}^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y_{ik} \right)^2 \label{loglikelihood}
+-2 L_\phi\left(\phi, y_1, \dots,y_N \right) = \sum_{i=1}^n \sum_{j=2}^{m_i} \sigma_{ij0}^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y_{ik} \right)^2 \label{loglikelihood}
 \end{equation}
 \end{adjustwidth}
 
@@ -670,7 +670,7 @@ P = \mbox{blockdiag}\left(0,\; P_1, \; P_2, \; P_{3},\; P_4, \; P_{5} \right),
 
 
 \begin{frame}
-\frametitle{\emph{Nested PS-ANOVA Penalty}}
+\frametitle{\emph{Now the variance components have simpler structure.}}
 
 Let $\alpha_k \sim \mathcal{N}\left(0,G_k\right)$,
 \begin{align*}
@@ -678,6 +678,7 @@ Z &= \left[\begin{array}{c|c|c|c|c} Z_1 & Z_2 & Z_3 & Z_4 & Z_5\end{array} \righ
 &= \left[\begin{array}{c|c|c|c|c} \coolunderbrace{\alpha_1}{1 \square Z_{\ms l}}  & \coolunderbrace{\alpha_2}{Z_{\ms m} \square 1} & \coolunderbrace{\alpha_3}{m \square  Z_{\ms l}} & \coolunderbrace{\alpha_4}{ Z_{\ms m} \square l} &  \coolunderbrace{\alpha_5}{Z_{\ms m} \square  Z_{\ms l} } \end{array} \right]
 \end{align*}
 
+\vspace{0.2in}
 Take $Z_k^* = Z_k F_k^{-1}$, then
 
 \begin{align*}
@@ -690,13 +691,54 @@ G  &= \mbox{blockdiag}\left(G_1,\;G_2,\;G_3,\;G_4,\;G_5 \right)\\
 
 
 
+%
+%
+%\begin{frame}
+%\frametitle{REML for $\sigma_e^2$ and $\tau_k^2$ }
+%
+%Take $\hat{\tau}_k^2$, $\hat{\sigma}_e^2$ to be the minimizers of
+%
+%\begin{align*}
+%\mathcal{L}=&-\frac{1}{2} \log \vert V \vert -\frac{1}{2} \log \vert X^\prime W^\prime V^{-1} W X \vert \\
+%&-\frac{1}{2} y^\prime \left(V^{-1} - V^{-1}X^\prime W^\prime \left(X^\prime W^\prime V^{-1} WX \right)^{-1}X^\prime W^\prime  V^{-1} \right)y 
+%\end{align*}
+%
+%where 
+%\begin{equation}
+%V = Cov \left( Y \right) = \sigma_e^2 D + WZGZ^\prime W^\prime
+%\end{equation}
+%\end{frame}
 
-%% this slide should be annotated in power point
 
 
 
 
 
+\begin{frame}
+\frametitle{REML for $\sigma_e^2$ and $\tau_k^2$ }
+
+Take $\hat{\sigma}_e^2$, $\hat{\tau}_k^2$ to minimize
+\begin{align*}
+-2\mathcal{L}= n \log \sigma_e &+ \sum_{j=1}^5 \left( k_j \log \tau_j + \log \sigma_e + \frac{\alpha_j^\prime \alpha_j}{\tau_j^2}\right)  \\[5pt]
+&+ \sigma_e^{-2}\left(Y - W\left(X\beta - Z\alpha \right) \right)^\prime  \left(Y - W\left(X\beta - Z\alpha \right) \right) 
+\end{align*}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Effective model dimension}
+
+\begin{align*}
+\hat{\tau}_k^2 &=  \frac{\hat{\alpha}_k^\prime\hat{\alpha}_k}{  \textup{ED}_j}, \\
+ \hat{\sigma}_e^2 &= \frac{\left(Y - W\left(X\hat{\beta} - Z\hat{\alpha}\right) \right)^\prime  \left(Y - W\left(X\hat{\beta} - Z\hat{\alpha}\right) \right)}{N - \textup{ED}}
+\end{align*}
+
+
+\begin{align*}
+\textup{ED} = \textup{trace}\left( H \right) = \textup{trace}\bigg[\left(\left[X\;Z \right]^\prime\left[X\;Z \right] + \mathring{G} \right)^{-1} \left[X\;Z \right]^\prime\left[X\;Z \right] \bigg] 
+\end{align*}
+
+\end{frame}
 
 
 
