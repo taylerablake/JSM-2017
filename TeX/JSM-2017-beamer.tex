@@ -360,7 +360,7 @@ Take $\hat{\phi}^*$ to be the minimizer of
 %\]
 \begin{adjustwidth}{-2cm}{-2cm}
 \begin{equation}
--2 L_\phi\left(\phi, y_1, \dots,y_N \right) = \sum_{i=1}^n \sum_{j=2}^{m_i} \sigma_{ij0}^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y_{ik} \right)^2 \label{loglikelihood}
+-2 L_\phi\left(\phi, y_1, \dots,y_N \right) = \sum_{i=1}^n \sum_{j=2}^{m_i} \sigma_{ij}^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y_{ik} \right)^2 \label{loglikelihood}
 \end{equation}
 \end{adjustwidth}
 
@@ -415,15 +415,19 @@ so Model~\ref{eq:MyModel} becomes
 
 \begin{align}  
 \begin{split}\label{eq:l-m-marginal-basis}
-\phi_1\left(l\right)  &=\sum_{c=1}^{c_l} B_{\ms c}\left(l;q_l\right) \theta_{lc } = B_{\ms l} \theta_l, \\
-\phi_2\left(m\right)  &= \sum_{c^\prime=1}^{c_m} B_{\ms{c^\prime}}  \left(  m;q_m  \right)  \theta_{\ms{mc^\prime }}  = B_{\ms m} \theta_{\ms m} \\
-\phi_{12}\left(l,m\right)  &= \sum_{c=1}^{c_l} \sum_{{c^\prime}=1}^{c_m} B_{\ms c}\left(l;q_l\right) B_{\ms{c^\prime } }\left(m;q_m\right)\theta_{\ms{c c^\prime} } = B_{\ms{lm}}\theta_{\ms{lm}}
+\phi^*\left(l,m \right) &= B \theta \\
+&= \phi_1\left(l\right)  + \phi_2\left(m\right)  + \phi_{12}\left(l,m\right)  \\
+&= \sum_{c=1}^{c_l} B_{\ms c}\left(l\right) \theta_{lc }  B_{\ms l} \theta_l + \sum_{c^\prime=1}^{c_m} B_{\ms{c^\prime}}  \left(  m \right)  \theta_{\ms{mc^\prime }}  \\
+&\mbox{\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;} + \sum_{c=1}^{c_l} \sum_{{c^\prime}=1}^{c_m} B_{\ms c}\left(l\right) B_{\ms{c^\prime } }\left(m\right)\theta_{\ms{c c^\prime} } 
 \end{split}
 \end{align}
+
+where $\theta \equiv \left(\mu, \theta_{\ms{l}},\theta_{\ms{m}},\theta_{\ms{lm}}\right)^\prime $ and
 \begin{align*}
-B_{\ms{lm}} &= B_m \; \square \; B_l \\   
-&\equiv \left( B_m \otimes 1^\prime_{c_l} \right) \odot \left(1^\prime_{c_m} \otimes  B_l  \right)    
+B &\equiv \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{\ms{lm}} \; \right] \\
+&= \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert  B_m \; \square \; B_l \right] 
 \end{align*}
+
 \end{frame}
 
 %
@@ -452,50 +456,54 @@ B_{\ms{lm}} &= B_m \; \square \; B_l \\
 
 
 
-
-\begin{frame}
-\frametitle{\emph{Difference penalty had to regulate.}}
-
-For $f\left(x\right)=\sum \limits_{i=1}^{p} B_{i}\left(x\right) \theta_{i}$, approximate
-
-\begin{align}
-\begin{split}
-\int_0^1 \left(f^{\prime \prime}\left(x\right)\right)^{\ms 2} \;dx &= \int_0^1 \bigg\{ \sum \limits_{i=1}^{p} B^{\prime \prime}_{i}\left(x\right) \theta_{i} \bigg\}^{\ms 2} \;dx \\ 
-&= k_1 \newmaththought{\sum_i \left( \Delta^{\ms 2} \theta_i \right)^{\ms 2}} + k_2, 
-\end{split}
-\end{align}
-\noindent
-by
-\[
-\newmaththought{\vert \vert D_{\ms 2} \theta \vert \vert^{\ms 2}, \qquad  D_{\ms 2} \theta= \left( \Delta^{\ms 2}\theta_{\ms 1},\dots,\Delta^{\ms 2}\theta_{\ms{p-2}} \right)^\prime }
-\]
-In general, 
-\framebox{approximate $\int \limits_{\ms 0}^{\ms 1} \big(f^{\ms{\left(d\right)}}\big)^{\ms 2}\;dx$ with $\vert \vert D_{\ms d} \theta \vert \vert^{\ms 2} $ }
-\end{frame}
+%
+%\begin{frame}
+%\frametitle{\emph{Difference penalty had to regulate.}}
+%
+%For $f\left(x\right)=\sum \limits_{i=1}^{p} B_{i}\left(x\right) \theta_{i}$, approximate
+%
+%\begin{align}
+%\begin{split}
+%\int_0^1 \left(f^{\prime \prime}\left(x\right)\right)^{\ms 2} \;dx &= \int_0^1 \bigg\{ \sum \limits_{i=1}^{p} B^{\prime \prime}_{i}\left(x\right) \theta_{i} \bigg\}^{\ms 2} \;dx \\ 
+%&= k_1 \newmaththought{\sum_i \left( \Delta^{\ms 2} \theta_i \right)^{\ms 2}} + k_2, 
+%\end{split}
+%\end{align}
+%\noindent
+%by
+%\[
+%\newmaththought{\vert \vert D_{\ms 2} \theta \vert \vert^{\ms 2}, \qquad  D_{\ms 2} \theta= \left( \Delta^{\ms 2}\theta_{\ms 1},\dots,\Delta^{\ms 2}\theta_{\ms{p-2}} \right)^\prime }
+%\]
+%In general, 
+%\framebox{approximate $\int \limits_{\ms 0}^{\ms 1} \big(f^{\ms{\left(d\right)}}\big)^{\ms 2}\;dx$ with $\vert \vert D_{\ms d} \theta \vert \vert^{\ms 2} $ }
+%\end{frame}
 
 
 \begin{frame}
 \frametitle{\emph{PS-ANOVA Penalty}}
 
-\[
-B \equiv \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{\ms{lm}} \; \right] ,   \qquad  \theta \equiv \left(\mu, \theta_{\ms{l}},\theta_{\ms{m}},\theta_{\ms{lm}}\right)^\prime            
-\]
 
 Find $\theta$ minimizing
-\begin{equation} \label{eq:PS-ANOVA}
-\left(Y-WB\theta\right)^\prime D^{-1}\left(Y-WB\theta\right) + \theta^\prime P \theta
-\end{equation}
-\begin{equation*}
-P  = \begin{bmatrix}
-0 &&&\\
-& \underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms l}$}}	& 	& \\
-&&& \\
-&	&	\underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms m}$}}	& 	\\
-&&&\\
-&&&	\underbracket[0.2pt]{\tau_l D_{\ms{d_l}}^\prime D_{\ms{d_l}} \otimes I_{\ms{c_m}} + \tau_m I_{\ms{c_l}} \otimes D_{\ms{d_m}}^\prime D_{\ms{d_m}}}_{\text{$P_{\ms lm}$}}
-\end{bmatrix}
-\end{equation*}
+\begin{align}
+\begin{split} \label{eq:PS-ANOVA}
+\ell\left(\theta,\lambda\right) &= \left(Y-WB\theta\right)^\prime D^{-1}\left(Y-WB\theta\right) + \theta^\prime P \theta\\
+&= \sum_{i=1}^n \sum_{j=2}^{m_i} \sigma_{ij}^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y_{ik} \right)^2 \\[2ex]
+&\mbox{\;\;\;\;}+ \lambda_l\vert \vert D_l\theta_l \vert \vert^2 + \lambda_m\vert \vert D_m\theta_m \vert \vert^2+ \lambda_{lm}\vert \vert D_{lm}\theta_{lm} \vert \vert^2
+%&\mbox{\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;} + \lambda_m\vert \vert D_m\theta_m \vert \vert^2 \\
+%&\mbox{\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;} + \lambda_{lm}\vert \vert D_{lm}\theta_{lm} \vert \vert^2 \\
+\end{split}
+\end{align}
 
+%\begin{equation*}
+%P  = \begin{bmatrix}
+%0 &&&\\
+%& \underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms l}$}}	& 	& \\
+%&&& \\
+%&	&	\underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms m}$}}	& 	\\
+%&&&\\
+%&&&	\underbracket[0.2pt]{\tau_l D_{\ms{d_l}}^\prime D_{\ms{d_l}} \otimes I_{\ms{c_m}} + \tau_m I_{\ms{c_l}} \otimes D_{\ms{d_m}}^\prime D_{\ms{d_m}}}_{\text{$P_{\ms lm}$}}
+%\end{bmatrix}
+%\end{equation*}
+%
 
 \end{frame}
 
@@ -511,7 +519,7 @@ P  = \begin{bmatrix}
 \begin{frame}
 \frametitle{\emph{Mixed model representation}}
 
-Find transformation $\mathrm{Q} = \left[\begin{array}{c|c} \mathrm{Q}_0 & \mathrm{Q}_1 \end{array}\right]$; map
+Find orthogonal transformation $\mathrm{Q} = \left[\begin{array}{c|c} \mathrm{Q}_0 & \mathrm{Q}_1 \end{array}\right]$; map
 %\begin{equation*}
 %\newmaththought{B} \longrightarrow \mixedmodelmath{ \big[ \begin{array}{c|c} X & Z \end{array}  \big]}, \qquad \newmaththought{\theta} \longrightarrow \mixedmodelmath{\left( \beta^\prime, \alpha^\prime \right)^\prime}
 %\end{equation*}
@@ -558,11 +566,33 @@ Z &= \left[\begin{array}{c|c|c|c|c} 1 \square Z_{\ms l}& Z_{\ms m} \square 1 & m
 
 \end{frame}
 
+\begin{frame}
+\frametitle{\emph{Nested B-spline bases}}
 
+\begin{align*}
+ \phi_{\ms{12}}\left(l,m\right)  =   \sum_{r=1}^{\ms{d_m-1}} m^{\ms r}g_{\ms lr}\left(l\right) +  \sum_{r^\prime=1}^{\ms{d_l-1}} l^{\ms r^\prime}  g_{\ms mr^\prime}\left(m\right)+ h\left( l,m \right),
+\end{align*}
+\noindent
+For $d_l = d_m = 2$,
+\[
+ \phi_{\ms{12}}\left(l,m\right)  = g_{\ms 1}\left(l\right) \; m+ l \; g_{\ms 2}\left(m\right) + \; h\left( l,m \right) 
+\]
 
+\begin{equation} \label{eq:nested-SANOVA-basis-matrix}
+B = \big[  \; 1 \; \vert \;  B_1  \; \vert \;   B_2 \; \vert  B_3 \; \vert B_4 \; \vert B_5 \; \big],
+\end{equation}
+\noindent
+where
+\[
+\begin{array}{ccc}
+B_{\ms 3} = m \; \square \;  B_{\ms 1}, \;\; & B_{\ms 4}  = B_{\ms 2}  \square \; l, \;\; &  B_{\ms 5}= B_{\ms 2} \;\square \; B_{\ms 1} 
+\end{array}
+\]
+\begin{equation*} \label{eq:PSANOVA-penalty}
+P = \mbox{blockdiag}\left(0,\; P_1, \; P_2, \; P_{3},\; P_4, \; P_{5} \right),
+\end{equation*}
 
-
-
+\end{frame}
 
 
 
@@ -634,39 +664,6 @@ F_{\ms l} &&\\
 
 
 
-\begin{frame}
-\frametitle{\emph{Nested B-spline bases}}
-
-\begin{align*}
- \phi_{\ms{12}}\left(l,m\right)  =   \sum_{r=1}^{\ms{d_m-1}} m^{\ms r}g_{\ms lr}\left(l\right) +  \sum_{r^\prime=1}^{\ms{d_l-1}} l^{\ms r^\prime}  g_{\ms mr^\prime}\left(m\right)+ h\left( l,m \right),
-\end{align*}
-\noindent
-For $d_l = d_m = 2$,
-\[
- \phi_{\ms{12}}\left(l,m\right)  = g_{\ms 1}\left(l\right) \; m+ l \; g_{\ms 2}\left(m\right) + \; h\left( l,m \right) 
-\]
-
-\begin{equation} \label{eq:nested-SANOVA-basis-matrix}
-B = \big[  \; 1 \; \vert \;  B_1  \; \vert \;   B_2 \; \vert  B_3 \; \vert B_4 \; \vert B_5 \; \big],
-\end{equation}
-\noindent
-where
-\[
-\begin{array}{ccc}
-B_{\ms 3} = m \; \square \;  B_{\ms 1}, \;\; & B_{\ms 4}  = B_{\ms 2}  \square \; l, \;\; &  B_{\ms 5}= B_{\ms 2} \;\square \; B_{\ms 1} 
-\end{array}
-\]
-\begin{equation*} \label{eq:PSANOVA-penalty}
-P = \mbox{blockdiag}\left(0,\; P_1, \; P_2, \; P_{3},\; P_4, \; P_{5} \right),
-\end{equation*}
-
-\end{frame}
-
-
-
-
-
-
 
 
 \begin{frame}
@@ -722,26 +719,32 @@ Take $\hat{\sigma}_e^2$, $\hat{\tau}_k^2$ to minimize
 -2\mathcal{L}= n \log \sigma_e &+ \sum_{j=1}^5 \left( k_j \log \tau_j + \log \sigma_e + \frac{\alpha_j^\prime \alpha_j}{\tau_j^2}\right)  \\[5pt]
 &+ \sigma_e^{-2}\left(Y - W\left(X\beta - Z\alpha \right) \right)^\prime  \left(Y - W\left(X\beta - Z\alpha \right) \right) 
 \end{align*}
-\end{frame}
 
-
-\begin{frame}
-\frametitle{Effective model dimension}
 
 \begin{align*}
 \hat{\tau}_k^2 &=  \frac{\hat{\alpha}_k^\prime\hat{\alpha}_k}{  \textup{ED}_j}, \\
  \hat{\sigma}_e^2 &= \frac{\left(Y - W\left(X\hat{\beta} - Z\hat{\alpha}\right) \right)^\prime  \left(Y - W\left(X\hat{\beta} - Z\hat{\alpha}\right) \right)}{N - \textup{ED}}
 \end{align*}
-
-
-\begin{align*}
-\textup{ED} = \textup{trace}\left( H \right) = \textup{trace}\bigg[\left(\left[X\;Z \right]^\prime\left[X\;Z \right] + \mathring{G} \right)^{-1} \left[X\;Z \right]^\prime\left[X\;Z \right] \bigg] 
-\end{align*}
-
 \end{frame}
 
-
-
+%
+%\begin{frame}
+%
+%\frametitle{Appendix}
+%
+%\begin{align*}
+%B_{\ms{lm}} &= B_m \; \square \; B_l \\   
+%&\equiv \left( B_m \otimes 1^\prime_{c_l} \right) \odot \left(1^\prime_{c_m} \otimes  B_l  \right)    
+%\end{align*}
+%
+%
+%\begin{align*}
+%\textup{ED} = \textup{trace}\left( H \right) = \textup{trace}\bigg[\left(\left[X\;Z \right]^\prime\left[X\;Z \right] + \mathring{G} \right)^{-1} \left[X\;Z \right]^\prime\left[X\;Z \right] \bigg] 
+%\end{align*}
+%
+%
+%\end{frame}
+%
 
 
 
