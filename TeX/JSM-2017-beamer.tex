@@ -268,24 +268,24 @@ D = T \Sigma T^\prime, \quad T = \begin{bmatrix} 1 & 0 & \dots & & \\ -\phi_{21}
 
 Regress $Y_j$ on $Y_{\ms{\left(1:j-1\right)}} = \left(Y_1, \dots, Y_{\ms{j-1}}\right)^\prime$:
 
-\begin{align} \label{eq:ARmodel}
+\begin{align*} \label{eq:ARmodel}
 y_{j}  = \left\{  \begin{array}{ll} 
 		e_1 &j=1, \\
   \sum \limits_{k=1}^{j-1} \phi_{jk} y_{k} + \sigma_{j}e_{j} &  j=2,\dots,M
 \end{array}\right.
-\end{align}
+\end{align*}
 \noindent
-In matrix form:
-\begin{align}
+where $e_j \sim N\left( 0,\sigma^2 \right)$. In matrix form:
+\begin{align*}
 %\begin{split}
-\newmaththought{ e = TY,}
+\newmaththought{ e = TY}
 %\end{split}
-\end{align}
+\end{align*}
 \noindent
- and taking covariances on both sides:
-\begin{equation}
-\newmaththought{ D = \sigma_{\ms e}^2 \mbox{diag}\left( \sigma_1^2,\dots, \sigma_M^2 \right) = T \Sigma T^\prime.}
-\end{equation}
+Taking covariances on both sides:
+\begin{equation*}
+\newmaththought{ D =  \mbox{diag}\left( \sigma_1^2,\dots, \sigma_M^2 \right) = T \Sigma T^\prime}
+\end{equation*}
 \end{frame}
 
 
@@ -313,7 +313,7 @@ In matrix form:
 
 
 \begin{frame}
-\frametitle{\emph{The regression model tool box is a deep, luxurious toolbox.}}
+\frametitle{\emph{Accompanying the regression model is a deep, luxurious toolbox.}}
 
 \begin{align*}
 \makegrey{Y_j}  	&\longrightarrow \makewhite{Y\left( t_j \right) }		&	 \makegrey{e_j} 		&\longrightarrow \makewhite{e\left( t_j \right)}\\
@@ -328,7 +328,7 @@ In matrix form:
 \noindent
 where
 \begin{equation*} 
-\makewhite{e\left(s\right)} \makewhite{ \sim  \mathcal{WN}\left(0,\sigma_{\ms e}^2 \right)}
+\makewhite{e\left(s\right)} \makewhite{ \sim  \mathcal{N}\left(0,\sigma^2 \right)}
 \end{equation*}
 
 
@@ -338,30 +338,27 @@ where
 
 
 
-
-
-
 \begin{frame}
 \frametitle{\emph{Regularization of $\phi\left(s,t\right)$ is more intuitive if we transform the $s$-$t$ axis. }}
 
 \begin{align*}
-\newmaththought{l} &\newmaththought{= s-t} \\
-\newmaththought{m} &\newmaththought{= \frac{1}{2}\left(s+t\right)}
+l = t-s, \qquad m = \frac{1}{2}\left(s+t\right)
 \end{align*}
 \noindent
-Reparameterize $\phi$:
+
 \begin{align*}
 \newmaththought{\phi\left(s,t\right) =\phi^*\left(l,m\right)= \phi^*\left(s-t, \frac{1}{2}\left(s+t\right)\right)}
 \end{align*}
 
-Take $\hat{\phi}^*$ to be the minimizer of 
+The negative log likelihood can be written
 %\[
 %\underbracket[0.2pt]{-2L}_{\text{\parbox{3cm}{\centering \mbox{ \;}\\ goodness \\[-4pt] of fit}}} + \underbracket[0.2pt]{\lambda J\left(\phi^*\right)}_{\text{\parbox{3cm}{\centering \mbox{ \;}\\ %flexibility of the \\[-4pt] fitted curve}}}
 %\]
 \begin{adjustwidth}{-2cm}{-2cm}
-\begin{equation}
--2 L_\phi\left(\phi, y_1, \dots,y_N \right) = \sum_{i=1}^n \sum_{j=2}^{m_i} \sigma_{ij}^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y_{ik} \right)^2 \label{loglikelihood}
-\end{equation}
+\begin{align*} \label{loglikelihood}
+-2L &= \sum_{i=1}^n \sum_{j=2}^{m_i} \sigma_{ij}^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y_{ik} \right)^2 \\
+&= \sum_{i=1}^n \sum_{j=2}^{m_i} \sigma_{ij}^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi^*\left({l_{ijk},m_{ijk}}\right)y_{ik} \right)^2 
+\end{align*}
 \end{adjustwidth}
 
 \end{frame}
@@ -392,43 +389,78 @@ Take $\hat{\phi}^*$ to be the minimizer of
 
 
 
+%\begin{frame}
+%\frametitle{\emph{Smooth ANOVA models}}
+%Decompose
+%\begin{equation} \label{eq:SANOVA-model}
+%\carrotorangemath{
+%\phi^*\left(l,m\right) = \mu + \phi_1\left(l\right) + \phi_2\left(m\right) + \phi_{12}\left(l,m\right)},
+%\end{equation} 
+%so Model~\ref{eq:MyModel} becomes
+%
+%\begin{align*}  
+%\begin{split}% \label{eq:expanded-ps-anova-vc-model}
+% y\left(t_j \right)  = \sum_{k=1}^{j-1} \bigg[\mu + \phi_1\left(l_{jk}\right) +  &\phi_2\left(m_{jk}\right) \bigg.\\[-2ex]
+%\bigg. &+ \phi_{12}\left(l_{jk},m_{jk}\right) \bigg]y\left(t_k\right)+ \sigma\left(t_j\right)e\left({t_j}\right)
+%\end{split}
+%\end{align*}
+%\end{frame}
+%
+
 \begin{frame}
-\frametitle{\emph{Smooth ANOVA models}}
-Decompose
-\begin{equation} \label{eq:SANOVA-model}
-\carrotorangemath{
-\phi^*\left(l,m\right) = \mu + \phi_1\left(l\right) + \phi_2\left(m\right) + \phi_{12}\left(l,m\right)},
-\end{equation} 
-so Model~\ref{eq:MyModel} becomes
+\frametitle{\emph{Smooth via a tensor product B-spline basis}}
 
-\begin{align*}  
-\begin{split}% \label{eq:expanded-ps-anova-vc-model}
- y\left(t_j \right)  = \sum_{k=1}^{j-1} \bigg[\mu + \phi_1\left(l_{jk}\right) +  &\phi_2\left(m_{jk}\right) \bigg.\\[-2ex]
-\bigg. &+ \phi_{12}\left(l_{jk},m_{jk}\right) \bigg]y\left(t_k\right)+ \sigma\left(t_j\right)e\left({t_j}\right)
-\end{split}
-\end{align*}
-\end{frame}
-
-
-\begin{frame}
-\frametitle{\emph{Approximate $\phi_1$, $\phi_2$, $\phi_{12}$ with B-splines.}}
-
-\begin{align}  
-\begin{split}\label{eq:l-m-marginal-basis}
-\phi^*\left(l,m \right) &= B \theta \\
-&= \phi_1\left(l\right)  + \phi_2\left(m\right)  + \phi_{12}\left(l,m\right)  \\
-&= \sum_{c=1}^{c_l} B_{\ms c}\left(l\right) \theta_{lc }  B_{\ms l} \theta_l + \sum_{c^\prime=1}^{c_m} B_{\ms{c^\prime}}  \left(  m \right)  \theta_{\ms{mc^\prime }}  \\
-&\mbox{\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;} + \sum_{c=1}^{c_l} \sum_{{c^\prime}=1}^{c_m} B_{\ms c}\left(l\right) B_{\ms{c^\prime } }\left(m\right)\theta_{\ms{c c^\prime} } 
-\end{split}
-\end{align}
-
-where $\theta \equiv \left(\mu, \theta_{\ms{l}},\theta_{\ms{m}},\theta_{\ms{lm}}\right)^\prime $ and
+ \begin{columns}
+\begin{column}{0.5\textwidth}
+Equip $l$ and $m$ with
 \begin{align*}
-B &\equiv \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{\ms{lm}} \; \right] \\
-&= \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert  B_m \; \square \; B_l \right] 
+B_{1}\left(l\right),\dots, B_{K}\left(l\right),\\
+B_{1}\left(m\right),\dots, B_{L}\left(m\right)
 \end{align*}
+to build
+\begin{equation*}
+T_{jk}\left(l,m\right) = B_j\left(l\right){B}_k\left(m\right)
+\end{equation*}
+  \end{column}
+\begin{column}{0.5\textwidth}  %%<--- here
+    \begin{center}
+    \begin{figure}
+    \graphicspath{{img/}}
+ \includegraphics[width=4cm]{sparse_bicubic_basis}
+ \caption{A ``thinned'' tensor product basis}
+ \end{figure}
+     \end{center}
+\end{column}
+\end{columns}
+\vspace{0.3cm}
+\begin{equation*}
+\phi^*\left(l,m\right) = \sum_{i=1}^K \sum_{j=1}^L \theta_{ij} B_{i}\left(l\right) B_{j}\left(m\right)
+\end{equation*}
 
 \end{frame}
+
+
+
+
+%\begin{frame}
+%\frametitle{\emph{Approximate $\phi_1$, $\phi_2$, $\phi_{12}$ with B-splines.}}
+%
+%\begin{align}  
+%\begin{split}\label{eq:l-m-marginal-basis}
+%\phi^*\left(l,m \right) &= B \theta \\
+%&= \phi_1\left(l\right)  + \phi_2\left(m\right)  + \phi_{12}\left(l,m\right)  \\
+%&= \sum_{c=1}^{c_l} B_{\ms c}\left(l\right) \theta_{lc }  B_{\ms l} \theta_l + \sum_{c^\prime=1}^{c_m} B_{\ms{c^\prime}}  \left(  m \right)  \theta_{\ms{mc^\prime }}  \\
+%&\mbox{\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;} + \sum_{c=1}^{c_l} \sum_{{c^\prime}=1}^{c_m} B_{\ms c}\left(l\right) B_{\ms{c^\prime } }\left(m\right)\theta_{\ms{c c^\prime} } 
+%\end{split}
+%\end{align}
+%
+%where $\theta \equiv \left(\mu, \theta_{\ms{l}},\theta_{\ms{m}},\theta_{\ms{lm}}\right)^\prime $ and
+%\begin{align*}
+%B &\equiv \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{\ms{lm}} \; \right] \\
+%&= \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert  B_m \; \square \; B_l \right] 
+%\end{align*}
+%
+%\end{frame}
 
 %
 %\begin{frame}
@@ -455,54 +487,344 @@ B &\equiv \left[\; 1_p \; \vert \;  B_l  \; \vert \;   B_m \; \vert B_{\ms{lm}} 
 %
 
 
+\begin{frame}
+\frametitle{\emph{Recruit the difference penalty to regulate.}}
 
-%
-%\begin{frame}
-%\frametitle{\emph{Difference penalty had to regulate.}}
-%
-%For $f\left(x\right)=\sum \limits_{i=1}^{p} B_{i}\left(x\right) \theta_{i}$, approximate
-%
-%\begin{align}
+For $f\left(x\right)=\sum \limits_{i=1}^{p} B_{i}\left(x\right) \theta_{i}$, approximate
+
+\begin{align*}
 %\begin{split}
-%\int_0^1 \left(f^{\prime \prime}\left(x\right)\right)^{\ms 2} \;dx &= \int_0^1 \bigg\{ \sum \limits_{i=1}^{p} B^{\prime \prime}_{i}\left(x\right) \theta_{i} \bigg\}^{\ms 2} \;dx \\ 
-%&= k_1 \newmaththought{\sum_i \left( \Delta^{\ms 2} \theta_i \right)^{\ms 2}} + k_2, 
+\int_0^1 \left(f^{\prime \prime}\left(x\right)\right)^{\ms 2} \;dx &= \int_0^1 \bigg\{ \sum \limits_{i=1}^{p} B^{\prime \prime}_{i}\left(x\right) \theta_{i} \bigg\}^{\ms 2} \;dx \\ 
+&= k_1 \newmaththought{\sum_i \left( \Delta^{\ms 2} \theta_i \right)^{\ms 2}} + k_2, 
+%\end{split}
+\end{align*}
+\noindent
+by
+\[
+\newmaththought{\vert \vert D_{\ms 2} \theta \vert \vert^{\ms 2}, \qquad  D_{\ms 2} \theta= \left( \Delta^{\ms 2}\theta_{\ms 1},\dots,\Delta^{\ms 2}\theta_{\ms{p-2}} \right)^\prime }
+\]
+In general, 
+\framebox{approximate $\int \limits_{\ms 0}^{\ms 1} \big(f^{\ms{\left(d\right)}}\big)^{\ms 2}\;dx$ with $\vert \vert D_{\ms d} \theta \vert \vert^{\ms 2} $ }
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\emph{Append the difference penalties to the log likelihood:}}
+
+Find $\theta$ minimizing
+
+\begin{align*}\label{eq:unfolded-row-column-difference-penalty}
+\mathcal{Q}=\sum_{i=1}^n \sum_{j=2}^{m_i} \sigma_{ij}^{-2} \left[y_{ij} - \sum_{k=1}^{j-1}\left(\sum_{i=1}^K \sum_{j=1}^L \theta_{ij} B_{i}\left(l_{ijk}\right) B_{j}\left( m_{ijk} \right)  \right) y_{ik} \right]^2 \\
+\mbox{\;\;\;\;\;\;\;\;}+ \lambda_l \sum_{k} \vert D_d \theta_{k \cdot} \vert^2 + \lambda_m \sum_{l} \vert D_{\ms d_{\ms m}} \theta_{\cdot l} \vert^2 
+\end{align*}
+
+\end{frame}
+%\begin{align}
+%\begin{split} \label{eq:PS-ANOVA}
+%\ell\left(\theta,\lambda\right) &= \left(Y-WB\theta\right)^\prime D^{-1}\left(Y-WB\theta\right) + \theta^\prime P \theta\\
+%&= \sum_{i=1}^n \sum_{j=2}^{m_i} \sigma_{ij}^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y_{ik} \right)^2 \\[2ex]
+%&\mbox{\;\;\;\;}+ \lambda_l\vert \vert D_l\theta_l \vert \vert^2 + \lambda_m\vert \vert D_m\theta_m \vert \vert^2+ \lambda_{lm}\vert \vert D_{lm}\theta_{lm} \vert \vert^2
+%%&\mbox{\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;} + \lambda_m\vert \vert D_m\theta_m \vert \vert^2 \\
+%%&\mbox{\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;} + \lambda_{lm}\vert \vert D_{lm}\theta_{lm} \vert \vert^2 \\
 %\end{split}
 %\end{align}
-%\noindent
-%by
-%\[
-%\newmaththought{\vert \vert D_{\ms 2} \theta \vert \vert^{\ms 2}, \qquad  D_{\ms 2} \theta= \left( \Delta^{\ms 2}\theta_{\ms 1},\dots,\Delta^{\ms 2}\theta_{\ms{p-2}} \right)^\prime }
-%\]
-%In general, 
-%\framebox{approximate $\int \limits_{\ms 0}^{\ms 1} \big(f^{\ms{\left(d\right)}}\big)^{\ms 2}\;dx$ with $\vert \vert D_{\ms d} \theta \vert \vert^{\ms 2} $ }
+%
+
+
+
+\begin{frame}
+\frametitle{\emph{Differencing in two dimensions}}
+
+
+ \begin{columns}
+\begin{column}{0.5\textwidth}
+    \begin{center}
+    \begin{figure}
+    \graphicspath{{img/}}
+ \includegraphics[width=4cm]{large-row-penalty}
+ \caption{Strong row penalty}
+ \end{figure}
+     \end{center}
+  \end{column}
+\begin{column}{0.5\textwidth}  %%<--- here
+    \begin{center}
+    \begin{figure}
+    \graphicspath{{img/}}
+ \includegraphics[width=4cm]{large-col-penalty}
+ \caption{\small Strong column penalty}
+ \end{figure}
+     \end{center}
+\end{column}
+\end{columns}
+
+
+\end{frame}
+
+
+
+
+
+
+%
+%\begin{equation*}
+%P  = \begin{bmatrix}
+%0 &&&\\
+%& \underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms l}$}}	& 	& \\
+%&&& \\
+%&	&	\underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms m}$}}	& 	\\
+%&&&\\
+%&&&	\underbracket[0.2pt]{\tau_m D_{\ms{d_m}}^\prime D_{\ms{d_m}} \otimes I_{\ms{c_l}} + \tau_l I_{\ms{c_m}} \otimes D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms lm}$}}
+%\end{bmatrix}
+%\end{equation*}
+%
 %\end{frame}
 
 
+
 \begin{frame}
-\frametitle{\emph{PS-ANOVA Penalty}}
+\frametitle{\emph{``Unfold'' the two dimensional surface:}}
 
-
-Find $\theta$ minimizing
-\begin{align}
-\begin{split} \label{eq:PS-ANOVA}
-\ell\left(\theta,\lambda\right) &= \left(Y-WB\theta\right)^\prime D^{-1}\left(Y-WB\theta\right) + \theta^\prime P \theta\\
-&= \sum_{i=1}^n \sum_{j=2}^{m_i} \sigma_{ij}^{-2} \left(y_{ij} - \sum_{k=1}^{j-1}\phi\left({t_{ij},t_{ik}}\right)y_{ik} \right)^2 \\[2ex]
-&\mbox{\;\;\;\;}+ \lambda_l\vert \vert D_l\theta_l \vert \vert^2 + \lambda_m\vert \vert D_m\theta_m \vert \vert^2+ \lambda_{lm}\vert \vert D_{lm}\theta_{lm} \vert \vert^2
-%&\mbox{\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;} + \lambda_m\vert \vert D_m\theta_m \vert \vert^2 \\
-%&\mbox{\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;} + \lambda_{lm}\vert \vert D_{lm}\theta_{lm} \vert \vert^2 \\
-\end{split}
-\end{align}
-
+via the \emph{kronecker product}:
+\begin{align*} %\label{eq:rowwise-kronecker-product}
+B &= B_l \square B_m \\
+&= \left( B_m \otimes 1^\prime_{K} \right) \odot \left(1^\prime_{L} \otimes  B_l  \right)\\
+P_l  &=  I_L \otimes D_{d_{\ms l}}^\prime D_{d_{\ms l}}\\
+P_m &=   D_{d_{\ms m}}^\prime D_{d_{\ms m}} \otimes I_K
+\end{align*}
+to write
 \begin{equation*}
-P  = \begin{bmatrix}
-0 &&&\\
-& \underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms l}$}}	& 	& \\
-&&& \\
-&	&	\underbracket[0.2pt]{\lambda_l D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms m}$}}	& 	\\
-&&&\\
-&&&	\underbracket[0.2pt]{\tau_m D_{\ms{d_m}}^\prime D_{\ms{d_m}} \otimes I_{\ms{c_l}} + \tau_l I_{\ms{c_m}} \otimes D_{\ms{d_l}}^\prime D_{\ms{d_l}}}_{\text{$P_{\ms lm}$}}
-\end{bmatrix}
+\mbox{vec}\left\{ \phi^*\left(l,m\right)\right \} = B \theta
 \end{equation*}
+
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{\emph{Then the penalized likelihood has convenient form:}}
+
+\begin{equation*} %\label{eq:tensor-pspline-objective-function}
+Q = \left( Y - WB\theta\right)^\prime D^{-1} \left( Y - WB\theta\right) + \lambda_l  \theta^\prime P_l \theta + \lambda_m \theta^\prime P_m \theta 
+\end{equation*}
+
+
+\begin{align*} \label{eq:tensor-pspline-normal-equations}
+\hat{\theta}_\lambda = \left[ \left(WB\right)^\prime D^{-1}WB +  \lambda_l P_l+ \lambda_m P_m\right]^{-1} \left(W B\right)^\prime Y
+\end{align*}
+Degrees of freedom can be approximated as in the usual smoothing case:
+\begin{align*}
+\textup{ED} &= \textup{tr} \left[ H_\lambda \right]\\
+&= \textup{tr}\bigg[\left[ \left(WB\right)^\prime D^{-1}WB +  \lambda_l P_l+ \lambda_m P_m\right]^{-1} \left(W B\right)^\prime WB  \bigg]
+\end{align*}
+
+AIC, GCV, CV accessible for model diagnostics.
+
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}
+\frametitle{\emph{Simulations: }$\Sigma = 0.3^2 I$\\
+$N = 30$, $M=20$, $d_l = d_m= 0$}
+
+
+    \begin{center}
+    \begin{figure}
+    \graphicspath{{img/}}
+ \includegraphics[width=5cm]{identity-cov-estimated-cholesky}
+ \caption{Estimated $T$ }
+ \end{figure}
+     \end{center}
+  
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\emph{Simulations: }$\Sigma = 0.3^2 I$\\
+$N = 30$, $M=20$, $d_l = d_m= 0$}
+
+
+ \begin{columns}
+\begin{column}{0.5\textwidth}
+    \begin{center}
+    \begin{figure}
+    \graphicspath{{img/}}
+ \includegraphics[width=4cm]{identity-cov-true-covariance}
+ \caption{True $\Sigma$ }
+ \end{figure}
+     \end{center}
+  \end{column}
+\begin{column}{0.5\textwidth}  %%<--- here
+    \begin{center}
+    \begin{figure}
+    \graphicspath{{img/}}
+ \includegraphics[width=4cm]{identity-cov-estimated-covariance}
+ \caption{$\hat{\Omega}^{-1}$}
+ \end{figure}
+     \end{center}
+\end{column}
+\end{columns}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{\emph{Simulations: }$\phi\left(s,t\right) = s-\frac{1}{2}$, $\sigma^2 = 0.3^2$\\
+$N = 30$, $M=20$, $d_l = d_m= 2$}
+
+ \begin{columns}
+\begin{column}{0.5\textwidth}
+    \begin{center}
+    \begin{figure}
+    \graphicspath{{img/}}
+ \includegraphics[width=4cm]{linear-vc-model-true-cholesky}
+ \caption{True $T$ }
+ \end{figure}
+     \end{center}
+  \end{column}
+\begin{column}{0.5\textwidth}  %%<--- here
+    \begin{center}
+    \begin{figure}
+    \graphicspath{{img/}}
+ \includegraphics[width=4cm]{linear-vc-model-estimated-cholesky}
+ \caption{Estimated $T$}
+ \end{figure}
+     \end{center}
+\end{column}
+\end{columns}
+
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{\emph{Simulations: }$\phi\left(s,t\right) = s-\frac{1}{2}$, $\sigma^2 = 0.3^2$\\
+$N = 30$, $M=20$, $d_l = d_m= 2$}
+
+ \begin{columns}
+\begin{column}{0.5\textwidth}
+    \begin{center}
+    \begin{figure}
+    \graphicspath{{img/}}
+ \includegraphics[width=4cm]{linear-vc-model-true-covariance}
+ \caption{$\Sigma$ }
+ \end{figure}
+     \end{center}
+  \end{column}
+\begin{column}{0.5\textwidth}  %%<--- here
+    \begin{center}
+    \begin{figure}
+    \graphicspath{{img/}}
+ \includegraphics[width=4cm]{linear-vc-model-estimated-covariance}
+ \caption{$\hat{\Omega}^{-1}$}
+ \end{figure}
+     \end{center}
+\end{column}
+\end{columns}
+
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{frame}
+\frametitle{\emph{Simulations: }$\Sigma = 0.7J + 0.3I$\\
+$N = 30$, $M=20$, $d_l = 2$, $d_m= 1$}
+
+ \begin{columns}
+\begin{column}{0.5\textwidth}
+    \begin{center}
+    \begin{figure}
+    \graphicspath{{img/}}
+ \includegraphics[width=4cm]{compound-symmetry-true-cholesky}
+ \caption{True $T$ }
+ \end{figure}
+     \end{center}
+  \end{column}
+\begin{column}{0.5\textwidth}  %%<--- here
+    \begin{center}
+    \begin{figure}
+    \graphicspath{{img/}}
+ \includegraphics[width=4cm]{compound-symmetry-estimated-cholesky}
+ \caption{Estimated $T$}
+ \end{figure}
+     \end{center}
+\end{column}
+\end{columns}
+
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{\emph{Simulations: }$\Sigma = 0.7J + 0.3I$\\
+$N = 30$, $M=20$, $d_l = 2$, $d_m= 1$}
+
+ \begin{columns}
+\begin{column}{0.5\textwidth}
+    \begin{center}
+    \begin{figure}
+    \graphicspath{{img/}}
+ \includegraphics[width=4cm]{compound-symmetry-true-covariance}
+ \caption{$\Sigma$ }
+ \end{figure}
+     \end{center}
+  \end{column}
+\begin{column}{0.5\textwidth}  %%<--- here
+    \begin{center}
+    \begin{figure}
+    \graphicspath{{img/}}
+ \includegraphics[width=4cm]{compound-symmetry-estimated-covariance}
+ \caption{$\hat{\Omega}^{-1}$}
+ \end{figure}
+     \end{center}
+\end{column}
+\end{columns}
+
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{\emph{Recap: from the top}}
+
+\begin{itemize}
+\item We propose a general framework for unconstrained covariance estimation.
+\item Flexibility permits imposing various types of regularization with ease. 
+\item Penalty specification is crucial for performance.
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{What's next?}
+
+\begin{itemize}
+\item ``designer'' penalties - impose desirable shape constraints (decay in $l$)
+\item Additive, ANOVA models for $\phi^*$
+\item P-spline model reparameterized as mixture models
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{\emph{Thank you!}}
 
 
 \end{frame}
@@ -511,126 +833,123 @@ P  = \begin{bmatrix}
 
 
 
-
-
-
-%% NEEDS CORRECTED TO ACCOUNT FOR REPLACING \sigma^2 I with D
-
-\begin{frame}
-\frametitle{\emph{Mixed model representation}}
-
-Find orthogonal transformation $\mathrm{Q} = \left[\begin{array}{c|c} \mathrm{Q}_0 & \mathrm{Q}_1 \end{array}\right]$; map
-%\begin{equation*}
-%\newmaththought{B} \longrightarrow \mixedmodelmath{ \big[ \begin{array}{c|c} X & Z \end{array}  \big]}, \qquad \newmaththought{\theta} \longrightarrow \mixedmodelmath{\left( \beta^\prime, \alpha^\prime \right)^\prime}
-%\end{equation*}
+%
+%
+%%% NEEDS CORRECTED TO ACCOUNT FOR REPLACING \sigma^2 I with D
+%
+%\begin{frame}
+%\frametitle{\emph{Mixed model representation}}
+%
+%Find orthogonal transformation $\mathrm{Q} = \left[\begin{array}{c|c} \mathrm{Q}_0 & \mathrm{Q}_1 \end{array}\right]$; map
+%%\begin{equation*}
+%%\newmaththought{B} \longrightarrow \mixedmodelmath{ \big[ \begin{array}{c|c} X & Z \end{array}  \big]}, \qquad \newmaththought{\theta} \longrightarrow \mixedmodelmath{\left( \beta^\prime, \alpha^\prime \right)^\prime}
+%%\end{equation*}
+%%\noindent
+%%such that 
+%
+%\begin{align*}
+%BQ &=\mixedmodelmath{ \big[ \begin{array}{c|c} B\mathrm{Q}_{\ms 0} &  B\mathrm{Q}_{\ms 1} \end{array}  \big]}	\\	
+%&=  \mixedmodelmath{ \big[ \begin{array}{c|c} X & Z \end{array}  \big]}\\
+%\end{align*}
 %\noindent
-%such that 
-
-\begin{align*}
-BQ &=\mixedmodelmath{ \big[ \begin{array}{c|c} B\mathrm{Q}_{\ms 0} &  B\mathrm{Q}_{\ms 1} \end{array}  \big]}	\\	
-&=  \mixedmodelmath{ \big[ \begin{array}{c|c} X & Z \end{array}  \big]}\\
-\end{align*}
-\noindent
-such that
-\begin{equation*}
-B\theta = \mixedmodelmath{X\beta + Z\alpha}
-\end{equation*}
-
-\end{frame}
-
-
-
-
-
-
-
-\begin{frame}
-\frametitle{\emph{Mixed model representation}}
-
-
-Model~\ref{eq:PS-ANOVA} becomes
-\begin{equation} \label{eq:vc-mixed-effects-model}
-Y = W\left(X \beta + Z \alpha\right) + e 
-\end{equation}
-\begin{equation*}
- \alpha \sim \mathcal{N}\left(0,G \right), \quad
- e\sim\mathcal{N}\left(0, \sigma_{\ms e}^2 D \right)
-\end{equation*}
-
-For $d_{\ms l} = d_{\ms m} = 2$, 
-
-\begin{align*} 
-X &= \left[\begin{array}{c|c|c|c} 1 & 1 \square l & m \square 1 & m \square l  \end{array} \right] \\
-Z &= \left[\begin{array}{c|c|c|c|c} 1 \square Z_{\ms l}& Z_{\ms m} \square 1 & m \square  Z_{\ms l} &  Z_{\ms m} \square l &  Z_{\ms m} \square  Z_{\ms l}\end{array} \right] 
-\end{align*} 
-
-\end{frame}
-
-\begin{frame}
-\frametitle{\emph{Nested B-spline bases}}
-
-\begin{align*}
- \phi_{\ms{12}}\left(l,m\right)  =   \sum_{r=1}^{\ms{d_m-1}} m^{\ms r}g_{\ms lr}\left(l\right) +  \sum_{r^\prime=1}^{\ms{d_l-1}} l^{\ms r^\prime}  g_{\ms mr^\prime}\left(m\right)+ h\left( l,m \right),
-\end{align*}
-\noindent
-For $d_l = d_m = 2$,
-\[
- \phi_{\ms{12}}\left(l,m\right)  = g_{\ms 1}\left(l\right) \; m+ l \; g_{\ms 2}\left(m\right) + \; h\left( l,m \right) 
-\]
-
-\begin{equation} \label{eq:nested-SANOVA-basis-matrix}
-B = \big[  \; 1 \; \vert \;  B_1  \; \vert \;   B_2 \; \vert  B_3 \; \vert B_4 \; \vert B_5 \; \big],
-\end{equation}
-\noindent
-where
-\[
-\begin{array}{ccc}
-B_{\ms 3} = m \; \square \;  B_{\ms 1}, \;\; & B_{\ms 4}  = B_{\ms 2}  \square \; l, \;\; &  B_{\ms 5}= B_{\ms 2} \;\square \; B_{\ms 1} 
-\end{array}
-\]
-\begin{equation*} \label{eq:PSANOVA-penalty}
-P = \mbox{blockdiag}\left(0,\; P_1, \; P_2, \; P_{3},\; P_4, \; P_{5} \right),
-\end{equation*}
-
-\end{frame}
-
-
-
-
-
-\begin{frame}
-\frametitle{\emph{\normalsize{Smoothing parameter selection = variance component estimation}}}
-
-\vspace{0.2in}
-$G = \sigma_{\ms e}^2 F^{-1}$ where
-
-\begin{align*}
-F &= \left[\begin{array}{ccc}
-F_{\ms l} &&\\
-&F_{\ms m} &\\
-&& F_{\ms lm}\\
-\end{array}\right]
- = \left[\begin{array}{ccc}
-\lambda_l \tilde{\Delta}_l &&\\
-&\lambda_m \tilde{\Delta}_m &\\
-&& F_{\ms lm}\\
-\end{array}\right],
-\end{align*}
+%such that
+%\begin{equation*}
+%B\theta = \mixedmodelmath{X\beta + Z\alpha}
+%\end{equation*}
+%
+%
+%
+%Model~\ref{eq:PS-ANOVA} becomes
+%\begin{equation} \label{eq:vc-mixed-effects-model}
+%Y = W\left(X \beta + Z \alpha\right) + e 
+%\end{equation}
+%\begin{equation*}
+% \alpha \sim \mathcal{N}\left(0,G \right), \quad
+% e\sim\mathcal{N}\left(0, \sigma_{\ms e}^2 D \right)
+%\end{equation*}
+%
+%
+%
+%\end{frame}
+%
+%
 %
 
-\begin{equation*}
- F_{\ms lm} = \left[\begin{array}{ccc}
-\tau_l \tilde{\Delta}_l &&\\
-&&\\
-&\tau_m \tilde{\Delta}_m&\\
-&&\\
-&&\tau_m \tilde{\Delta}_m \otimes I_{\ms{c_l-d_l}} +  I_{\ms{c_m-d_m}} \otimes \tau_l \tilde{\Delta}_l \end{array}\right]
-\end{equation*}
+
+%
+%
+%\begin{frame}
+%\frametitle{\emph{Nested B-spline bases}}
+%
+%For $d_{\ms l} = d_{\ms m} = 2$, 
+%\begin{align*} 
+%X &= \left[\begin{array}{c|c|c|c} 1 & 1 \square l & m \square 1 & m \square l  \end{array} \right] \\
+%Z &= \left[\begin{array}{c|c|c|c|c} 1 \square Z_{\ms l}& Z_{\ms m} \square 1 & m \square  Z_{\ms l} &  Z_{\ms m} \square l &  Z_{\ms m} \square  Z_{\ms l}\end{array} \right] 
+%\end{align*} 
+%
+%
+%\begin{align*}
+% \phi_{\ms{12}}\left(l,m\right)  =   \sum_{r=1}^{\ms{d_m-1}} m^{\ms r}g_{\ms lr}\left(l\right) +  \sum_{r^\prime=1}^{\ms{d_l-1}} l^{\ms r^\prime}  g_{\ms mr^\prime}\left(m\right)+ h\left( l,m \right),
+%\end{align*}
+%\noindent
+%For $d_l = d_m = 2$,
+%\[
+% \phi_{\ms{12}}\left(l,m\right)  = g_{\ms 1}\left(l\right) \; m+ l \; g_{\ms 2}\left(m\right) + \; h\left( l,m \right) 
+%\]
+%
+%%\begin{equation} \label{eq:nested-SANOVA-basis-matrix}
+%%B = \big[  \; 1 \; \vert \;  B_1  \; \vert \;   B_2 \; \vert  B_3 \; \vert B_4 \; \vert B_5 \; \big],
+%%\end{equation}
+%%\noindent
+%%where
+%%\[
+%%\begin{array}{ccc}
+%%B_{\ms 3} = m \; \square \;  B_{\ms 1}, \;\; & B_{\ms 4}  = B_{\ms 2}  \square \; l, \;\; &  B_{\ms 5}= B_{\ms 2} \;\square \; B_{\ms 1} 
+%%\end{array}
+%%\]
+%%\begin{equation*} \label{eq:PSANOVA-penalty}
+%%P = \mbox{blockdiag}\left(0,\; P_1, \; P_2, \; P_{3},\; P_4, \; P_{5} \right),
+%%\end{equation*}
+%
+%\end{frame}
 
 
-\end{frame}
-
-
+%
+%
+%
+%\begin{frame}
+%\frametitle{\emph{\normalsize{Smoothing parameter selection = variance component estimation}}}
+%
+%\vspace{0.2in}
+%$G = \sigma_{\ms e}^2 F^{-1}$ where
+%
+%\begin{align*}
+%F &= \left[\begin{array}{ccc}
+%F_{\ms l} &&\\
+%&F_{\ms m} &\\
+%&& F_{\ms lm}\\
+%\end{array}\right]
+% = \left[\begin{array}{ccc}
+%\lambda_l \tilde{\Delta}_l &&\\
+%&\lambda_m \tilde{\Delta}_m &\\
+%&& F_{\ms lm}\\
+%\end{array}\right],
+%\end{align*}
+%%
+%
+%\begin{equation*}
+% F_{\ms lm} = \left[\begin{array}{ccc}
+%\tau_l \tilde{\Delta}_l &&\\
+%&&\\
+%&\tau_m \tilde{\Delta}_m&\\
+%&&\\
+%&&\tau_m \tilde{\Delta}_m \otimes I_{\ms{c_l-d_l}} +  I_{\ms{c_m-d_m}} \otimes \tau_l \tilde{\Delta}_l \end{array}\right]
+%\end{equation*}
+%
+%
+%\end{frame}
+%
+%
 
 
 
@@ -665,27 +984,27 @@ F_{\ms l} &&\\
 
 
 
-
-\begin{frame}
-\frametitle{\emph{Now the variance components have simpler structure.}}
-
-Let $\alpha_k \sim \mathcal{N}\left(0,G_k\right)$,
-\begin{align*}
-Z &= \left[\begin{array}{c|c|c|c|c} Z_1 & Z_2 & Z_3 & Z_4 & Z_5\end{array} \right]\\
-&= \left[\begin{array}{c|c|c|c|c} \coolunderbrace{\alpha_1}{1 \square Z_{\ms l}}  & \coolunderbrace{\alpha_2}{Z_{\ms m} \square 1} & \coolunderbrace{\alpha_3}{m \square  Z_{\ms l}} & \coolunderbrace{\alpha_4}{ Z_{\ms m} \square l} &  \coolunderbrace{\alpha_5}{Z_{\ms m} \square  Z_{\ms l} } \end{array} \right]
-\end{align*}
-
-\vspace{0.2in}
-Take $Z_k^* = Z_k F_k^{-1}$, then
-
-\begin{align*}
-G  &= \mbox{blockdiag}\left(G_1,\;G_2,\;G_3,\;G_4,\;G_5 \right)\\
-  &= \mbox{blockdiag}\left(\tau_1^2 I_{{\ms c_l - 2}},\; \tau_2^2 I_{{\ms c_m - 2}},\;\tau_3^2 I_{{\ms c_l - 2}},\;\tau_4^2 I_{{\ms c_m - 2}},\;\tau_5^2 I_{{\ms \left(c_l - 2\right) \left(c_m - 2\right)}} \right)\\
-\end{align*}
-
-\end{frame}
-
-
+%
+%\begin{frame}
+%\frametitle{\emph{Now the variance components have simpler structure.}}
+%
+%Let $\alpha_k \sim \mathcal{N}\left(0,G_k\right)$,
+%\begin{align*}
+%Z &= \left[\begin{array}{c|c|c|c|c} Z_1 & Z_2 & Z_3 & Z_4 & Z_5\end{array} \right]\\
+%&= \left[\begin{array}{c|c|c|c|c} \coolunderbrace{\alpha_1}{1 \square Z_{\ms l}}  & \coolunderbrace{\alpha_2}{Z_{\ms m} \square 1} & \coolunderbrace{\alpha_3}{m \square  Z_{\ms l}} & \coolunderbrace{\alpha_4}{ Z_{\ms m} \square l} &  \coolunderbrace{\alpha_5}{Z_{\ms m} \square  Z_{\ms l} } \end{array} \right]
+%\end{align*}
+%
+%\vspace{0.2in}
+%Take $Z_k^* = Z_k F_k^{-1}$, then
+%
+%\begin{align*}
+%G  &= \mbox{blockdiag}\left(G_1,\;G_2,\;G_3,\;G_4,\;G_5 \right)\\
+%  &= \mbox{blockdiag}\left(\tau_1^2 I_{{\ms c_l - 2}},\; \tau_2^2 I_{{\ms c_m - 2}},\;\tau_3^2 I_{{\ms c_l - 2}},\;\tau_4^2 I_{{\ms c_m - 2}},\;\tau_5^2 I_{{\ms \left(c_l - 2\right) \left(c_m - 2\right)}} \right)\\
+%\end{align*}
+%
+%\end{frame}
+%
+%
 
 
 %
@@ -711,21 +1030,26 @@ G  &= \mbox{blockdiag}\left(G_1,\;G_2,\;G_3,\;G_4,\;G_5 \right)\\
 
 
 
-\begin{frame}
-\frametitle{REML for $\sigma_e^2$ and $\tau_k^2$ }
+%\begin{frame}
+%\frametitle{REML for $\sigma_e^2$ and $\tau_k^2$ }
+%
+%Take $\hat{\sigma}_e^2$, $\hat{\tau}_k^2$ to minimize
+%\begin{align*}
+%-2\mathcal{L}= n \log \sigma_e &+ \sum_{j=1}^5 \left( k_j \log \tau_j + \log \sigma_e + \frac{\alpha_j^\prime \alpha_j}{\tau_j^2}\right)  \\[5pt]
+%&+ \sigma_e^{-2}\left(Y - W\left(X\beta - Z\alpha \right) \right)^\prime  \left(Y - W\left(X\beta - Z\alpha \right) \right) 
+%\end{align*}
+%
+%
+%\begin{align*}
+%\hat{\tau}_k^2 &=  \frac{\hat{\alpha}_k^\prime\hat{\alpha}_k}{  \textup{ED}_j}, \\
+% \hat{\sigma}_e^2 &= \frac{\left(Y - W\left(X\hat{\beta} - Z\hat{\alpha}\right) \right)^\prime  \left(Y - W\left(X\hat{\beta} - Z\hat{\alpha}\right) \right)}{N - \textup{ED}}
+%\end{align*}
+%\end{frame}
+%
+%
+%
 
-Take $\hat{\sigma}_e^2$, $\hat{\tau}_k^2$ to minimize
-\begin{align*}
--2\mathcal{L}= n \log \sigma_e &+ \sum_{j=1}^5 \left( k_j \log \tau_j + \log \sigma_e + \frac{\alpha_j^\prime \alpha_j}{\tau_j^2}\right)  \\[5pt]
-&+ \sigma_e^{-2}\left(Y - W\left(X\beta - Z\alpha \right) \right)^\prime  \left(Y - W\left(X\beta - Z\alpha \right) \right) 
-\end{align*}
 
-
-\begin{align*}
-\hat{\tau}_k^2 &=  \frac{\hat{\alpha}_k^\prime\hat{\alpha}_k}{  \textup{ED}_j}, \\
- \hat{\sigma}_e^2 &= \frac{\left(Y - W\left(X\hat{\beta} - Z\hat{\alpha}\right) \right)^\prime  \left(Y - W\left(X\hat{\beta} - Z\hat{\alpha}\right) \right)}{N - \textup{ED}}
-\end{align*}
-\end{frame}
 
 %
 %\begin{frame}
