@@ -119,11 +119,11 @@ We sidestep both issues of high dimensionality and irregularly sampled data by v
 To present a comprehensive overview our estimation procedure, we begin with the representation of the inverse covariance matrix, $\Omega = \Sigma^{-1}$, in terms of its Cholesky decomposition (see \citet{pourahmadi2007cholesky} for a detailed discussion.) In the section to follow, we will demonstrate that this parameterization of the precision matrix is particularly attractive due to both the computational advantages as well as the convenient modeling interpretation it permits. For any positive definite matrix $\Sigma$, there exists a unique unit lower triangular matrix $T$ with diagonal entries equal to $1$ which diagonalizes $\Sigma$:
 
 \begin{equation}
-\nonumber T \Sigma T^T = D
+\nonumber T \Sigma T^\prime = D
 \end{equation}
 \noindent
 
-If we assume that the data having covariance matrix $\Sigma$ follow an autoregressive model, then the entries of the Cholesky factor $T$ and $D$ enjoy a useful interpretation. Let $Y = \left( Y_{1}, Y_{2}, \dots, Y_{m} \right)^T$ be defined on a probability space with some probability measure $\mathcal{P}$ corresponding to the multivariate Normal distribution with mean $0$ and covariance $\Sigma$, and let $Y_1,Y_2,\dots, Y_m$ have associated measurement times 
+If we assume that the data having covariance matrix $\Sigma$ follow an autoregressive model, then the entries of the Cholesky factor $T$ and $D$ enjoy a useful interpretation. Let $Y = \left( Y_{1}, Y_{2}, \dots, Y_{m} \right)^\prime$ be defined on a probability space with some probability measure $\mathcal{P}$ corresponding to the multivariate Normal distribution with mean $0$ and covariance $\Sigma$, and let $Y_1,Y_2,\dots, Y_m$ have associated measurement times 
 
 \[
 t_{1} < t_{2} < \dots< t_{m}.
@@ -136,7 +136,7 @@ Let $\hat{y}_t$ denote the linear least-squares predictor of $y_t$ based on its 
 {y}_{j}  = \sum_{k=1}^{j-1} \phi_{jk} y_{k} + \sigma_{j}e_{j}, \qquad j=2,\dots,m, \label{eq:ARmodel}.
 \end{equation}
 
- Let $T$ denote the $m \times m$  matrix with elements 
+Let $T$ denote the $m \times m$ unit lower triangular matrix with elements 
 
 \[
 T_{jk} = \left\{
@@ -147,7 +147,7 @@ T_{jk} = \left\{
 \end{array}\right.
 \]
 \noindent
-for $j,k=1,\dots,m$. Then in matrix notation,  model~\ref{eq:ARmodel} may then be written
+for $j,k=1,\dots,m$. In matrix notation,  model~\ref{eq:ARmodel} may then be written
 
 \begin{equation}
 e = T Y, \label{eq:epsilon}
@@ -157,13 +157,13 @@ e = T Y, \label{eq:epsilon}
 Taking covariances on both sides of \ref{eq:epsilon}, we have
 
 \begin{equation} \label{eq:cholesky_decomp}
-D = T \Sigma T^T 
+D = T \Sigma T^\prime
 \end{equation} 
 
 An attractive feature of this reparameterisation is that, regardless of the modelling approach, the estimated covariance matrix is guaranteed to be positive definite. The unconstrained regression coefficients $\lbrace \phi_{jk} \rbrace$ are referred to as the \emph{generalized autoregressive parameters} (GARPs). The $\lbrace \sigma^2_{j} \rbrace$ are called the \emph{innovation variances} (IVs.)  Unconstrained estimation of the $\left\{ \sigma_{k}^2 \right\}$ is achieved by log transformation;  we leave these details for section 2. Expressing the precision matrix  in terms of the GARPs and IVs, we have
-\begin{equation} \label{eq:omega_decomp}
-\Omega= \Sigma^{-1} = T^T D^{-1} T.
-\end{equation}
+\begin{equation*} \label{eq:omega_decomp}
+\Omega= \Sigma^{-1} = T^\prime D^{-1} T.
+\end{equation*}
 
 Rather than estimating a specific covariance matrix for data observed on a fixed, regular grid, we aim to estimate a smooth covariance function. This accomodates data which may consist of  observations on multiple subjects measured at potentially unequally spaced and individual-specific times. In estimation of the means $\mu$ of p-vectors of i.i.d. variables, the
 Gaussian white noise model [9] is the appropriate infinite-dimensional model into
@@ -173,20 +173,17 @@ from l2 to l2. These can be represented as matrices [cite \textit{Regularized es
 
 Rather than $m$-dimensional vectors, consider $Y$ and $e$ as the values of the stochastic processes $Y\left(t\right)$ and $e\left(t\right)$ at the set of observation times.  We assume that $Y\left(t\right)$ is equipped with covariance function $G\left(s,t\right)$, and
 \[
-e\left(s\right) \sim \mathcal{WN}\left(0,1\right)
+e\left(s\right) \sim \mathcal{N}\left(0,1\right)
 \] 
-is a zero mean Gaussian white noise process with unit variance. We assume that $G\left(s,t\right)$ satisfies some smoothness conditions, where smoothness is defined in terms of square integrability of certain derivatives. [TODO: clean up statement about smoothness of covariance function; integrability of covariance function of a stochastic process?] The entries of $\Sigma$, then, correspond to $G$ evaluated at the distinct pairs of observed time points. Similarly, we treat the elements of the precision matrix $\Omega$ as the values of some smooth function, $\omega\left(s,t\right)$ evaluated at observed pairs of time points.
+is a zero mean Gaussian process with unit variance. We assume that $G\left(s,t\right)$ satisfies some smoothness conditions, where smoothness is defined in terms of square integrability of certain derivatives. [TODO: clean up statement about smoothness of covariance function; integrability of covariance function of a stochastic process?] The entries of $\Sigma$, then, correspond to $G$ evaluated at the distinct pairs of observed time points. Similarly, we treat the elements of the precision matrix $\Omega$ as the evaluation of some smooth function, $\omega\left(s,t\right)$.
 
 
-Extending this perspective to the elements of $D$ and the elements of the Cholesky factor $T$ leads us to  %view the GARPs $\lbrace \phi_{ijk} \rbrace$ and innovation variances as the evaluation of the smooth functions $\phi\left(s,t\right)$ and $\sigma^2\left(t\right)$ at observed time points and interpret $\phi_{ijk} = \phi\left(t_{ij},t_{ik}\right)$ and $\sigma_{ij}^2 = \sigma^2\left(t_{ij}\right)$. 
-the varying coefficient (VC) models first introduced by Hastie and Tibshirani. 
-The procedures presented by \citet{fan2000two} and \citet{huang2002varying} utilize varying coefficient models for modeling the mean of longitudinal data; parameterizing the covariance matrix according to \ref{eq:cholesky_decomp} allows us to exploit these models in covariance estimation for such data as well.  A generalization of traditional linear regression models, varying coefficient models offer more flexibility than their static analogues by allowing the effect of covariates to change smoothly with the value other variables. Both regressors and response variables are assumed to vary according to an \emph{indexing variable}, which is particularly attractive because this permits interpolation of regressors and response variables at values of this indexing variable where there is either missing data of only a single observation and slope estimation is not feasible.  Replacing  $\left \{ \phi_{jk} \right\}$ and $\left\{ \sigma_j \right\}$ with smooth functions, we model 
+Viewing the elements of $D$ and the elements of the Cholesky factor $T$ as the evaluation of smooth functions $\sigma\left(\cdot\right)$ and $\phi^*\left(\cdot,\cdot\right)$ leads us to the varying coefficient (VC) models first introduced in the seminal work of Hastie and Tibshirani.  The procedures presented by \citet{fan2000two} and \citet{huang2002varying} utilize varying coefficient models for modeling the mean of longitudinal data; parameterizing the covariance matrix according to \ref{eq:cholesky_decomp} allows us to exploit these models in covariance estimation for such data as well.  A generalization of traditional linear regression models, varying coefficient models offer more flexibility than their static analogues by allowing the effect of covariates to change smoothly with the value other variables. Both regressors and response variables are assumed to vary according to an \emph{indexing variable}, which  permits interpolation of regressors and response variables at values of this indexing variable where there is either missing data of only a single observation and slope estimation is not feasible.  Replacing  $\left \{ \phi_{jk} \right\}$ and $\left\{ \sigma_j \right\}$ with smooth functions, we model 
 
 \begin{equation}   
 y\left(t_j \right)  = \sum_{k=1}^{j-1} \phi\left(t_j ,t_k\right) y\left(t_k\right) + \sigma\left(t_j\right)\epsilon\left({t_j}\right) \;\;\;\; j=1,\dots, m, 
 \label{eq:MyModel} 
 \end{equation}
-
 \noindent for $t_1 < t_2 < \dots < t_m$. 
 
 We represent the varying coefficient function and the innovation variances using tensor product smoothing splines and penalized tensor product B-splines alongside penalties to induce simplicity in $\phi$ and $\sigma^2$  to produce final covariance estimates exhibiting the desired null structure.  For ease of exposition, we first focus our attention on the estimation of $\phi$ assume that $\sigma^2\left(t\right)$ is fixed and known; we will later propose an iterative procedure for simultaneous estimation of $\sigma^2$ and $\phi$.    %square integrability of certain derivatives. 
@@ -214,7 +211,7 @@ t_{i1} < t_{i2} < \dots < t_{i,m_i}.
 \]
 The form of the likelihood of $y_1,\dots,y_N$ indicates that we allow both the number of measurements as well as the observation times to varying across subjects. The $\left\{t_{ij} \right\}$ need not be evenly-spaced within or across individuals.  
 
-In the case that subjects share a common set of observation times $t_1 < \dots < t_m$,  it is well known that the MLE for $\Sigma$, $S = \sum_{i=1}^N y_i y_i^T$ is highly unstable in high dimensions, a condition that is potentially worsened when one or more subjects has at least one observation time that is unique from the set of observation times common across subjects. To mitigate instability due to high dimensionality and simultaneously permit the estimation of $\phi\left(\cdot,\cdot\right)$ as a smooth bivariate function, we obtain a covariance estimator by applying bivariate smoothing of the elements of the Cholesky factor. 
+In the case that subjects share a common set of observation times $t_1 < \dots < t_m$,  it is well known that the MLE for $\Sigma$, $S = \sum_{i=1}^N y_i y_i^\prime$ is highly unstable in high dimensions, a condition that is potentially worsened when one or more subjects has at least one observation time that is unique from the set of observation times common across subjects. To mitigate instability due to high dimensionality and simultaneously permit the estimation of $\phi\left(\cdot,\cdot\right)$ as a smooth bivariate function, we obtain a covariance estimator by applying bivariate smoothing of the elements of the Cholesky factor. 
 
 
 
@@ -296,56 +293,45 @@ In the case that subjects share a common set of observation times $t_1 < \dots <
 
 \section{Penalized B-splines for flexible smoothing}
 
-%The parameters of the functional autoregressive model given by \ref{eq:MyModel} define the elements of the precision matrix $\Omega$, rather than the elements of $\Sigma$ itself. It is well known that if we let $Y = \left(Y_1, \dots, Y_m\right)^T$ denote the random vector having joint distribution with mean zero and covariance matrix $\Sigma$, then the elements of $\Sigma^{-1}=\Omega$, $\left\{ \omega_{ij} \right\}$ may be interpreted as partial covariances between the elements of $Y$. This suggests shrinking $\phi^*$ to zero for large values of $l$. One can show that if $T$ has $k$ non-zero diagonals, then the middle $k$ diagonals of $\Sigma^{-1}$ are non-zero.  
+%The parameters of the functional autoregressive model given by \ref{eq:MyModel} define the elements of the precision matrix $\Omega$, rather than the elements of $\Sigma$ itself. It is well known that if we let $Y = \left(Y_1, \dots, Y_m\right)^\prime$ denote the random vector having joint distribution with mean zero and covariance matrix $\Sigma$, then the elements of $\Sigma^{-1}=\Omega$, $\left\{ \omega_{ij} \right\}$ may be interpreted as partial covariances between the elements of $Y$. This suggests shrinking $\phi^*$ to zero for large values of $l$. One can show that if $T$ has $k$ non-zero diagonals, then the middle $k$ diagonals of $\Sigma^{-1}$ are non-zero.  
 
 Estimating the varying coefficient function $\phi^*$ is quite different from the usual problem of estimating an arbitrary bivariate function via smoothing. In the case of the latter, we most typically treat both arguments equally in terms of regularization, but in the case of covariance estimation and the generalized coefficient function equal treatment of $l$ and $m$ in terms of penalization perhaps is not the most appropriate approach. The lag component, $l$, has particularly significant meaning in terms of the covariance function and thus also in terms of $\phi^*$ and is of considerable more interest than the orthogonal component, $m$. As discussed in Section 2, we can define an entire class of functional autoregressive models using only the $l$ direction, and additionally, as discussed in Section 3, there is a natural expectation about the functional form of the autoregressive coefficient function (and hence covariance) as a function of $l$. The use of smoothing splines to estimate $\phi$ outlined in Section~\ref{} yields smooth null models, but smoothness of the elements of the Cholesky factor alone may not lead to desirable structure in the inverse covariance matrix.  
 
-There has been a recent upsurge in both the theoretical analysis and study of the practical application of regularization procedures for large empirical covariance matrices, including \citet{huang2006covariance}, \citet{furrer2007estimation}, \citet{fan2008high}, \citet{ledoit2004well}.  \citet{furrer2007estimation} propose stabilizing the sample covariance matrix by ``tapering,'' or gradually shrinking the off-diagonal elements to zero. \citet{d2008first} propose a sparse estimator by applying an $L_1$ penalty directly to the elements of the covariance matrix. Instead of regularizing the covariance matrix itself, some have opted to regularize its inverse;  \cite{wu2003nonparametric} band the Cholesky decomposition  by setting certain diagonals of the Cholesky factor to zero. \citet{huang2006covariance} and \citet{levina2008sparse} use $L_1$ penalties to achieve parsimony of the entries of the Cholesky factor; sparsity of the Cholesky factor, however, does not necessarily imply sparsity in the inverse covariance matrix. \citet{levina2008sparse} propose banding the Cholesky factor using a nested Lasso penalty which yields sparse estimators of the precision matrix.  
-
-These approaches implicitly adopt different notions of sparsity. Like \citet{huang2006covariance} and \citet{levina2008sparse}, our aim is to regularize the inverse of the covariance matrix through the Cholesky factor.\cite{pourahmadi1999joint} presented a hueristic argument that the GARPs, $\phi_{t,t-l}$ should be monotonically decreasing in absolute value as $l$ increases. The following proposition establishes the relationship between zeros in the Cholesky factor and zeroes in the inverse covariance, connecting the regularization of $\phi^*$  to the structure in the resulting inverse covariance matrix. 
-
-\begin{proposition} \label{prop:cholesky-inverse-banding-equivalence}
-Let $\Omega$ denote a $m \times m$ positive definite matrix with elements $\omega_{ij}$ with modified Cholesky decomposition $T^T D^{-1} T$, where $T$ is unit lower triangular. Let  $t_{ij}$ denote the $ij^{th}$ element of $T$. For any column $j$ and row $r\left(j\right) > j$,  $\omega_{mj} = \dots = \omega_{r\left(j\right),j} = 0$ if and only if  $t_{mj} = \dots = t_{r\left(j\right),j} = 0$.
-\end{proposition}
+[TODO: ] FIX THIS PARAGRAPH
 
 
-The proof is left to the appendix. Proposition~\ref{prop:cholesky-inverse-banding-equivalence} maintains that the modified Cholesky factor $T$ with arbitrary column band lengths corresponds to inverse covariance matrix $\Omega$ with the same column band lengths, and hence the inverse covariance matrix is $K$-banded if and only if its Cholesky factor is $K$-banded. That is, if $\phi^*$ is zero or nearly zero for  large $\vert i-j \vert$, then $y_i$ and $y_j$ are conditionally uncorrelated (or nearly so). This suggests that the effect of $y_{t-l}$ on $y_t$ through model~\ref{eq:MyModel} should decrease as the time between the two measurements increases, such that
- 
-\[
-\phi^*\left(l,m\right) \approx 0
-\]
-\noindent
-for large $l$ is a reasonable way to institute regularization. 
-
-Several have proposed regularization of the inverse covariance matrix by ``banding'' the Cholesky factor $T$: setting all elements of $T$ beyond the $K^{th}$ off-diagonal to zero, i.e. setting $\phi_{t,t-l}=0$ for $l > K$ for some choice of $K$.  (See \cite{pourahmadi1999joint}, \citet{wu2003nonparametric}, \cite{bickel2008regularized}, and \cite{huang2007estimation}.) In terms of model~\ref{eq:ARmodel}, this is equivalent to regressing $y_t$  on only its $K$ immediate predecessors, setting the regression coefficient for $y_{t-l}$ to zero for $l>K$.  This notion is instrumental in justifying a family of penalties which induces an alternative decomposition of the function space for which the null space of these penalties comprises functions $\phi^*$ taking nonzero values on a subset of the domain:
-
-\begin{equation} \label{eq:banded-penalty-nullspace}
-\mathcal{H}_0\left(\mathcal{B}\right) = \left\{ \phi^*: \phi^*\left(l,m\right) = 0 \mbox{ for all } l > l_0 \right\},
-\end{equation}
-\noindent
-which is equivalent to the set of functions having compact support:
-
-\[
-supp\left( \phi^* \right) = \left(0,l_0\right].
-\]
+These approaches implicitly adopt different notions of sparsity. Like \citet{huang2006covariance} and \citet{levina2008sparse}, our aim is to regularize the inverse of the covariance matrix through the Cholesky factor. Expressing the varying coefficient function using a tensor product basis expansion builds the foundation for a flexible estimation framework within which employing multiple notions of smoothness is simple and straightforward. 
 
 
-The penalties having nullspace \ref{eq:banded-penalty-nullspace} differ significantly from the penalty discussed in Section 2.1 and the derivative-based penalties typically encountered in the smoothing spline ANOVA setting. For $\mathcal{H}_B$ to be non-empty, functions in $\mathcal{H}$ must be constructed from a basis having at least one or more elements with compact support. Consider a sequence of knots partitioning the unit interval $0 < \ell_1 < \ell_2 < \dots < \ell_n < 1$; the truncated power functions (TPFs) of degree $k$, $\lbrace T_{i,k} \rbrace_{i=1}^n$, are given by
+% \begin{columns}
+%\begin{column}{0.5\textwidth}
+Equip $l$ and $m$ with
+\begin{align*}
+B_{1}\left(l\right),\dots, B_{K}\left(l\right),\\
+B_{1}\left(m\right),\dots, B_{L}\left(m\right)
+\end{align*}
+to build
 \begin{equation*}
-T^+_{i,k}\left(l\right) = \left(l - \ell_i\right)^{k}_+ = \left\{\begin{array}{lr} \left(l-\ell_i\right)^{k-1}, & l-\ell_i \ge0\\ 0 & l-\ell_i < 0\end{array}\right.
+T_{jk}\left(l,m\right) = B_j\left(l\right){B}_k\left(m\right)
+\end{equation*}
+%  \end{column}
+%\begin{column}{0.5\textwidth}  %%<--- here
+    \begin{center}
+    \begin{figure}
+    \graphicspath{{img/}}
+ \includegraphics[width=4cm]{sparse_bicubic_basis}
+ \caption{A ``thinned'' tensor product basis}
+ \end{figure}
+     \end{center}
+%\end{column}
+%\end{columns}
+%\vspace{0.3cm}
+\begin{equation*}
+\phi^*\left(l,m\right) = \sum_{i=1}^K \sum_{j=1}^L \theta_{ij} B_{i}\left(l\right) B_{j}\left(m\right)
 \end{equation*}
 
-Polynomial regression splines are continuous piecewise polynomials where the definition of the function changes at the collection of knot points. A polynomial of degree $k$ has basis
-\[
-\lbrace 1,l,\dots,l^k, \left(l - \ell_1\right)^{k}_+,\dots, \left(l - \ell_n\right)^{k}_+ \rbrace
-\]
+%\end{frame}
 
-A univariate function can be represented as a linear combination of these basis functions: 
-
-\[
-\phi_1 = \sum_{j=0}^k \beta_j l^j + \sum_{i=1}^n \beta_{k+i} T_{i,k}
-\]
-\noindent
 
 The truncated power basis, as in their use in defining polynomial regression splines, enjoy a particular ease of interpretation. The coefficient $\beta_{i+k}$ corresponds to the size of the jump at $\ell_i$ in the $k^{th}$ derivative of $\phi_1$. This fact is especially useful when tracking change points or in general, any abrupt changes in the regression curve, as the decomposition according to \ref{eq:banded-penalty-nullspace} demands. Rather than constructing a basis for $\mathcal{H}$, we instead consider representing the set of piecewise polynomial functions using B-splines, which exhibit numerical properties which are preferable to those of the TPFs. Let $\ell= \left\{ \ell_i \right\}$ denote a non-decreasing sequence. The $i^{th}$ B-spline of order $k$ which corresponds to the knot sequence $t$ is defined by 
 
@@ -365,17 +351,6 @@ As a result, for a set of B-splines of order $k$ corresponding to the knot seque
 \phi_1\left(l\right) =  \sum_{i=1}^n \beta_{k+i} B_{i}\left(l\right)
 \end{equation}
 \noindent
-permits the intuitive expression of a penalty to be used for banding the Cholesky factor. The B-spline basis functions are non-negative on their support; therefore, if a B-spline (as in \ref{eq:b-spline-representation}) is zero for $l > l_0$, then the coefficients of the B-splines contributing to that region of the domain are also zero. For functions represented using order $k$ B-spline basis functions $\lbrace B_i \rbrace$, $i=1,\dots,n$, one may truncate the function to zero at some truncation point $l_0 \in \left(0,1\right)$ by penalizing the size of the coefficients corresponding to any basis functions having support on $l > l_0$. This naturally leads to penalties of the form
-
-\begin{equation} \label{eq:banded-pspline-penalty}
-J_{B} = \sum_{ i=i^* -k }^n \vert \beta_i \vert^p
-\end{equation}
-\noindent
-where
-\[
-i^* = \max\limits_{i} \left\{ \ell_i: \ell_i \le l_0 \right\}
-\]
-is the index of the largest knot which is smaller than the truncation point $l_0$. Setting $p=1$ in \ref{eq:banded-pspline-penalty} corresponds to putting a LASSO penalty (see \citet{tibshirani1996regression}) on the coefficients contributing to the function value on $l > l_0$, while setting $p=2$ corresponds to the usual ridge regression setting. 
 
 
 \subsection{Regularization with difference penalties} \label{subsection:univariate-psplines}
@@ -422,26 +397,26 @@ Then, \ref{eq:bspline-difference-penalty} can be written in terms of the squared
 \begin{align} 
 \begin{split} \label{eq:bspline-difference-penalty-vector-form}
 J_d\left( \phi_1 \right) &= \vert \vert D_d\beta \vert \vert^2 \\
-&= \beta^T P_d \beta
+&= \beta^\prime P_d \beta
 \end{split}
 \end{align}
 \noindent
-where $P_d = D_d^T D_d$.
+where $P_d = D_d^\prime D_d$.
 
 By expressing the traditional penalty on the second derivative in terms of the B-spline coefficients, we can examine its connection to a penalty on second-order differences of the third-order B-spline coefficients:
 \begin{equation} \label{eq:second-derivative-bspline-penalty}
-\beta^T P \beta = \int_{0}^{1} \left\{ \sum\limits_{j=1}^n  \beta_j B_{j,3}^{\prime \prime} \left(l\right) \right\}^2\; dl.
+\beta^\prime P \beta = \int_{0}^{1} \left\{ \sum\limits_{j=1}^n  \beta_j B_{j,3}^{\prime \prime} \left(l\right) \right\}^2\; dl.
 \end{equation}
 \noindent
 Using the derivative properties of B-splines, this can be written as 
 \begin{equation} \label{eq:second-derivative-bspline-penalty}
-\beta^T P \beta =  \int_{0}^{1}  \bigg[ \sum\limits_{j=1}^n \sum\limits_{k=1}^n \Delta^2 \beta_j \Delta^2 \beta_k B_{j,1}\left(l\right)B_{k,1}\left(l\right)\bigg]\; dl  . 
+\beta^\prime P \beta =  \int_{0}^{1}  \bigg[ \sum\limits_{j=1}^n \sum\limits_{k=1}^n \Delta^2 \beta_j \Delta^2 \beta_k B_{j,1}\left(l\right)B_{k,1}\left(l\right)\bigg]\; dl  . 
 \end{equation}
 \noindent
 Most of the cross products of $B_{j,1}\left(l\right)$ and $B_{k,1}\left( l \right)$ vanish since B-splines of degree 1 only overlap when $j$ is $k-1$, $k$, or $k+1$. Thus, we have that
 \begin{align}
 \begin{split}
-\beta^T P \beta = {} &  \int_0^1 \bigg[ \left\{ \sum\limits_{j=1}^n   \Delta^2 \beta_j  B_j\left(l,1\right)  \right\}^2  + 2 \sum_{j}\Delta^2 \beta_j\Delta^2 \beta_{j-1}B_j\left(l,1\right)B_{j-1}\left(l,1\right) \bigg]\; dl \\ 
+\beta^\prime P \beta = {} &  \int_0^1 \bigg[ \left\{ \sum\limits_{j=1}^n   \Delta^2 \beta_j  B_j\left(l,1\right)  \right\}^2  + 2 \sum_{j}\Delta^2 \beta_j\Delta^2 \beta_{j-1}B_j\left(l,1\right)B_{j-1}\left(l,1\right) \bigg]\; dl \\ 
 = {} & \sum \limits_{j=1}^n  \left( \Delta^2\beta_j \right)^2 \int_0^1 B_j^2\left(l,1\right)\;dl \\
    &{} \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\; + 2 \sum\limits_{j=1}^n \Delta^2 \beta_j\Delta^2 \beta_{j-1} \int_0^1 B_j\left(l,1\right)B_{j-1}\left(l,1\right)\;dl 
 \end{split}
@@ -449,7 +424,7 @@ Most of the cross products of $B_{j,1}\left(l\right)$ and $B_{k,1}\left( l \righ
 \noindent
 which can be written as
 \begin{equation} \label{eq:derivative-penalty-difference-penalty-connection}
-\beta^T P \beta = c_1 \sum\limits_{j=2}^n \left( \Delta^2 \beta_j\right)^2 + c_2 \sum\limits_{j=3}^n \Delta^2 \beta_j\Delta^2 \beta_{j-1}
+\beta^\prime P \beta = c_1 \sum\limits_{j=2}^n \left( \Delta^2 \beta_j\right)^2 + c_2 \sum\limits_{j=3}^n \Delta^2 \beta_j\Delta^2 \beta_{j-1}
 \end{equation}
 \noindent
 Given a set of equidistant knots, the constants $c_1$ and $c_2$ are given by
@@ -638,7 +613,7 @@ It is computationally advantageous to express the coefficient matrix in ``unfold
 Stacking the columns of $A$ gives the vectorized coefficient matrix $\alpha = \mbox{vec}\left( A \right)$. The $p \times KL$ tensor product basis $B$ is constructed from the tensor product of the marginal B-spline bases defined in \citet{eilers2006fast} as the \textit{row-wise Kronecker product} of the individual bases:
 
 \begin{equation} \label{eq:rowwise-kronecker-product}
-B = B_l \square B_m = \left( B_m \otimes 1^T_{K} \right) \odot \left(1^T_{L} \otimes  B_l  \right).
+B = B_l \square B_m = \left( B_m \otimes 1^\prime_{K} \right) \odot \left(1^\prime_{L} \otimes  B_l  \right).
 \end{equation}
 \noindent
 The operator $\odot$ denotes the element-wise matrix product; $1_K$ ($1_L$) denotes the column vector of ones having length $K$ ($L$.) The operations in \ref{eq:rowwise-kronecker-product} construct $B$ such that the $i^{th}$ row of $B_m\square B_l$ is the Kronecker product of the corresponding rows of $B_m$ and $B_l$. The penalty in \ref{eq:unfolded-row-column-difference-penalty} can also be compactly expressed:
@@ -647,7 +622,7 @@ The operator $\odot$ denotes the element-wise matrix product; $1_K$ ($1_L$) deno
 \lambda_l \vert P_l \alpha \vert^2 + \lambda_m \vert P_m \alpha \vert^2
 \end{equation}
 
-where $P_l = I_L \otimes D_{d_{\ms l}}^T D_{d_{\ms l}} $ and $P_m =  D_{d_{\ms m}}^T D_{d_{\ms m}} \otimes I_K$. We define the matrix $W$ of historical regressors so that \ref{eq:unfolded-difference-penalty-log-likelihood} can be written in matrix form as
+where $P_l = I_L \otimes D_{d_{\ms l}}^\prime D_{d_{\ms l}} $ and $P_m =  D_{d_{\ms m}}^\prime D_{d_{\ms m}} \otimes I_K$. We define the matrix $W$ of historical regressors so that \ref{eq:unfolded-difference-penalty-log-likelihood} can be written in matrix form as
 
 \begin{equation} \label{eq:tensor-pspline-objective-function}
 -2L + J\left(\phi^*\right) = \vert Y - WB\alpha \vert^2 + \lambda_l \vert P_l \alpha \vert^2 + \lambda_m \vert P_m \alpha \vert^2,
@@ -655,12 +630,12 @@ where $P_l = I_L \otimes D_{d_{\ms l}}^T D_{d_{\ms l}} $ and $P_m =  D_{d_{\ms m
 \noindent
 with $\hat{\alpha}$ solving the system of equations 
 \begin{equation} \label{eq:tensor-pspline-normal-equations}
-\left[ \left(WB\right)^T WB +  \lambda_l P_l+ \lambda_m P_m\right]\alpha = W B Y
+\left[ \left(WB\right)^\prime WB +  \lambda_l P_l+ \lambda_m P_m\right]\alpha = W B Y
 \end{equation}
 \noindent
 From \ref{eq:tensor-pspline-normal-equations}, we note that the system of equations depends on basis coefficients remains fixed at $KL$, even as the number of observations increases.   The grid of regression coefficients can be recovered by arranging the elements of $\hat{\alpha}$ into a matrix of $L$ columns having length $K$. The effective hat matrix is given by 
 \[
-H_\lambda = W B\left(W B^T W B +  \lambda_l P_l + \lambda_m P_m \right)^{-1} W B^T,
+H_\lambda = W B\left(W B^\prime W B +  \lambda_l P_l + \lambda_m P_m \right)^{-1} W B^\prime,
 \]
 from which we can easy calculate deletion residuals and obtain a measure of effective model dimension. We will discuss diagnostics and approaches to model selection in detail in Section~\ref{}.
 
@@ -848,6 +823,52 @@ Degrees of freedom can be approximated as in the usual smoothing case:
 AIC, GCV, CV accessible for model diagnostics.
 
  
+
+
+\subsection{Banding the Cholesky factor}
+
+A recent upsurge in the application of regularization to large empirical covariance matrices includes the work \citet{huang2006covariance}, \citet{furrer2007estimation}, \citet{fan2008high}, \citet{ledoit2004well}.  \citet{furrer2007estimation} propose stabilizing the sample covariance matrix by ``tapering,'' or gradually shrinking the off-diagonal elements to zero. \citet{d2008first} propose a sparse estimator by applying an $L_1$ penalty directly to the elements of the covariance matrix. Instead of regularizing the covariance matrix itself, some have opted to regularize its inverse;  \cite{wu2003nonparametric} band the Cholesky decomposition  by setting certain diagonals of the Cholesky factor to zero. \citet{huang2006covariance} and \citet{levina2008sparse} use $L_1$ penalties to achieve parsimony of the entries of the Cholesky factor; sparsity of the Cholesky factor, however, does not necessarily imply sparsity in the inverse covariance matrix. \citet{levina2008sparse} propose banding the Cholesky factor using a nested Lasso penalty which yields sparse estimators of the precision matrix.  
+
+\cite{pourahmadi1999joint} presented a hueristic argument that the GARPs, $\phi_{t,t-l}$ should be monotonically decreasing in absolute value as $l$ increases. The following proposition establishes the relationship between zeros in the Cholesky factor and zeroes in the inverse covariance, connecting the regularization of $\phi^*$  to the structure in the resulting inverse covariance matrix. 
+
+\begin{proposition} \label{prop:cholesky-inverse-banding-equivalence}
+Let $\Omega$ denote a $m \times m$ positive definite matrix with elements $\omega_{ij}$ with modified Cholesky decomposition $T^\prime D^{-1} T$, where $T$ is unit lower triangular. Let  $t_{ij}$ denote the $ij^{th}$ element of $T$. For any column $j$ and row $r\left(j\right) > j$,  $\omega_{mj} = \dots = \omega_{r\left(j\right),j} = 0$ if and only if  $t_{mj} = \dots = t_{r\left(j\right),j} = 0$.
+\end{proposition}
+
+
+The proof is left to the appendix. Proposition~\ref{prop:cholesky-inverse-banding-equivalence} maintains that the modified Cholesky factor $T$ with arbitrary column band lengths corresponds to inverse covariance matrix $\Omega$ with the same column band lengths, and hence the inverse covariance matrix is $K$-banded if and only if its Cholesky factor is $K$-banded. That is, if $\phi^*$ is zero or nearly zero for  large $\vert i-j \vert$, then $y_i$ and $y_j$ are conditionally uncorrelated (or nearly so). This suggests that the effect of $y_{t-l}$ on $y_t$ through model~\ref{eq:MyModel} should decrease as the time between the two measurements increases, such that
+ 
+\[
+\phi^*\left(l,m\right) \approx 0
+\]
+\noindent
+for large $l$ is a reasonable way to institute regularization. 
+
+
+This notion of sparsity is quite different from the notion of smoothness imposed by the usual derivative-based penalties or the analog difference penalties for P-splines; however, the local support of the B-spline basis functions permits the intuitive expression of a penalty to be used for banding the Cholesky factor. The B-spline basis functions are non-negative on their support; therefore, if a B-spline (as in \ref{eq:b-spline-representation}) is zero for $l > l_0$, then the coefficients of the B-splines contributing to that region of the domain are also zero. For functions represented using order $k$ B-spline basis functions $\lbrace B_i \rbrace$, $i=1,\dots,n$, one may truncate the function to zero at some truncation point $l_0 \in \left(0,1\right)$ by penalizing the size of the coefficients corresponding to any basis functions having support on $l > l_0$. This naturally leads to penalties of the form
+
+\begin{equation} \label{eq:banded-pspline-penalty}
+J_{B} = \sum_{ i=i^* -k }^n \vert \beta_i \vert^p
+\end{equation}
+\noindent
+where
+\[
+i^* = \max\limits_{i} \left\{ \ell_i: \ell_i \le l_0 \right\}
+\]
+is the index of the largest knot which is smaller than the truncation point $l_0$. Setting $p=1$ in \ref{eq:banded-pspline-penalty} corresponds to putting a LASSO penalty (see \citet{tibshirani1996regression}) on the coefficients contributing to the function value on $l > l_0$, while setting $p=2$ corresponds to the usual ridge regression setting. 
+
+
+Several have proposed regularization of the inverse covariance matrix by ``banding'' the Cholesky factor $T$: setting all elements of $T$ beyond the $K^{th}$ off-diagonal to zero, i.e. setting $\phi_{t,t-l}=0$ for $l > K$ for some choice of $K$.  (See \cite{pourahmadi1999joint}, \citet{wu2003nonparametric}, \cite{bickel2008regularized}, and \cite{huang2007estimation}.) In terms of model~\ref{eq:ARmodel}, this is equivalent to regressing $y_t$  on only its $K$ immediate predecessors, setting the regression coefficient for $y_{t-l}$ to zero for $l>K$.  This notion is instrumental in justifying a family of penalties which induces an alternative decomposition of the function space for which the null space of these penalties comprises functions $\phi^*$ taking nonzero values on a subset of the domain:
+
+\begin{equation} \label{eq:banded-penalty-nullspace}
+\mathcal{H}_0\left(\mathcal{B}\right) = \left\{ \phi^*: \phi^*\left(l,m\right) = 0 \mbox{ for all } l > l_0 \right\},
+\end{equation}
+\noindent
+which is equivalent to the set of functions having compact support:
+
+\[
+supp\left( \phi^* \right) = \left(0,l_0\right].
+\]
 
 
 
@@ -1264,5 +1285,5 @@ $N = 30$, $M=20$, $d_l = 2$, $d_m= 1$}
 %
 
 
-
+\bibliography{Master}
 \end{document}
