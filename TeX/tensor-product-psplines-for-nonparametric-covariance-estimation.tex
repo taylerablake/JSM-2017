@@ -179,7 +179,16 @@ e\left(s\right) \sim \mathcal{N}\left(0,1\right)
 is a zero mean Gaussian process with unit variance. We assume that $G\left(s,t\right)$ satisfies some smoothness conditions, where smoothness is defined in terms of square integrability of certain derivatives. [TODO: clean up statement about smoothness of covariance function; integrability of covariance function of a stochastic process?] The entries of $\Sigma$, then, correspond to $G$ evaluated at the distinct pairs of observed time points. Similarly, we treat the elements of the precision matrix $\Omega$ as the evaluation of some smooth function, $\omega\left(s,t\right)$.
 
 
-Viewing the elements of $D$ and the elements of the Cholesky factor $T$ as the evaluation of smooth functions $\sigma\left(\cdot\right)$ and $\phi^*\left(\cdot,\cdot\right)$ leads us to the varying coefficient (VC) models first introduced in the seminal work of Hastie and Tibshirani.  The procedures presented by \citet{fan2000two} and \citet{huang2002varying} utilize varying coefficient models for modeling the mean of longitudinal data; parameterizing the covariance matrix according to \ref{eq:cholesky_decomp} allows us to exploit these models in covariance estimation for such data as well.  A generalization of traditional linear regression models, varying coefficient models offer more flexibility than their static analogues by allowing the effect of covariates to change smoothly with the value other variables. Both regressors and response variables are assumed to vary according to an \emph{indexing variable}, which  permits interpolation of regressors and response variables at values of this indexing variable where there is either missing data of only a single observation and slope estimation is not feasible.  Replacing  $\left \{ \phi_{jk} \right\}$ and $\left\{ \sigma_j \right\}$ with smooth functions, we model 
+Viewing the elements of $D$ and the elements of the Cholesky factor $T$ as the evaluation of smooth functions $\sigma\left(\cdot\right)$ and $\phi^*\left(\cdot,\cdot\right)$ leads us to the varying coefficient (VC) models first introduced in the seminal work of Hastie and Tibshirani.  The procedures presented by \citet{fan2000two} and \citet{huang2002varying} utilize varying coefficient models for modeling the mean of longitudinal data; parameterizing the covariance matrix according to \ref{eq:cholesky_decomp} allows us to exploit these models in covariance estimation for such data as well.  A generalization of traditional linear regression models, varying coefficient models offer more flexibility than their static analogues by allowing the effect of covariates to change smoothly with the value other variables. Both regressors and response variables are assumed to vary according to an \emph{indexing variable}, which  permits interpolation of regressors and response variables at values of this indexing variable where there is either missing data of only a single observation and slope estimation is not feasible.  Replacing  $\left \{ \phi_{jk} \right\}$ and $\left\{ \sigma_j \right\}$ with smooth functions
+
+\[
+\begin{array}{ll}
+\phi\left(t,s\right)        &0  \le s < t \le 1,\\
+\sigma^2\left(t\right)  &0  \le t \le 1,
+\end{array}
+\]
+\noindent
+the autoregressive model becomes
 
 \begin{equation}   
 y\left(t_j \right)  = \sum_{k=1}^{j-1} \phi\left(t_j ,t_k\right) y\left(t_k\right) + \sigma\left(t_j\right)\epsilon\left({t_j}\right) \;\;\;\; j=1,\dots, m, 
@@ -314,8 +323,13 @@ l = t-s, \qquad m = \frac{1}{2}\left(s+t\right),
 \noindent
 so that the following relationship holds:
 \begin{align*}
-\phi\left(s,t\right) =\phi^*\left(l,m\right)= \phi^*\left(s-t, \frac{1}{2}\left(s+t\right)\right)
+\phi\left(s,t\right) = \phi^*\left(s-t, \frac{1}{2}\left(s+t\right)\right) =\phi^*\left(l,m\right)
 \end{align*}
+with 
+\begin{equation} \label{eq:phi-star-domain}
+\frac{l}{2} < m < 1 - \frac{l}{2}, \quad 0 < l < 1.
+\end{equation}
+
 \noindent
 The likelihood can be written in terms of the reparameterized varying coefficient function:
 
@@ -566,6 +580,17 @@ with $\hat{\theta}$ solving the system of equations
 \noindent
 From \ref{eq:tensor-pspline-normal-equations}, we note that the system of equations depends on basis coefficients remains fixed at $KL$, even as the number of observations increases.   The grid of regression coefficients can be recovered by arranging the elements of $\hat{\theta}$ into a matrix of $L$ columns having length $K$. 
 
+This recipe for constructing a tensor product basis for $\phi^*$ is an easy and convenient way to construct a two-dimensional basis for a bivariate function with domain corresponding to the unit square. However, the domain of the autoregressive coefficient function, specified in \ref{eq:phi-star-domain}, lies on the lower triangle of the unit square:
+
+\begin{figure}[H] \label{fig:triangle-domain}
+    \graphicspath{{img/}}
+ \includegraphics[scale=0.2]{knot-removal-on-triangle-domain.png}
+ \caption{$\frac{l}{2} < m < 1 - \frac{l}{2}, \quad 0 < l < 1.$}
+ \end{figure}
+
+The triangular domain of $\phi^*$ cannot be modeled by the tensor product basis as constructed due to singularities resulting from the large number of basis functions anchored at knots near which we have no data, and hence little information about the corresponding basis coefficient. Much work in computer graphics has been done proposing methods of smoothing over arbitrary function domains, which are approximated by triangulations. See \citet{dahmen1992blossoming} and \citet{seidel1991symmetric} for details. These methods are, however, quite computationally intensive; to correct for the instability in the smoothed surface, we can simply remove the knots corresponding to tensor products functions which do not overlap with the function domain from the basis, $B$, and trimming the penalty matrices $P_l$ and $P_m$ as needed. With the trimmed basis and penalties, we can carry out optimization as previously discussed.
+
+
 
 \section{Model selection and tuning parameter estimation}
 
@@ -642,105 +667,105 @@ Define $L \equiv Q^{-{1/2}}Q_\lambda Q^{-{1/2}}$. Then
 %
 %
 %Equation~\ref{eq:cyclic_hat_matrix_simplification} cleanly shows that the effective dimension is always less than $n$, the number of B-spline used in the regression basis; further, the effective dimension is always smaller than $\min\left(m,n\right)$. A formal proof follows below. This is illustrated in 
-
-Figure~\ref{fig:PS_ED_figure_1} shows how the effective dimension on a univariate P-spline changes with the smoothing parameter for the ten simulated observations in Figure~\ref{fig:overcomplete_basis_pspline} using 60 B-spline basis functions. For small $\lambda$, the effective dimension approaches $m$. As $\lambda$ increases, the effective dimension approaches the order of the difference penalty, $d$. It is worth pointing out here that there are no problems incurred when smoothing with many more B-splines than observations since the effective model dimension is always less than $m$, for all $\lambda$. 
-
-
-\begin{figure}[H]
-\begin{subfigure}{.5\textwidth}
-  \centering
-   \graphicspath{{img/}}
-  \includegraphics[scale=0.5]{PS_penalty_section_figure_6_order_0.png}
-  %\label{fig:pspline_small_lambda}
-\caption{$d=0$ }
-\end{subfigure}
-\begin{subfigure}{.5\textwidth}
-  \centering
-   \graphicspath{{img/}}
-  \includegraphics[scale=0.5]{PS_penalty_section_figure_6_order_1.png}
- % \label{fig:pspline_small_lambda}
-\caption{$d=1$}
-\end{subfigure}
-\begin{subfigure}{.5\textwidth}
-  \centering
-   \graphicspath{{img/}}
-  \includegraphics[scale=0.5]{PS_penalty_section_figure_6_order_2.png}
-  %\label{fig:pspline_small_lambda}
-\caption{$d=2$}
-\end{subfigure}
-\begin{subfigure}{.5\textwidth}
-  \centering
-   \graphicspath{{img/}}
-  \includegraphics[scale=0.5]{PS_penalty_section_figure_6_order_3.png}
-  %\label{fig:pspline_small_lambda}
-\caption{$d=3$}
-\end{subfigure}
-\caption{\textit{Illustration of the impact of the order of the difference penalty. The number of B-splines used is the same in each plot, with the penalty parameter varying from across the same grid of values. The fitted curves in the upper left plot correspond to the difference penalty of order $0$, where $\vert D_0 \alpha \vert^2 = \sum_{i=1}^n \alpha_i^2$, analogous to ridge regression using the B-spline basis as regression covariates. The fitted curves approach polynomials of degree $d-1$ as $\lambda \rightarrow \infty$, as discussed in \ref{eq:PS_properties} \ref{eq:PS_property_3}.}}
-\label{fig:PS_penalty_section_figure_6}
-\end{figure}
-
+%
+%Figure~\ref{fig:PS_ED_figure_1} shows how the effective dimension on a univariate P-spline changes with the smoothing parameter for the ten simulated observations in Figure~\ref{fig:overcomplete_basis_pspline} using 60 B-spline basis functions. For small $\lambda$, the effective dimension approaches $m$. As $\lambda$ increases, the effective dimension approaches the order of the difference penalty, $d$. It is worth pointing out here that there are no problems incurred when smoothing with many more B-splines than observations since the effective model dimension is always less than $m$, for all $\lambda$. 
+%
+%
+%\begin{figure}[H]
+%\begin{subfigure}{.5\textwidth}
+%  \centering
+%   \graphicspath{{img/}}
+%  \includegraphics[scale=0.5]{PS_penalty_section_figure_6_order_0.png}
+%  %\label{fig:pspline_small_lambda}
+%\caption{$d=0$ }
+%\end{subfigure}
+%\begin{subfigure}{.5\textwidth}
+%  \centering
+%   \graphicspath{{img/}}
+%  \includegraphics[scale=0.5]{PS_penalty_section_figure_6_order_1.png}
+% % \label{fig:pspline_small_lambda}
+%\caption{$d=1$}
+%\end{subfigure}
+%\begin{subfigure}{.5\textwidth}
+%  \centering
+%   \graphicspath{{img/}}
+%  \includegraphics[scale=0.5]{PS_penalty_section_figure_6_order_2.png}
+%  %\label{fig:pspline_small_lambda}
+%\caption{$d=2$}
+%\end{subfigure}
+%\begin{subfigure}{.5\textwidth}
+%  \centering
+%   \graphicspath{{img/}}
+%  \includegraphics[scale=0.5]{PS_penalty_section_figure_6_order_3.png}
+%  %\label{fig:pspline_small_lambda}
+%\caption{$d=3$}
+%\end{subfigure}
+%\caption{\textit{Illustration of the impact of the order of the difference penalty. The number of B-splines used is the same in each plot, with the penalty parameter varying from across the same grid of values. The fitted curves in the upper left plot correspond to the difference penalty of order $0$, where $\vert D_0 \alpha \vert^2 = \sum_{i=1}^n \alpha_i^2$, analogous to ridge regression using the B-spline basis as regression covariates. The fitted curves approach polynomials of degree $d-1$ as $\lambda \rightarrow \infty$, as discussed in \ref{eq:PS_properties} \ref{eq:PS_property_3}.}}
+%\label{fig:PS_penalty_section_figure_6}
+%\end{figure}
+%
 %%====================================================================================
 %%====================================================================================
-
-
-%Cross validation prediction error is a well-known measure of the predictive power of a P-spline model for given values of the smoothing parameters $\lambda_l$, $\lambda_m$ . 
-Cross validation and its variants have long been utilized for smoothing parameter selection in spline models, and their properties have been studied extensively. A short list of supplemental references include \cite{craven1978smoothing}, \cite{wahba1985comparison}, \cite{hardle1988far}, \cite{hardle1992applied}, and \cite{wahba1990spline}. There are a number of ways to calculate a measure of cross validated prediction error; we first focus on the leave-one-out method. Let $\hat{y}_{-i}$ denote the predicted value for the observation $y_i$ when $y_i$ itself is removed from the data we use to fit the model. We can calculate these predictions for each observation in the data set to obtain the prediction error:
-
-\begin{equation} \label{eq:LOOCV_def}
-\textup{CV}\left(\lambda\right) = \frac{1}{m}\sum_{i=1}^m \left(  y_i - \hat{y}_{-i}\right)^2, 
-\end{equation}
-Brute force calculation of \ref{eq:LOOCV_def} is generally impractical, especially if the number of observations is large. However, this labor can be sidestepped using the following fact: 
-
-\begin{equation*}
-\hat{y} = Hy = B\left(B^TB + \lambda D_d^T D_d \right)^{-1} B^T y
-\end{equation*}
-
-One can show that 
-
-\begin{equation} \label{eq:LOO_residual}
-y_i - \hat{y}_{-i} = \left(y_i - \hat{y}_{i}\right)/\left(1-h_{ii}\right),
-\end{equation}
-\noindent
-and the diagonal elements of $H$ can be calculated quickly. An informal proof of \label{eq:LOO_residual} is as follows: suppose that we change the $i^{th}$ element of $y$, obtaining a new response vector $y^*$. Then $\hat{y}^* = H y^*$.
-
- Since 
- \[
- \hat{y}_i = \sum_{j} h_{ij} y_j \qquad \textup{and} \qquad \hat{y}_{-i} = \sum_{j} h_{ij} y_j^*,
- \]
- \noindent
- then
- \[
- \hat{y}_i - \hat{y}_{-i} = \sum_j h_{ij} \left(y_i - y_i^*\right) = h_{ii} \left(y_i - y_i^*\right).  
-\]
-
-
-For generalized cross-validation \cite{wahba1990spline}, we compute 
-\begin{equation} \label{eq:GCV_def}
-\textup{GCV}\left(\lambda\right) = \sum_{i=1}^m \frac{\left(  y_i - \hat{y}_i \right)^2}{\left(m-\sum_{j=1}^m h_{jj}\right)^2} 
-\end{equation}
-
-The difference between both quantities is generally small; the best $\lambda$ is the value that minimizes $\textup{CV}\left(\lambda\right)$ or $\textup{GCV}\left(\lambda\right)$. 
-The smoothing matrix $H$ plays an integral role of calculating all of the model selection criteria we will discuss; within the context of both AIC and cross validation, the diagonal elements of $H$, $h_{ii}$ are of particular importance. Closely related to the problem of model selection is the ability to quantify model complexity. In classical regression theory, the degrees of freedom are clearly defined as the number of variables included in the model. \cite{eilers1996flexible} and\cite{marx2005multidimensional} refer to this measure of model complexity as the model's \emph{effective dimension} ED; they follow \cite{hastie1990generalized}, who discuss the effective dimensions of linear smoother and propose to use the trace of the smoother matrix as an approximation.
-
-This approach to approximating the effective model dimension is also consistent with \cite{ye1998measuring}, who constructed a generalization of the concept of a model's degrees of freedom using the idea that the degrees of freedom can also be interpreted as the sum of the sensitivity of each fitted value with respect to the corresponding observed value.  For smoothing matrix $H$, the predicted response values are given by $\hat{y} = H y$. Writing
-
-\begin{align*}
-\frac{\partial \hat{y_i}}{\partial y_i} = \frac{\partial }{\partial y_i} \sum_{j} h_{ij} y_j = h_{ii},
-\end{align*}
-\noindent
-we see that the latter interpretation of the effective model dimension reduces to calculating the trace of the hat matrix. Thus we take the effective dimension to be 
-\begin{align}
-\textup{ED}\left(\lambda\right) &= \textup{tr}\left(H\right) \nonumber \\
-&= \textup{tr}\bigg[ B\left( B^T B + \lambda D^T D \right)^{-1} B^T\bigg], \label{eq:hat_matrix_trace}
-\end{align}
-
-
-{
-\needsparaphrased{
-[ INSERT PROOF HERE.]
-}
-}
-
+%
+%
+%%Cross validation prediction error is a well-known measure of the predictive power of a P-spline model for given values of the smoothing parameters $\lambda_l$, $\lambda_m$ . 
+%Cross validation and its variants have long been utilized for smoothing parameter selection in spline models, and their properties have been studied extensively. A short list of supplemental references include \cite{craven1978smoothing}, \cite{wahba1985comparison}, \cite{hardle1988far}, \cite{hardle1992applied}, and \cite{wahba1990spline}. There are a number of ways to calculate a measure of cross validated prediction error; we first focus on the leave-one-out method. Let $\hat{y}_{-i}$ denote the predicted value for the observation $y_i$ when $y_i$ itself is removed from the data we use to fit the model. We can calculate these predictions for each observation in the data set to obtain the prediction error:
+%
+%\begin{equation} \label{eq:LOOCV_def}
+%\textup{CV}\left(\lambda\right) = \frac{1}{m}\sum_{i=1}^m \left(  y_i - \hat{y}_{-i}\right)^2, 
+%\end{equation}
+%Brute force calculation of \ref{eq:LOOCV_def} is generally impractical, especially if the number of observations is large. However, this labor can be sidestepped using the following fact: 
+%
+%\begin{equation*}
+%\hat{y} = Hy = B\left(B^TB + \lambda D_d^T D_d \right)^{-1} B^T y
+%\end{equation*}
+%
+%One can show that 
+%
+%\begin{equation} \label{eq:LOO_residual}
+%y_i - \hat{y}_{-i} = \left(y_i - \hat{y}_{i}\right)/\left(1-h_{ii}\right),
+%\end{equation}
+%\noindent
+%and the diagonal elements of $H$ can be calculated quickly. An informal proof of \label{eq:LOO_residual} is as follows: suppose that we change the $i^{th}$ element of $y$, obtaining a new response vector $y^*$. Then $\hat{y}^* = H y^*$.
+%
+% Since 
+% \[
+% \hat{y}_i = \sum_{j} h_{ij} y_j \qquad \textup{and} \qquad \hat{y}_{-i} = \sum_{j} h_{ij} y_j^*,
+% \]
+% \noindent
+% then
+% \[
+% \hat{y}_i - \hat{y}_{-i} = \sum_j h_{ij} \left(y_i - y_i^*\right) = h_{ii} \left(y_i - y_i^*\right).  
+%\]
+%
+%
+%For generalized cross-validation \cite{wahba1990spline}, we compute 
+%\begin{equation} \label{eq:GCV_def}
+%\textup{GCV}\left(\lambda\right) = \sum_{i=1}^m \frac{\left(  y_i - \hat{y}_i \right)^2}{\left(m-\sum_{j=1}^m h_{jj}\right)^2} 
+%\end{equation}
+%
+%The difference between both quantities is generally small; the best $\lambda$ is the value that minimizes $\textup{CV}\left(\lambda\right)$ or $\textup{GCV}\left(\lambda\right)$. 
+%The smoothing matrix $H$ plays an integral role of calculating all of the model selection criteria we will discuss; within the context of both AIC and cross validation, the diagonal elements of $H$, $h_{ii}$ are of particular importance. Closely related to the problem of model selection is the ability to quantify model complexity. In classical regression theory, the degrees of freedom are clearly defined as the number of variables included in the model. \cite{eilers1996flexible} and\cite{marx2005multidimensional} refer to this measure of model complexity as the model's \emph{effective dimension} ED; they follow \cite{hastie1990generalized}, who discuss the effective dimensions of linear smoother and propose to use the trace of the smoother matrix as an approximation.
+%
+%This approach to approximating the effective model dimension is also consistent with \cite{ye1998measuring}, who constructed a generalization of the concept of a model's degrees of freedom using the idea that the degrees of freedom can also be interpreted as the sum of the sensitivity of each fitted value with respect to the corresponding observed value.  For smoothing matrix $H$, the predicted response values are given by $\hat{y} = H y$. Writing
+%
+%\begin{align*}
+%\frac{\partial \hat{y_i}}{\partial y_i} = \frac{\partial }{\partial y_i} \sum_{j} h_{ij} y_j = h_{ii},
+%\end{align*}
+%\noindent
+%we see that the latter interpretation of the effective model dimension reduces to calculating the trace of the hat matrix. Thus we take the effective dimension to be 
+%\begin{align}
+%\textup{ED}\left(\lambda\right) &= \textup{tr}\left(H\right) \nonumber \\
+%&= \textup{tr}\bigg[ B\left( B^T B + \lambda D^T D \right)^{-1} B^T\bigg], \label{eq:hat_matrix_trace}
+%\end{align}
+%
+%
+%{
+%\needsparaphrased{
+%[ INSERT PROOF HERE.]
+%}
+%}
+%
 An alternative approach to model selection is to minimize the information criterion (IC):
 \[
 \textup{IC}\left(\lambda\right) = -2\mathscr{l}\left(y, \hat{\beta}_\lambda \right) + c\; \textup{dim}\left(\hat{\beta}_\lambda\right)
@@ -817,35 +842,29 @@ Alternatively, one might note that an (approximately) unbiased estimate of the e
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
- 
-\section{\emph{Simulations: }$\Sigma = 0.3^2 I$\\
+ \section{\emph{Simulations: }}
+\subsection{$\Sigma = 0.3^2 I$\\
 $N = 30$, $M=20$, $d_l = d_m= 0$}
 
 
     \begin{center}
     \begin{figure}[H]
     \graphicspath{{img/}}
- \includegraphics[width=5cm]{identity-cov-estimated-cholesky}
+ \includegraphics[scale=0.5]{identity-cov-estimated-cholesky}
  \caption{Estimated $T$ }
  \end{figure}
      \end{center}
   
 
  
-
-
- 
-\section{\emph{Simulations: }$\Sigma = 0.3^2 I$\\
-$N = 30$, $M=20$, $d_l = d_m= 0$}
-
 \begin{center}
 \begin{figure}[H] \label{row-col-differencing}
  \begin{subfigure}{.48\textwidth}
- \includegraphics[width=4cm]{img/identity-cov-true-covariance}
+ \includegraphics[scale=0.5]{img/identity-cov-true-covariance}
  \caption{True $\Sigma$ }
  \end{subfigure}
  \begin{subfigure}{.48\textwidth}
-  \includegraphics[width=4cm]{img/identity-cov-estimated-covariance}
+  \includegraphics[scale=0.5]{img/identity-cov-estimated-covariance}
  \caption{$\hat{\Omega}^{-1}$}
  \end{subfigure}
  \end{figure}
@@ -857,17 +876,17 @@ $N = 30$, $M=20$, $d_l = d_m= 0$}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
  
-\section{\emph{Simulations: }$\phi\left(s,t\right) = s-\frac{1}{2}$, $\sigma^2 = 0.3^2$\\
+\subsection{$\phi\left(s,t\right) = s-\frac{1}{2}$, $\sigma^2 = 0.3^2$\\
 $N = 30$, $M=20$, $d_l = d_m= 2$}
 
 \begin{center}
 \begin{figure}[H]
  \begin{subfigure}{.48\textwidth}
- \includegraphics{img/linear-vc-model-true-cholesky}
+ \includegraphics[scale=0.5]{img/linear-vc-model-true-cholesky}
  \caption{True $T$ }
  \end{subfigure}
      \begin{subfigure}{.48\textwidth}
- \includegraphics{img/linear-vc-model-estimated-cholesky}
+ \includegraphics[scale=0.5]{img/linear-vc-model-estimated-cholesky}
  \caption{Estimated $T$}
  \end{subfigure}
      \end{figure}
@@ -879,17 +898,15 @@ $N = 30$, $M=20$, $d_l = d_m= 2$}
 
 
  
-\section{\emph{Simulations: }$\phi\left(s,t\right) = s-\frac{1}{2}$, $\sigma^2 = 0.3^2$\\
-$N = 30$, $M=20$, $d_l = d_m= 2$}
 
  \begin{center}
 \begin{figure}[H]
  \begin{subfigure}{.48\textwidth}
- \includegraphics{img/linear-vc-model-true-covariance}
+ \includegraphics[scale=0.5]{img/linear-vc-model-true-covariance}
  \caption{$\Sigma$ }
  \end{subfigure}
  \begin{subfigure}{.48\textwidth}
- \includegraphics{img/linear-vc-model-estimated-covariance}
+ \includegraphics[scale=0.5]{img/linear-vc-model-estimated-covariance}
  \caption{$\hat{\Omega}^{-1}$}
  \end{subfigure}
  \end{figure}
@@ -902,17 +919,17 @@ $N = 30$, $M=20$, $d_l = d_m= 2$}
 
 
  
-\section{\emph{Simulations: }$\Sigma = 0.7J + 0.3I$\\
+\subsection{$\Sigma = 0.7J + 0.3I$\\
 $N = 30$, $M=20$, $d_l = 2$, $d_m= 1$}
 
   \begin{center}
 \begin{figure}[H]
  \begin{subfigure}{.48\textwidth}
- \includegraphics{img/compound-symmetry-true-cholesky}
+ \includegraphics[scale=0.5]{img/compound-symmetry-true-cholesky}
  \caption{True $T$ }
  \end{subfigure}
  \begin{subfigure}{.48\textwidth}
-  \includegraphics{img/compound-symmetry-estimated-cholesky}
+  \includegraphics[scale=0.5]{img/compound-symmetry-estimated-cholesky}
  \caption{Estimated $T$}
  \end{subfigure}
 \end{figure}
@@ -923,59 +940,21 @@ $N = 30$, $M=20$, $d_l = 2$, $d_m= 1$}
 
 
 
- 
-\section{\emph{Simulations: }$\Sigma = 0.7J + 0.3I$\\
-$N = 30$, $M=20$, $d_l = 2$, $d_m= 1$}
-
-
   \begin{center}
 \begin{figure}[H]
  \begin{subfigure}{.48\textwidth}
- \includegraphics{img/compound-symmetry-true-covariance}
+ \includegraphics[scale=0.5]{img/compound-symmetry-true-covariance}
  \caption{$\Sigma$ }
  \end{subfigure}
   
  \begin{subfigure}{.48\textwidth}
- \includegraphics{img/compound-symmetry-estimated-covariance}
+ \includegraphics[scale=0.5]{img/compound-symmetry-estimated-covariance}
  \caption{$\hat{\Omega}^{-1}$}
  \end{subfigure}
  \end{figure}
      \end{center}
 
 
-
- 
-\section{\emph{Recruit the difference penalty to regulate.}}
-
-For $f\left(x\right)=\sum \limits_{i=1}^{p} B_{i}\left(x\right) \theta_{i}$, approximate
-
-\begin{align*}
-%\begin{split}
-\int_0^1 \left(f^{\prime \prime}\left(x\right)\right)^{\ms 2} \;dx &= \int_0^1 \bigg\{ \sum \limits_{i=1}^{p} B^{\prime \prime}_{i}\left(x\right) \theta_{i} \bigg\}^{\ms 2} \;dx \\ 
-&= k_1 \sum_i \left( \Delta^{\ms 2} \theta_i \right)^{\ms 2} + k_2, 
-%\end{split}
-\end{align*}
-\noindent
-by
-\[
-\vert \vert D_{\ms 2} \theta \vert \vert^{\ms 2}, \qquad  D_{\ms 2} \theta= \left( \Delta^{\ms 2}\theta_{\ms 1},\dots,\Delta^{\ms 2}\theta_{\ms{p-2}} \right)^\prime 
-\]
-In general, 
-\framebox{approximate $\int \limits_{\ms 0}^{\ms 1} \big(f^{\ms{\left(d\right)}}\big)^{\ms 2}\;dx$ with $\vert \vert D_{\ms d} \theta \vert \vert^{\ms 2} $ }
- 
-
-
- 
-\section{\emph{Append the difference penalties to the log likelihood:}}
-
-Find $\theta$ minimizing
-
-\begin{align*}\label{eq:unfolded-row-column-difference-penalty}
-\mathcal{Q}=\sum_{i=1}^n \sum_{j=2}^{m_i} \sigma_{ij}^{-2} \left[y_{ij} - \sum_{k=1}^{j-1}\left(\sum_{i=1}^K \sum_{j=1}^L \theta_{ij} B_{i}\left(l_{ijk}\right) B_{j}\left( m_{ijk} \right)  \right) y_{ik} \right]^2 \\
-\mbox{\;\;\;\;\;\;\;\;}+ \lambda_l \sum_{k} \vert D_d \theta_{k \cdot} \vert^2 + \lambda_m \sum_{l} \vert D_{\ms d_{\ms m}} \theta_{\cdot l} \vert^2 
-\end{align*}
-
- 
 %\begin{align}
 %\begin{split} \label{eq:PS-ANOVA}
 %\ell\left(\theta,\lambda\right) &= \left(Y-WB\theta\right)^\prime D^{-1}\left(Y-WB\theta\right) + \theta^\prime P \theta\\
@@ -987,97 +966,6 @@ Find $\theta$ minimizing
 %\end{align}
 %
 
-
-
- 
-\section{\emph{Differencing in two dimensions}}
-
-\begin{center}
-\begin{figure}[H] \label{row-col-differencing}
- \begin{subfigure}{.48\textwidth}
-%   \graphicspath{img/}
- \includegraphics{img/large-row-penalty.png}
- \caption{Strong column penalty}
- \label{fig:strong-col-penalty}
- \end{subfigure}
- \begin{subfigure}{.48\textwidth}
-%   \graphicspath{img/}
-  \includegraphics{img/large-row-penalty.png}
- \caption{Strong row penalty}
-\label{fig:strong-row-penalty}
- \end{subfigure}
- \caption{\textit{Nine cubic B-spline tensor products with heavy linear column penalty (left) and heavy linear row penalty (right)}}
-\end{figure}
-\end{center}
-
-%
-%
-% \begin{columns}
-%\begin{column}{0.5\textwidth}
-%    \begin{center}
-%    \begin{figure}
-%    \graphicspath{{img/}}
-% \includegraphics[width=4cm]{large-row-penalty}
-% \caption{Strong row penalty}
-% \end{figure}
-%     \end{center}
-%  \end{column}
-%\begin{column}{0.5\textwidth}  %%<--- here
-%    \begin{center}
-%    \begin{figure}
-%    \graphicspath{{img/}}
-% \includegraphics[width=4cm]{large-col-penalty}
-% \caption{\small Strong column penalty}
-% \end{figure}
-%     \end{center}
-%\end{column}
-%\end{columns}
-%
-
- 
-
-
-
-
-
- 
-\section{\emph{``Unfold'' the two dimensional surface:}}
-
-via the \emph{kronecker product}:
-\begin{align*} %\label{eq:rowwise-kronecker-product}
-B &= B_l \square B_m \\
-&= \left( B_m \otimes 1^\prime_{K} \right) \odot \left(1^\prime_{L} \otimes  B_l  \right)\\
-P_l  &=  I_L \otimes D_{d_{\ms l}}^\prime D_{d_{\ms l}}\\
-P_m &=   D_{d_{\ms m}}^\prime D_{d_{\ms m}} \otimes I_K
-\end{align*}
-to write
-\begin{equation*}
-\mbox{vec}\left\{ \phi^*\left(l,m\right)\right \} = B \theta
-\end{equation*}
-
- 
-
-
-
-
- 
-\section{\emph{Then the penalized likelihood has convenient form:}}
-
-\begin{equation*} %\label{eq:tensor-pspline-objective-function}
-Q = \left( Y - WB\theta\right)^\prime D^{-1} \left( Y - WB\theta\right) + \lambda_l  \theta^\prime P_l \theta + \lambda_m \theta^\prime P_m \theta 
-\end{equation*}
-
-
-\begin{align*} \label{eq:tensor-pspline-normal-equations}
-\hat{\theta}_\lambda = \left[ \left(WB\right)^\prime D^{-1}WB +  \lambda_l P_l+ \lambda_m P_m\right]^{-1} \left(W B\right)^\prime Y
-\end{align*}
-Degrees of freedom can be approximated as in the usual smoothing case:
-\begin{align*}
-\textup{ED} &= \textup{tr} \left[ H_\lambda \right]\\
-&= \textup{tr}\bigg[\left[ \left(WB\right)^\prime D^{-1}WB +  \lambda_l P_l+ \lambda_m P_m\right]^{-1} \left(W B\right)^\prime WB  \bigg]
-\end{align*}
-
-AIC, GCV, CV accessible for model diagnostics.
 
  
 
