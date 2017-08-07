@@ -1,12 +1,13 @@
 
 # Load functions
 
-source("/Users/taylerblake/GitRepos/pspline-mixed-models/lib/entropy-loss.R")
-source("/Users/taylerblake/GitRepos/pspline-mixed-models/lib/quadratic-loss.R")
-source("/Users/taylerblake/GitRepos/pspline-mixed-models/lib/help-functions.R")
-source("/Users/taylerblake/GitRepos/pspline-mixed-models/lib/build-grid.r")
 source(file.path(getwd(),"code/lib/helper-functions-2.R"))
 source(file.path(getwd(),"code/lib/fit_cholesky_PS.R"))
+source(file.path(getwd(),"code/lib/help-functions.R"))
+source(file.path(getwd(),"code/lib/quadratic-loss.R"))
+source(file.path(getwd(),"code/lib/entropy-loss.R"))
+source(file.path(getwd(),"code/lib/build-grid.r"))
+
 
 cl <- makeCluster(detectCores()-1)
 registerDoParallel(cl)
@@ -249,138 +250,130 @@ PS_fit_sim <- foreach(l=iter(lambdas,by="row")) %dopar% {
       
 }
 
-Fit <- MM$M %*% b
-ll <- ldply(ll,data.frame)
-sigmasq <- sigmasq[-1]
-AIC. <- AIC.[-1]
-SSR. <- SSR.[-1]
-MSE. <- MSE.[-1]
-tt <- ldply(tt,data.frame)
-effdim <- ldply(effdim,data.frame)
-
-rm(V)
-rm(Vu)
-rm(WXtWX.)
-rm(WXtWZ.)
-rm(WXty.)
-rm(WZty.)
-rm(WZtWZ.)
 
 
 
-ggplot(data.frame(it=(1:length(SSR.))*2,ssr=SSR.),
-       aes(x=it,y=ssr)) +
-      geom_line() +
-      theme_minimal() +
-      #      ylim(0,0.02) +
-      xlab("iteration") +
-      ylab("ssr")
-
-ggplot(data.frame(it=(1:length(MSE.))*2,mse=MSE.),
-       aes(x=it,y=mse)) +
-      geom_line() +
-      theme_minimal() +
-      #      ylim(0,0.02) +
-      xlab("iteration") +
-      ylab("mse")
+fit_list <- lapply(PS_fit_sim,function(l){
+      Phi <- B.[,-no_support] %*% l$fit$coef      
+      T_mat <- diag(M)
+      T_mat[lower.tri(T_mat)] <- -Phi
+      list(fit=Phi,
+           T_mod=T_mat)
+})
 
 
-ggplot(data.frame(it=(1:length(AIC.))*2,aic=AIC.),
-       aes(x=it,y=aic)) +
-      geom_line() +
-      theme_minimal() +
-      #      ylim(0,0.02) +
-      xlab("iteration") +
-      ylab("aic")
+omega_list <- lapply(fit_list,function(l){
+      
+      Omega_hat <- t(l$T_mod)%*%diag(1/diag(C)^2)%*%l$T_mod
+      
+})
 
 
-ggplot(data.frame(it=(1:length(sigmasq))*2,sigma2=sigmasq),
-       aes(x=it,y=sigma2)) +
-      geom_line() +
-      theme_minimal() +
-      #      ylim(0,0.02) +
-      xlab("iteration") +
-      ylab(expression(hat(sigma)^2)) +
-      annotate(geom="text",
-               x=125,
-               y=(sigma.^2)+0.00001,
-               label= paste("sigma^2 == ", sigma.^2),parse=TRUE)
-ggsave(file=file.path(getwd(),"reports-1-simulations",paste0(Type.,"-sigma2-convergence.png")))
-ggplot(ll,aes(x=it,y=log(lambda))) +
-      geom_line(aes(colour=component)) +
-      theme_minimal() +
-      xlab("iteration") +
-      ylab(expression("log("~lambda~")"))
-ggsave(file=file.path(getwd(),"reports-1-simulations","f6-lambdas-convergence.png"))
-# ggplot(tt,aes(x=it,y=tau)) +
-#       geom_line(aes(colour=component)) +
-#       theme_minimal() +
-#       xlab("iteration") +
-#       ylab(expression(tau)) +
-#       ylim(0,.2)
-ggplot(effdim,aes(x=it,y=ed)) +
-      geom_line(aes(colour=component)) +
-      theme_minimal() +
-      xlab("iteration") +
-      ylab("ED")
-ggsave(file=file.path(getwd(),"reports-1-simulations","f6-ED-convergence.png"))
+quad_loss <- lapply(omega_list, function(omega_hat){
+      quadratic_loss(omega_hat,Sigma)
+}) %>%
+      unlist
 
-#####################################################################################
-T_mat <- diag(M)
-T_mat[lower.tri(T_mat)] <- -phi
+entrpy_loss <- lapply(omega_list, function(omega_hat){
+      entropy_loss(omega_hat,Sigma)
+}) %>%
+      unlist
 
-if (Type. != "f05"){
-      Tfacet <- (-T_mat+diag(M))[-1, -1] - (T_mat-diag(M))[-1, -M] - (T_mat-diag(M))[-M, -1] - (T_mat-diag(M))[-M, -M]
-      # Recode facet z-values into color indices
-      facetcol <- cut(Tfacet, nbcol)
-      # png(file=file.path(getwd(),"reports-1-simulations",
-      #                    "img",
-      #                    paste0(Type.,"-persp-true-vs-est-cholesky-surface.png")))
-      persp(z=diag(M)-T_mat,
-            phi=15,
-            theta=10,
-            xlab="s",
-            ylab="t",
-            col = color[facetcol],
-            #main=expression(paste(phi," = ", e^{-6}*plain(cos),"(6",pi,"l)")),
-            ticktype = "detailed",
-            expand = 0.7,
-            cex.axis=0.6,
-            cex.lab=0.6,
-            zlab="")
-      #main="True Cholesky surface")
-      # dev.off()
-}
 
-T_mat_hat <- diag(M)
-T_mat_hat[lower.tri(T_mat_hat)] <- -Fit
-# Recode facet z-values into color indices
+sse <- lapply(fit_list,function(l){
+      t(y_vec - X %*% l$fit) %*% diag(1/rep(diag(C^2)[-1],N)) %*% (y_vec - X %*% l$fit)    
+}) %>% unlist
 
-persp(z=T_mat_hat-diag(M),
+ed <- lapply(PS_fit_sim,function(l){
+      l$fit$eff.dim      
+}) %>% unlist
+
+
+loglik <- lapply(fit_list,function(l){
+      sum(apply(y, MARGIN=1, FUN=function(x){
+            log_lik( as.numeric(x), l$T_mod, diag(diag(C^2)))
+      }))
+}) %>% unlist
+aic <- -2*loglik + 2*ed
+
+
+image.plot(y=log(sort(unique(lambdas$lam_l))),
+           x=log(sort(unique(lambdas$lam_m))[-1]),
+           z=matrix(aic[lambdas$lam_m>min(lambdas$lam_m)],
+                    ncol=length(unique(lambdas$lam_l)),
+                    nrow=length(unique(lambdas$lam_m))-1,
+                    byrow=TRUE),
+           ylab=expression("log "~lambda["l"]),
+           xlab=expression("log "~lambda["m"]))
+
+
+
+persp(y=log(sort(unique(lambdas$lam_l))),
+      x=log(sort(unique(lambdas$lam_m))[-1]),
+      z=matrix(aic[lambdas$lam_m>min(lambdas$lam_m)],
+               ncol=length(unique(lambdas$lam_l)),
+               nrow=length(unique(lambdas$lam_m))-1,
+               byrow=TRUE),
+      phi=15,
+      theta=90,
+      ylab="lambda l",
+      xlab="lambda m",
+      col = "light blue",
+      main="",
+      ticktype = "detailed",
+      expand = 0.7,
+      cex.axis=0.6,
+      cex.lab=0.6,
+      zlab="aic")
+
+
+persp(y=log(sort(unique(lambdas$lam_l))),
+      x=log(sort(unique(lambdas$lam_m))[-1]),
+      z=matrix(ed[lambdas$lam_m>min(lambdas$lam_m)],
+               ncol=length(unique(lambdas$lam_l)),
+               nrow=length(unique(lambdas$lam_m))-1,
+               byrow=TRUE),
+      phi=15,
+      theta=90,
+      ylab="log lambda l",
+      xlab="log lambda m",
+      col = "light blue",
+      main="effective model dimension",
+      ticktype = "detailed",
+      expand = 0.7,
+      cex.axis=0.6,
+      cex.lab=0.6,
+      zlab="ed")
+
+persp(z=diag(M)-T_mod,
       phi=15,
       theta=10,
       xlab="s",
       ylab="t",
-      col = plotColor,
-      zlab="",
-      main=expression(paste(hat(phi))),
+      col = "light blue",
+      main="true Cholesky surface",
       ticktype = "detailed",
       expand = 0.7,
       cex.axis=0.6,
-      cex.lab=0.6)
+      cex.lab=0.6,
+      zlab="")
+
+#png(file.path(getwd(),"TeX","img","compound-symmetry-estimated-cholesky.png"))
+persp(z=diag(M)-fit_list[[which.min(aic)]]$T_mod,
+      phi=15,
+      theta=10,
+      xlab="s",
+      ylab="t",
+      col = "light blue",
+      main="Estimated Cholesky surface",
+      ticktype = "detailed",
+      expand = 0.7,
+      cex.axis=0.6,
+      cex.lab=0.6,
+      zlab="")
 
 
 
-Omega <- t(T_mat)%*%diag(rep(1/sigma.^2, M))%*%T_mat
-Omegafacet <- Omega[-1, -1] + Omega[-1, -M] + Omega[-M, -1] + Omega[-M, -M]
-# Recode facet z-values into color indices
-facetcol <- cut(Omegafacet, nbcol)
-#par(mfrow=c(1,2))
-if (Type. !="f05") {
-      plotColor <- color[facetcol]
-} else{
-      plotColor <- "light blue"
-}
 persp(x=seq(0,1,length.out=M),
       y=seq(0,1,length.out=M),
       z=Omega,
@@ -388,7 +381,7 @@ persp(x=seq(0,1,length.out=M),
       theta=15,
       xlab="s",
       ylab="t",
-      col = color[facetcol],
+      col = "light blue",
       zlab="",
       main=expression(paste(Sigma^{-1})),
       ticktype = "detailed",
@@ -396,61 +389,127 @@ persp(x=seq(0,1,length.out=M),
       cex.axis=0.6,
       cex.lab=0.6)
 
-#Omega_hat <- t(T_mat_hat)%*%diag(rep(1/sig2, M))%*%T_mat_hat  
-Omega_hat <- t(T_mat_hat)%*%diag(rep(1/sigma.^2, M))%*%T_mat_hat  
-facetcol <- cut(Omegafacet, nbcol)
 
 
-# png(file=file.path(getwd(),"reports-1-simulations","img",
-#                    paste0(Type.,"-persp-true-vs-estimated-precision-matrix.png")))
 persp(x=seq(0,1,length.out=M),
       y=seq(0,1,length.out=M),
-      z=Omega_hat,
+      z=omega_list[[which.min(aic)]],
       phi=15,
       theta=15,
       xlab="s",
       ylab="t",
-      col = plotColor,
+      col = "light blue",
       zlab="",
       main=expression(paste(hat(Sigma)^{-1})),
       ticktype = "detailed",
       expand = 0.7,
       cex.axis=0.6,
       cex.lab=0.6)
-#dev.off()
 
 
-Sigma <- solve(Omega)
-Sigmafacet <- Sigma[-1, -1] + Sigma[-1, -M] + Sigma[-M, -1] + Sigma[-M, -M]
-Sigma_hat <- solve(Omega_hat)
-#par(mfrow=c(3,1))
-# Recode facet z-values into color indices
-if (Type. !="f05") {
-      facetcol <- cut(Sigmafacet, nbcol)
-      plotColor <- color[facetcol]
-} else{
-      plotColor <- "light blue"
-}
 
 
-# png(file=file.path(getwd(),"reports-1-simulations","img",
-#                    paste0(Type.,"-persp-true-vs-estimated-covariance-matrix.png")))
+persp(x=seq(0,1,length.out=M),
+      y=seq(0,1,length.out=M),
+      z=omega_list[[which.min(entrpy_loss)]],
+      phi=15,
+      theta=15,
+      xlab="s",
+      ylab="t",
+      col = "light blue",
+      zlab="",
+      main=expression(paste(hat(Sigma)^{-1})),
+      ticktype = "detailed",
+      expand = 0.7,
+      cex.axis=0.6,
+      cex.lab=0.6)
+
+
+
+
+
+
+persp(x=seq(0,1,length.out=M),
+      y=seq(0,1,length.out=M),
+      z=omega_list[[which.min(entrpy_loss)]]%*%Sigma,
+      phi=15,
+      theta=15,
+      xlab="s",
+      ylab="t",
+      col = "light blue",
+      zlab="",
+      main=expression(paste(hat(Sigma)^{-1},Sigma)),
+      ticktype = "detailed",
+      expand = 0.7,
+      cex.axis=0.6,
+      cex.lab=0.6)
+
+persp(x=seq(0,1,length.out=M),
+      y=seq(0,1,length.out=M),
+      z=omega_list[[900]],
+      phi=15,
+      theta=15,
+      xlab="s",
+      ylab="t",
+      col = "light blue",
+      zlab="",
+      main=expression(paste(hat(Sigma)^{-1})),
+      ticktype = "detailed",
+      expand = 0.7,
+      cex.axis=0.6,
+      cex.lab=0.6)
+
+png(file.path(getwd(),"TeX","img","compound-symmetry-true-covariance.png"))
 persp(x=seq(0,1,length.out=M),
       y=seq(0,1,length.out=M),
       z=Sigma,
-      phi=10,
-      theta=10,
+      phi=15,
+      theta=15,
       xlab="s",
       ylab="t",
-      col = plotColor,
+      col = "light blue",
       zlab="",
       main=expression(paste(Sigma)),
       ticktype = "detailed",
       expand = 0.7,
       cex.axis=0.6,
-      cex.lab=0.6)#,
-#      zlim=c(min(min(Sigma),min(Sigma_hat)),
-#             max(max(Sigma),max(Sigma_hat))))
+      cex.lab=0.6,
+      zlim=c(0.4,1.1))
+dev.off()
+
+png(file.path(getwd(),"TeX","img","compound-symmetry-estimated-covariance.png"))
+persp(x=seq(0,1,length.out=M),
+      y=seq(0,1,length.out=M),
+      z=solve(omega_list[[which.min(aic)]]),
+      phi=15,
+      theta=15,
+      xlab="s",
+      ylab="t",
+      col = "light blue",
+      zlab="",
+      main=expression(paste(hat(Sigma))),
+      ticktype = "detailed",
+      expand = 0.7,
+      cex.axis=0.6,
+      cex.lab=0.6)
+dev.off()
+
+
+
+persp(x=seq(0,1,length.out=M),
+      y=seq(0,1,length.out=M),
+      z=solve(omega_list[[900]]),
+      phi=15,
+      theta=15,
+      xlab="s",
+      ylab="t",
+      col = "light blue",
+      zlab="",
+      main=expression(paste(hat(Sigma))),
+      ticktype = "detailed",
+      expand = 0.7,
+      cex.axis=0.6,
+      cex.lab=0.6)
 
 S <- outer(y[1,],y[1,])
 for(subject in 2:nrow(y)){
@@ -461,409 +520,18 @@ S <- S/N
 persp(x=seq(0,1,length.out=M),
       y=seq(0,1,length.out=M),
       z=S,
-      xlab="s",
-      ylab="t",
-      col = plotColor,
-      #      zlab=expression(phi^"\u2217"),
-      #zlab=expression(paste(phi,"^",*)),
-      ticktype = "detailed",
-      main="S",
-      phi=10,
-      theta=10,
-      zlab="",
-      expand = 0.7,
-      cex.axis=0.6,
-      cex.lab=0.6)
-
-
-persp(x=seq(0,1,length.out=M),
-      y=seq(0,1,length.out=M),
-      z=Sigma_hat,
-      phi=10,
-      theta=10,
-      xlab="s",
-      ylab="t",
-      col = plotColor,
-      zlab="",
-      main=expression(paste(hat(Sigma))),
-      ticktype = "detailed",
-      expand = 0.7,
-      cex.axis=0.6,
-      cex.lab=0.6)
-#dev.off()
-#####################################################################################
-
-
-omega_list <- list.zip(b=bb,sig2=as.list(sigmasq)) %>%
-      lapply(.,function(l){
-            phiHat <- MM$M%*%l$b
-            T_hat <- diag(M)
-            T_hat[lower.tri(T_hat)] <- Fit
-            Omega_hat <- t(T_hat)%*%diag(rep(1/l$sig2, M))%*%T_hat
-      })
-quad_loss <- lapply(omega_list,quadratic_loss,Sig=Sigma)
-entrpy_loss <- lapply(omega_list,entropy_loss,Sig=Sigma)
-
-data.frame(it=2*(1:length(quad_loss)),
-           quadLoss=unlist(quad_loss),
-           entropyLoss=unlist(entrpy_loss)) %>%
-      ggplot(.,aes(x=it)) +
-      geom_line(aes(y=entropyLoss)) +
-      theme_minimal() +
-      xlab("iteration") +
-      ylab("") +
-      ggtitle(expression(paste(L[1],"(",Sigma,",",hat(Omega),")")))
-ggsave(file=file.path(getwd(),"reports-1-simulations",
-                      "img",
-                      paste0(Type.,"-entropy-loss-vs-iteration.png")))
-
-data.frame(it=2*(1:length(quad_loss)),
-           quadLoss=unlist(quad_loss),
-           entropyLoss=unlist(entrpy_loss)) %>%
-      ggplot(.,aes(x=it)) +
-      geom_line(aes(y=quadLoss)) +
-      theme_minimal() +
-      xlab("iteration") +
-      ylab("") +
-      ggtitle(expression(paste(L[2],"(",Sigma,",",hat(Omega),")")))
-
-which.min(unlist(quad_loss))
-
-b <- bb[[which.min(unlist(quad_loss))]]
-sig2 <- sigmasq[which.min(unlist(quad_loss))]
-bestFit <- MM$M %*% b
-
-T_mat_hat <- diag(M)
-T_mat_hat[lower.tri(T_mat_hat)] <- -bestFit
-# Recode facet z-values into color indices
-
-if(Type.!="f05"){
-      facetcol <- cut(Tfacet, nbcol)     
-      plotColor <- color[facetcol]
-} else if (Type.=="f05") {
-      plotColor <- "light blue"
-}
-persp(z=T_mat_hat-diag(M),
       phi=15,
-      theta=10,
+      theta=15,
       xlab="s",
       ylab="t",
-      col = plotColor,
+      col = "light blue",
       zlab="",
-      main=expression(paste(hat(phi))),
-      ticktype = "detailed",
-      expand = 0.7,
-      cex.axis=0.6,
-      cex.lab=0.6)
-dev.off()
-
-
-Omega <- t(T_mat)%*%diag(rep(1/sigma.^2, M))%*%T_mat
-Omegafacet <- Omega[-1, -1] + Omega[-1, -M] + Omega[-M, -1] + Omega[-M, -M]
-# Recode facet z-values into color indices
-facetcol <- cut(Omegafacet, nbcol)
-if (Type. !="f05") {
-      plotColor <- color[facetcol]
-} else{
-      plotColor <- "light blue"
-}
-
-Omega_hat <- t(T_mat_hat)%*%diag(rep(1/sig2, M))%*%T_mat_hat  
-facetcol <- cut(Omegafacet, nbcol)
-persp(z=Omega_hat,
-      phi=15,
-      theta=10,
-      xlab="s",
-      ylab="t",
-      col = plotColor,
-      zlab="",
-      main=expression(paste(hat(Omega))),
-      ticktype = "detailed",
-      expand = 0.7,
-      cex.axis=0.6,
-      cex.lab=0.6)
-
-entropy_loss(Omega_hat,Sigma)      
-Sigma <- solve(Omega)
-Sigmafacet <- Sigma[-1, -1] + Sigma[-1, -M] + Sigma[-M, -1] + Sigma[-M, -M]
-Sigma_hat <- solve(Omega_hat)
-persp(z=Sigma_hat,
-      phi=15,
-      theta=10,
-      xlab="s",
-      ylab="t",
-      col = plotColor,
-      zlab="",
-      main=expression(paste(hat(Sigma))),
-      ticktype = "detailed",
-      expand = 0.7,
-      cex.axis=0.6,
-      cex.lab=0.6)
-
-persp(z=Sigma,
-      phi=15,
-      theta=10,
-      xlab="s",
-      ylab="t",
-      col = plotColor,
-      zlab="",
-      main=expression(paste(Sigma)),
+      main=expression(paste(tilde(Sigma))),
       ticktype = "detailed",
       expand = 0.7,
       cex.axis=0.6,
       cex.lab=0.6)
 
 entropy_loss(solve(S),Sigma)
+min(entrpy_loss)
 
-data.frame(it=2*(1:length(quad_loss)),
-           quadLoss=unlist(quad_loss),
-           entropyLoss=unlist(entrpy_loss)) %>%
-      ggplot(.,aes(x=it)) +
-      geom_line(aes(y=quadLoss)) +
-      theme_minimal() +
-      xlab("iteration") +
-      ylab("") +
-      ggtitle(expression(paste(L[2],"(",Sigma,",",hat(Omega),")")))
-ggsave(file=file.path(getwd(),"reports-1-simulations",
-                      "img",
-                      paste0(Type.,"-quadratic-loss-vs-iteration.png")))
-#####################################################################################
-par(mfrow=c(1,1))
-## Select spatials points for prediction
-MMgrid <- mmodel.pred.frame2d(myGrid$l_s, 
-                              myGrid$m_s,
-                              nsegl, nsegm,
-                              nsegl/2, nsegm/2,
-                              bdeg,
-                              pordl, pordm,
-                              ngrid=100)
-
-Fit.grid <- matrix(MM$M %*% b[[which.min(unlist(quad_loss))]],
-                   100, 100,byrow=TRUE)
-persp(x=seq(0,1,length.out=100),
-      y=seq(0,1,length.out=100),
-      z=Fit.grid,
-      phi=15,
-      theta=35,
-      xlab="l",
-      ylab="m",
-      col = "light blue",
-      zlab="",
-      main=expression(paste(hat(phi))),
-      ticktype = "detailed",
-      expand = 0.7,
-      cex.axis=0.6)
-persp(x=seq(0,1,length.out=100),
-      y=seq(0,1,length.out=100),
-      z=matrix(Phi,nrow=100,ncol=100,byrow=TRUE),
-      phi=15,
-      theta=35,
-      xlab="l",
-      ylab="m",
-      col = "light blue",
-      zlab="",
-      main=expression(paste(phi)),
-      ticktype = "detailed",
-      expand = 0.7,
-      cex.axis=0.6)
-
-indexl <- 1 * (idx == 2)
-if (pordl > 0) indexl[2:pordl] <- 1
-Fitl <- matrix(MMgrid$M %*% (indexl * b), 100, 100)
-Phi1.grid <- matrix(Phi1,nrow=100,ncol=100)
-l_facet <- Phi1.grid[-1, -1] + Phi1.grid[-1, -M] + Phi1.grid[-M, -1] + Phi1.grid[-M, -M]
-
-# Recode facet z-values into color indices
-par(mfrow=c(1,2))
-facetcol <- cut(l_facet, nbcol)
-persp(x=seq(0,1,length.out=100),
-      y=seq(0,1,length.out=100),
-      z=Fitl,
-      phi=15,
-      theta=15,
-      xlab="l",
-      ylab="m",
-      col = color[facetcol],
-      zlab="",
-      ticktype = "detailed",
-      expand = 0.7,
-      main=expression(paste(hat(phi)[1])))
-persp(x=seq(0,1,length.out=100),
-      y=seq(0,1,length.out=100),
-      z=Phi1.grid,
-      phi=15,
-      theta=15,
-      xlab="l",
-      ylab="m",
-      col = color[facetcol],
-      zlab="",
-      ticktype = "detailed",
-      expand = 0.7,
-      main=expression(paste(phi[1])))
-
-data.frame(l=rep(seq(0,1,length.out = 100),2),
-           phi=c(Phi1.grid[,1],Fitl[,1]),
-           func=c(rep("true",100),
-                  rep("estimated",100))) %>%
-      ggplot(data=.,aes(x=l,y=phi)) +
-      geom_line(aes(colour=func)) +
-      guides(colour=guide_legend(title="")) +
-      theme_minimal() +
-      ylab("") +
-      ggtitle(expression("estimated vs true "~phi[1]))
-
-
-indexm <- 1 * (idx == 3)
-if ( pordm > 0 ) {
-      indexm[pordl*(1:(pordm-1))+1] <- 1      
-}
-Fitm <- matrix(MMgrid$M %*% (indexm * b), 100, 100)
-data.frame(m=rep(seq(0,1,length.out = 100),2),
-           phi=c(rep(0,nrow(Fitm)),Fitm[1,]),
-           func=c(rep("true",100),
-                  rep("estimated",100))) %>%
-      ggplot(data=.,aes(x=m,y=phi)) +
-      geom_line(aes(colour=func)) +
-      guides(colour=guide_legend(title="")) +
-      theme_minimal() +
-      ylab("") +
-      ylim(-0.0001,0.000001) +
-      ggtitle(expression("estimated vs true "~phi[2]))
-
-
-indexlm <- 1 - (indexl + indexm)
-indexlm[1] <- 0
-Fitlm <- matrix(MMgrid$M %*% (indexlm * b), 100, 100)
-
-# indexlma <- 1 * (idx == 4)
-# #indexlma[4] <- 1
-# Fitlma <- matrix(MMgrid$M %*% (indexlma * b), 100,100)
-# 
-# indexlmb <- 1 * (idx == 5)
-# Fitlmb <- matrix(MMgrid$M %*% (indexlmb * b), 100,100)
-# 
-# indexlmc <- 1 * (idx == 6)
-# indexlmc[4] <- 1
-# Fitlmc <- matrix(MMgrid$M %*% (indexlmc * b), 100, 100)
-
-
-
-cat("----------- PS-ANOVA-Schall -------------\n")
-cat("Sample size           ", length(yVec), "\n")
-cat("sigma                 ", sigma., "\n")
-cat("sigma (estimated)     ", round(sig2^0.5, 3), "\n")
-if (div == 1) {
-      cat("No nested bases \n")
-} else {
-      cat("Nested bases for interactions, with nseg1=", nseg1, ", nseg2=", nseg2, "and div=", 
-          div, "\n")
-}
-cat("------------------------------------------\n")
-
-cat("-----------------------------------------\n")
-cat("   AIC", AIC., "\n")
-cat("          fixed    fx1       fx2     fx1:x2     x1:fx2    fx1:fx2\n")
-cat("    ed", sprintf("%8.3f", ed), "\n")
-cat("sum ed", sum(ed), "\n")
-cat("MSE", MSE., "\n")
-cat("-----------------------------------------\n")
-
-
-
-ZLIM. <- range(c(-0.5, .5))
-
-subset(fullGrid, (s<t) & (s >= 0) & (s < 1) & (t > 0) & (t < 1) )$l
-image.plot(matrix(data=truePhi,nrow=100,ncol=100,byrow=TRUE),xlab="l",ylab="m",col=color)
-points(subset(fullGrid, !((s<t) & (s >= 0) & (s < 1) & (t > 0) & (t < 1)) )$l,
-       subset(fullGrid, !((s<t) & (s >= 0) & (s < 1) & (t > 0) & (t < 1)) )$m,
-       pch=20,cex=2.5)
-
-windows()
-jet.colors <- colorRampPalette( c("blue", "green") )
-# Generate the desired number of colors from this palette
-nbcol <- 100
-color <- jet.colors(nbcol)
-par(mfrow = c(1, 1))
-image.plot(Fit.grid, xlab = "l", ylab = "m", zlim = ZLIM.,col=color)
-points(subset(fullGrid, !((s<t) & (s >= 0) & (s < 1) & (t > 0) & (t < 1)) )$l,
-       subset(fullGrid, !((s<t) & (s >= 0) & (s < 1) & (t > 0) & (t < 1)) )$m,
-       pch=20,cex=2.5)
-title("Fitted surface")
-
-
-
-drape.plot(seq(0,1,length.out=100),
-           seq(0,1,length.out=100), Fitl,
-           phi=25,
-           theta=25,
-           expand = 0.5, 
-           border = NA, shade = 0.1, add.legend = T, xlab = "l", ylab = "m", 
-           zlab = "Phi1", main = "(a) main effect of l",
-           col = color,
-           ticktype = "detailed")
-
-drape.plot(seq(0,1,length.out=100),
-           seq(0,1,length.out=100),
-           Fitl,
-           phi=25,
-           theta=25,
-           expand = 0.5, 
-           xlab = "l", ylab = "m", 
-           zlab = expression("phi[l]"), main = "(a) main effect of l: nonparametric part",
-           ticktype = "detailed",
-           col=color)
-
-plot(seq(0,100,length.out=100),
-     matrix(Phi1,nrow=100,ncol=100)[,1],
-     type="l",
-     xlab="l",
-     ylab=expression("phi[l]"))
-plot(seq(0,100,length.out=100),
-     matrix(c(seq(0,1,length.out=100),
-              seq(0,1,length.out=100)),nrow=100,ncol=2,byrow=FALSE) %*% b[2:3],
-     type="l",
-     xlab="l",
-     ylab=expression("phi[l]"))
-
-drape.plot(seq(0,1,length.out=100),
-           seq(0,1,length.out=100),
-           Fitlnp,
-           phi=25,
-           theta=25,
-           expand = 0.5, 
-           border = NA, shade = 0.1, add.legend = T, xlab = "l", ylab = "m", 
-           zlab = "Phi1", main = "(a) main effect of l: nonparametric part",
-           col = color,
-           ticktype = "detailed")
-
-
-
-drape.plot(seq(0,1,length.out=100), seq(0,1,length.out=100), Fitm, theta = -30, phi = 30, expand = 0.85, 
-           border = NA, shade = 0.1, add.legend = T, xlab = "l", ylab = "m", 
-           zlab = "Y", main = "(b) main effect of m", zlim = ZLIM., col=color)
-drape.plot(ml, mm, Fitlma, theta = -30, phi = 30, expand = 0.85, 
-           border = NA, shade = 0.1, add.legend = T, xlab = "l", ylab = "m", 
-           zlab = "Y", main = "(c) f(x1):x2 interaction", zlim = ZLIM.)
-drape.plot(ml, mm, Fitlmb, theta = -30, phi = 30, expand = 0.85, 
-           border = NA, shade = 0.1, add.legend = T, xlab = "l", ylab = "m", 
-           zlab = "Y", main = "(d) x1:f(x2) interaction", zlim = ZLIM.)
-drape.plot(ml, mm, Fitlmc, theta = -30, phi = 30, expand = 0.85, 
-           border = NA, shade = 0.1, add.legend = T, xlab = "l", ylab = "m", 
-           zlab = "Y", main = "(e) f(x1,x2) interaction", zlim = ZLIM.)
-drape.plot(ml, mm, Fitlma + Fitlmb + Fitlmc, theta = -30, phi = 30, 
-           expand = 0.85, border = NA, shade = 0.1, add.legend = T, 
-           xlab = "x1", ylab = "x2", zlab = "True", main = "(f) sum of all interactions", 
-           zlim = ZLIM.)
-
-
-drape.plot(ml, mm, Fit.grid, theta = -30, phi = 30, 
-           expand = 0.85, border = NA, shade = 0.1, add.legend = T, 
-           xlab = "l", ylab = "m", # main = "(f) sum of all interactions", 
-           zlim = ZLIM.)
-
-drape.plot(seq(0,1,length.out=100), seq(0,1,length.out=100),
-           matrix(truePhi,nrow=100,ncol=100,byrow=TRUE),
-           theta = -30, phi = 30, 
-           expand = 0.85, border = NA, shade = 0.1, add.legend = T, 
-           xlab = "l", ylab = "m", # main = "(f) sum of all interactions", 
-           zlim = ZLIM.)
