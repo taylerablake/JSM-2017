@@ -59,13 +59,8 @@ B. <- kronecker(Bm,
                                                            Bl)
 
 
-knot_grid <- expand.grid(m=interior.knots.m,l=interior.knots.l)[,2:1]
-keep <- (knot_grid$m >= 0.5) & (knot_grid$m <= max(knot_grid$l)-(0.5*knot_grid$l)) |
-      (knot_grid$m <= 0.5) & (knot_grid$m >= min(knot_grid$l)+(0.5*knot_grid$l))
-knot_grid <- transform(knot_grid,keep=factor(keep))
-knot_grid <- data.frame(knot_grid,
-                        expand.grid(m_index=1:length(interior.knots.m),
-                                    l_index=(1:length(interior.knots.l)))[,2:1])
+
+
 
 basisKeepIndex <-( knot_grid$keep[!duplicated(knot_grid[,c("l_index","m_index")])]=="TRUE") %>% which
 B. <- B.[,basisKeepIndex]
