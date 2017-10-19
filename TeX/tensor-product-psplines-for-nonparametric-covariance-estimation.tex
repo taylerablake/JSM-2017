@@ -766,30 +766,30 @@ Define $L \equiv Q^{-{1/2}}Q_\lambda Q^{-{1/2}}$. Then
 %}
 %}
 %
-An alternative approach to model selection is to minimize the information criterion (IC):
-\[
-\textup{IC}\left(\lambda\right) = -2\mathscr{l}\left(y, \hat{\beta}_\lambda \right) + c\; \textup{dim}\left(\hat{\beta}_\lambda\right)
-\]
-
-Special cases are when $c=2$, yielding the Akaike information criterion (AIC) and when $c=\log\left(m\right)$, yielding the Bayesian information criterion (BIC). The IC assesses the quality of a model by adjusting the log likelihood of the data under the fitted model to account for some measure of model complexity. In the classical linear model setting, the degrees of freedom serves as the measure of model complexity, is used for obtaining an unbiased estimate of the error variance, and thus, is necessary for comparing the performance of different models. In the case of the normal likelihood, AIC becomes
-
-\begin{equation} \label{eq:univariate_AIC}
-\textup{AIC}\left(\lambda\right) = %\sum_{i=1}^m \frac{\left( y_i - \hat{\mu}_i \right)^2}{\sigma^2} + 2\tr\left(H\right) - 2m\log\left(\sigma\right) - m\log 2\pi
-\end{equation}
-
-One may use CV to select the optimal value of $\lambda$, and then using the corresponding residuals gives a natural choice to use as an estimate of $\sigma^2$ for the computation of $\textup{AIC}\left(\lambda\right)$. It is practical to work with modified versions of $\textup{CV}\left(\lambda\right)$ and $\textup{GCV}\left(\lambda\right)$, with values that can be interpreted as estimates of the cross-validation standard deviation:
-
-\begin{equation}
-\begin{split}
-\bar{\textup{CV}}\left(\lambda\right) &= \sqrt{\textup{CV}\left(\lambda\right)} \\
-\bar{\textup{GCV}}\left(\lambda\right) &= \sqrt{m\textup{GCV}\left(\lambda\right)} \\
-\end{split}
-\end{equation}
-
-Alternatively, one might note that an (approximately) unbiased estimate of the error variance is given by the sum of squared residuals divided by the error degrees of freedom, $m-\textup{ED}$.
-
-
-
+An alternative approach to model selection is to minimize the information criterion (IC).
+%\[
+%\textup{IC}\left(\lambda\right) = -2\mathscr{l}\left(y, \hat{\beta}_\lambda \right) + c\; \textup{dim}\left(\hat{\beta}_\lambda\right)
+%\]
+%
+%Special cases are when $c=2$, yielding the Akaike information criterion (AIC) and when $c=\log\left(m\right)$, yielding the Bayesian information criterion (BIC). The IC assesses the quality of a model by adjusting the log likelihood of the data under the fitted model to account for some measure of model complexity. In the classical linear model setting, the degrees of freedom serves as the measure of model complexity, is used for obtaining an unbiased estimate of the error variance, and thus, is necessary for comparing the performance of different models. In the case of the normal likelihood, AIC becomes
+%
+%\begin{equation} \label{eq:univariate_AIC}
+%\textup{AIC}\left(\lambda\right) = %\sum_{i=1}^m \frac{\left( y_i - \hat{\mu}_i \right)^2}{\sigma^2} + 2\tr\left(H\right) - 2m\log\left(\sigma\right) - m\log 2\pi
+%\end{equation}
+%
+%One may use CV to select the optimal value of $\lambda$, and then using the corresponding residuals gives a natural choice to use as an estimate of $\sigma^2$ for the computation of $\textup{AIC}\left(\lambda\right)$. It is practical to work with modified versions of $\textup{CV}\left(\lambda\right)$ and $\textup{GCV}\left(\lambda\right)$, with values that can be interpreted as estimates of the cross-validation standard deviation:
+%
+%\begin{equation}
+%\begin{split}
+%\bar{\textup{CV}}\left(\lambda\right) &= \sqrt{\textup{CV}\left(\lambda\right)} \\
+%\bar{\textup{GCV}}\left(\lambda\right) &= \sqrt{m\textup{GCV}\left(\lambda\right)} \\
+%\end{split}
+%\end{equation}
+%
+%Alternatively, one might note that an (approximately) unbiased estimate of the error variance is given by the sum of squared residuals divided by the error degrees of freedom, $m-\textup{ED}$.
+%
+%
+%
 
 
 
